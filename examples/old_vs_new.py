@@ -12,7 +12,8 @@ print("=" * 60)
 print("\n📚 OLD WAY: Managing Multiple Provider SDKs")
 print("-" * 50)
 
-print("""
+print(
+    """
 # Install multiple packages
 pip install google-generativeai
 pip install anthropic  
@@ -64,12 +65,14 @@ def old_way_example():
     # Different response formats to handle
     # Provider lock-in and complex management
 
-""")
+"""
+)
 
 print("\n✨ NEW WAY: Cost Katana Unified Interface")
 print("-" * 50)
 
-print("""
+print(
+    """
 # Install one package
 pip install cost-katana
 
@@ -109,7 +112,8 @@ def new_way_example():
     # Consistent response format
     # No provider lock-in
 
-""")
+"""
+)
 
 # Let's demo the actual new way if user has configured Cost Katana
 print("\n🚀 LIVE DEMO: Cost Katana in Action")
@@ -117,51 +121,53 @@ print("-" * 50)
 
 try:
     import cost_katana as ck
-    
+
     # Try to configure
     try:
-        ck.configure(config_file='config.json')
+        ck.configure(config_file="config.json")
         print("✅ Using config.json")
     except FileNotFoundError:
         print("ℹ️  No config.json found")
-        api_key = input("Enter your Cost Katana API key (or press Enter to skip): ").strip()
+        api_key = input(
+            "Enter your Cost Katana API key (or press Enter to skip): "
+        ).strip()
         if api_key:
             ck.configure(api_key=api_key)
             print("✅ Configured with API key")
         else:
             print("⏭️  Skipping live demo")
             exit()
-    
+
     print("\n🧪 Testing the same prompt with different providers...")
-    
+
     test_prompt = "Explain what makes you unique in exactly one sentence."
     models_to_test = [
-        ('gemini-2.0-flash', 'Google Gemini'),
-        ('claude-3-haiku', 'Anthropic Claude'), 
-        ('nova-micro', 'AWS Nova')
+        ("gemini-2.0-flash", "Google Gemini"),
+        ("claude-3-haiku", "Anthropic Claude"),
+        ("nova-micro", "AWS Nova"),
     ]
-    
+
     total_cost = 0
-    
+
     for model_id, display_name in models_to_test:
         try:
             print(f"\n🤖 {display_name} ({model_id}):")
             model = ck.GenerativeModel(model_id)
             response = model.generate_content(test_prompt)
-            
+
             print(f"   Response: {response.text}")
             print(f"   💰 Cost: ${response.usage_metadata.cost:.4f}")
             print(f"   ⚡ Latency: {response.usage_metadata.latency:.2f}s")
             print(f"   🔢 Tokens: {response.usage_metadata.total_tokens}")
-            
+
             total_cost += response.usage_metadata.cost
-            
+
             if response.usage_metadata.cache_hit:
                 print("   💾 Cache Hit: Saved money!")
-            
+
         except Exception as e:
             print(f"   ❌ Error: {e}")
-    
+
     print(f"\n💳 Total Demo Cost: ${total_cost:.4f}")
     print("\n✨ Key Benefits Demonstrated:")
     print("   • Same simple interface for all providers")
@@ -199,7 +205,8 @@ print(comparison_table)
 
 print("\n🎯 CONCLUSION")
 print("-" * 50)
-print("""
+print(
+    """
 Cost Katana transforms AI development by providing:
 
 ✅ SIMPLICITY: One interface, one API key, one package
@@ -210,7 +217,8 @@ Cost Katana transforms AI development by providing:
 ✅ SCALABILITY: Enterprise features for team management
 
 Stop managing multiple AI SDKs. Start optimizing with Cost Katana!
-""")
+"""
+)
 
 print("🚀 Get started: https://costkatana.com")
 print("📚 Documentation: https://docs.costkatana.com")

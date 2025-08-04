@@ -9,10 +9,10 @@ Simple interface for AI models that routes through Cost Katana for:
 
 Example:
     import cost_katana as ck
-    
+
     # Configure once
     ck.configure(config_file='config.json')
-    
+
     # Use like any AI library
     model = ck.GenerativeModel('gemini-2.0-flash')
     chat = model.start_chat()
@@ -27,43 +27,45 @@ from .exceptions import (
     AuthenticationError,
     ModelNotAvailableError,
     RateLimitError,
-    CostLimitExceededError
+    CostLimitExceededError,
 )
 from .config import Config
 
 __version__ = "1.0.0"
 __all__ = [
     "configure",
-    "GenerativeModel", 
+    "GenerativeModel",
     "ChatSession",
     "CostKatanaClient",
     "CostKatanaError",
-    "AuthenticationError", 
+    "AuthenticationError",
     "ModelNotAvailableError",
     "RateLimitError",
     "CostLimitExceededError",
-    "Config"
+    "Config",
 ]
 
 # Import configure function from client
 from .client import configure
 
+
 def GenerativeModel(model_name: str, **kwargs):
     """
     Create a generative model instance.
-    
+
     Args:
         model_name: Name of the model (e.g., 'gemini-2.0-flash', 'claude-3-sonnet', 'gpt-4')
         **kwargs: Additional model configuration
-        
+
     Returns:
         GenerativeModel instance
-        
+
     Example:
         model = cost_katana.GenerativeModel('gemini-2.0-flash')
         response = model.generate_content("Hello, world!")
     """
     client = get_global_client()
-    
+
     from .models import GenerativeModel as GM
+
     return GM(client, model_name, **kwargs)
