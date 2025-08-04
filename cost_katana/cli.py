@@ -14,7 +14,7 @@ from rich.prompt import Prompt, Confirm
 from rich.syntax import Syntax
 
 try:
-    from . import configure, GenerativeModel, CostKatanaClient
+    from . import configure, create_generative_model, CostKatanaClient
     from .config import Config
     from .exceptions import CostKatanaError
 except ImportError:

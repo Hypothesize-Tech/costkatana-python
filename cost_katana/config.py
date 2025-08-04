@@ -74,9 +74,7 @@ class Config:
         config_path_obj = Path(config_path).expanduser()
 
         if not config_path_obj.exists():
-            raise FileNotFoundError(
-                f"Configuration file not found: {config_path}"
-            )
+            raise FileNotFoundError(f"Configuration file not found: {config_path}")
 
         try:
             with open(config_path_obj, "r", encoding="utf-8") as f:
@@ -91,9 +89,11 @@ class Config:
         config = cls(**config_data)
 
         # Store additional data
-        setattr(config, '_extra_data', {
-            k: v for k, v in data.items() if k not in config_fields
-        })
+        setattr(
+            config,
+            "_extra_data",
+            {k: v for k, v in data.items() if k not in config_fields},
+        )
 
         return config
 

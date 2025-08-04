@@ -24,7 +24,7 @@ def configure(
     api_key: Optional[str] = None,
     base_url: Optional[str] = None,
     config_file: Optional[str] = None,
-    **kwargs
+    **kwargs,
 ):
     """
     Configure Cost Katana client globally.
