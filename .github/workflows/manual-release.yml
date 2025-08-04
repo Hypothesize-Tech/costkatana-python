@@ -1,0 +1,86 @@
+name: Manual Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.13"
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+    
+    - name: Extract version from tag
+      id: version
+      run: |
+        VERSION=${GITHUB_REF#refs/tags/v}
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Release version: $VERSION"
+    
+    - name: Update version in setup.py
+      run: |
+        sed -i "s/version=\"[^\"]*\"/version=\"${{ steps.version.outputs.version }}\"/" setup.py
+        echo "Updated setup.py version to ${{ steps.version.outputs.version }}"
+    
+    - name: Build package
+      run: |
+        python -m build
+    
+    - name: Check package
+      run: |
+        twine check dist/*
+    
+    - name: Publish to PyPI
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        twine upload dist/*
+    
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: Release ${{ github.ref_name }}
+        body: |
+          ## Cost Katana Python SDK v${{ steps.version.outputs.version }}
+          
+          ### Installation
+          ```bash
+          pip install cost-katana==${{ steps.version.outputs.version }}
+          ```
+          
+          ### What's New
+          - Updated dependencies and improvements
+          - Enhanced CLI interface
+          - Better error handling
+          
+          ### Breaking Changes
+          None
+          
+          ### Bug Fixes
+          - Fixed Makefile syntax issues
+          - Updated Python command references
+          
+          ### Documentation
+          - Updated installation instructions
+          - Improved examples and documentation
+          
+          ### Development
+          - Added GitHub Actions CI/CD
+          - Automated testing and publishing
+        draft: false
+        prerelease: false 

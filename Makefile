@@ -136,6 +136,44 @@ info:  ## Show package information
 	@echo "💬 Discord: https://discord.gg/costkatana"
 
 # Quick start for new users
+# CI/CD helpers
+ci-test:  ## Run tests for CI
+	python3 -m pytest tests/ -v --cov=cost_katana --cov-report=xml
+
+ci-lint:  ## Run linting for CI
+	flake8 cost_katana/ --count --select=E9,F63,F7,F82 --show-source --statistics
+	flake8 cost_katana/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+ci-format:  ## Run format check for CI
+	black --check cost_katana/
+	black --check examples/
+
+ci-type:  ## Run type checking for CI
+	mypy cost_katana/ --ignore-missing-imports
+
+ci-build:  ## Build package for CI
+	python3 -m build
+
+ci-check:  ## Check package for CI
+	python3 -m twine check dist/*
+
+ci-security:  ## Run security checks
+	pip install safety bandit
+	safety check --full-report
+	bandit -r cost_katana/ -f txt
+
+# Release helpers
+release-prepare:  ## Prepare a new release
+	@echo "🚀 Preparing release..."
+	@./scripts/prepare-release.sh
+
+release-push:  ## Push release to GitHub
+	@echo "📤 Pushing release to GitHub..."
+	git push origin main
+	git push --tags
+
+release-full: release-prepare release-push  ## Complete release process
+
 quick-start:  ## Quick start guide
 	@echo "🚀 Cost Katana Python SDK - Quick Start"
 	@echo "========================================"
