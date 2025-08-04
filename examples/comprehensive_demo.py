@@ -20,56 +20,58 @@ from pathlib import Path
 # Add the parent directory to the path so we can import cost_katana
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+
 def demo_configuration():
     """Demonstrate configuration management"""
     print("🔧 Configuration Management")
     print("=" * 40)
-    
+
     try:
         import cost_katana
         from cost_katana.config import Config
-        
+
         # Create default config
         config = Config()
         print(f"✓ Default model: {config.default_model}")
         print(f"✓ Base URL: {config.base_url}")
-        
+
         # Load from file if exists
         config_path = Path("cost_katana_config.json")
         if config_path.exists():
             config = Config.from_file(str(config_path))
             print(f"✓ Loaded config from file: {config.default_model}")
-        
+
         # Test model mapping
         model_id = config.get_model_mapping("nova-lite")
         print(f"✓ Model mapping: nova-lite -> {model_id}")
-        
+
         # Show environment variable support
         print("\nEnvironment Variables:")
         print("  COST_KATANA_API_KEY - Your API key")
         print("  COST_KATANA_BASE_URL - Custom base URL")
         print("  COST_KATANA_DEFAULT_MODEL - Default model")
-        
+
         return True
     except Exception as e:
         print(f"✗ Configuration demo failed: {e}")
         return False
 
+
 def demo_client_setup():
     """Demonstrate client setup"""
     print("\n🔌 Client Setup")
     print("=" * 40)
-    
+
     try:
         from cost_katana.client import CostKatanaClient
-        
+
         # Show how to create client (will fail without API key)
         try:
             client = CostKatanaClient()
             print("✓ Client created successfully")
         except Exception as e:
             print(f"✓ Client properly validates API key: {type(e).__name__}")
-        
+
         # Show configuration with API key
         print("\nConfiguration Methods:")
         print("1. Environment variable:")
@@ -84,37 +86,40 @@ def demo_client_setup():
         print()
         print("4. CLI initialization:")
         print("   cost-katana init")
-        
+
         return True
     except Exception as e:
         print(f"✗ Client setup demo failed: {e}")
         return False
 
+
 def demo_model_creation():
     """Demonstrate model creation"""
     print("\n🤖 Model Creation")
     print("=" * 40)
-    
+
     try:
         from cost_katana.models import GenerativeModel, GenerationConfig
-        
+
         # Show how to create a model (will fail without configuration)
         try:
             model = GenerativeModel(None, "nova-lite")
             print("✓ Model created successfully")
         except Exception as e:
             print(f"✓ Model creation properly requires client: {type(e).__name__}")
-        
+
         # Show generation config
         config = GenerationConfig(
             temperature=0.7,
             max_output_tokens=2000,
             top_p=0.9,
             top_k=40,
-            stop_sequences=["\n\n", "Human:", "Assistant:"]
+            stop_sequences=["\n\n", "Human:", "Assistant:"],
         )
-        print(f"✓ Generation config created: temp={config.temperature}, max_tokens={config.max_output_tokens}")
-        
+        print(
+            f"✓ Generation config created: temp={config.temperature}, max_tokens={config.max_output_tokens}"
+        )
+
         print("\nComplete Usage Example:")
         print("```python")
         print("import cost_katana as ck")
@@ -136,20 +141,21 @@ def demo_model_creation():
         print("print(f'Cost: ${response.usage_metadata.cost:.4f}')")
         print("print(f'Tokens: {response.usage_metadata.total_tokens}')")
         print("```")
-        
+
         return True
     except Exception as e:
         print(f"✗ Model creation demo failed: {e}")
         return False
 
+
 def demo_chat_session():
     """Demonstrate chat session functionality"""
     print("\n💬 Chat Sessions")
     print("=" * 40)
-    
+
     try:
         from cost_katana.models import ChatSession
-        
+
         print("Chat sessions provide conversation context and memory:")
         print()
         print("```python")
@@ -177,24 +183,25 @@ def demo_chat_session():
         print("new_chat = model.start_chat()")
         print("new_chat.import_conversation(conversation_data)")
         print("```")
-        
+
         print("\nAdvanced Chat Features:")
         print("✓ Context preservation across messages")
         print("✓ Conversation export/import")
         print("✓ Memory management")
         print("✓ Multi-turn reasoning")
         print("✓ Conversation analytics")
-        
+
         return True
     except Exception as e:
         print(f"✗ Chat session demo failed: {e}")
         return False
 
+
 def demo_async_operations():
     """Demonstrate async operations"""
     print("\n⚡ Async Operations")
     print("=" * 40)
-    
+
     try:
         print("Cost Katana supports async operations for better performance:")
         print()
@@ -217,7 +224,9 @@ def demo_async_operations():
         print("    ")
         print("    # Batch processing")
         print("    prompts = ['Hello', 'How are you?', 'What is AI?']")
-        print("    tasks = [model.generate_content_async(prompt) for prompt in prompts]")
+        print(
+            "    tasks = [model.generate_content_async(prompt) for prompt in prompts]"
+        )
         print("    responses = await asyncio.gather(*tasks)")
         print("    ")
         print("    for i, response in enumerate(responses):")
@@ -226,23 +235,24 @@ def demo_async_operations():
         print("# Run async demo")
         print("asyncio.run(async_demo())")
         print("```")
-        
+
         print("\nAsync Benefits:")
         print("✓ Non-blocking operations")
         print("✓ Concurrent request processing")
         print("✓ Better resource utilization")
         print("✓ Improved throughput")
-        
+
         return True
     except Exception as e:
         print(f"✗ Async operations demo failed: {e}")
         return False
 
+
 def demo_performance_benchmarking():
     """Demonstrate performance benchmarking"""
     print("\n📊 Performance Benchmarking")
     print("=" * 40)
-    
+
     try:
         print("Cost Katana provides built-in performance monitoring:")
         print()
@@ -283,17 +293,18 @@ def demo_performance_benchmarking():
         print("for model in models:")
         print("    benchmark_model(model, 'Explain quantum computing in simple terms')")
         print("```")
-        
+
         return True
     except Exception as e:
         print(f"✗ Performance benchmarking demo failed: {e}")
         return False
 
+
 def demo_cli_usage():
     """Demonstrate CLI usage"""
     print("\n🖥️  CLI Usage")
     print("=" * 40)
-    
+
     print("The Cost Katana CLI provides easy access to all features:")
     print()
     print("Basic Commands:")
@@ -316,20 +327,25 @@ def demo_cli_usage():
     print("✓ Syntax highlighting")
     print("✓ Multi-line input support")
     print("✓ Export/import conversations")
-    
+
     return True
+
 
 def demo_error_handling():
     """Demonstrate error handling"""
     print("\n⚠️  Error Handling")
     print("=" * 40)
-    
+
     try:
         from cost_katana.exceptions import (
-            CostKatanaError, AuthenticationError, ModelNotAvailableError,
-            RateLimitError, CostLimitExceededError, ValidationError
+            CostKatanaError,
+            AuthenticationError,
+            ModelNotAvailableError,
+            RateLimitError,
+            CostLimitExceededError,
+            ValidationError,
         )
-        
+
         print("The SDK provides comprehensive error handling:")
         print()
         print("```python")
@@ -363,24 +379,25 @@ def demo_error_handling():
         print("        print(f'❌ System error: {e}')")
         print("        return None")
         print("```")
-        
+
         print("\nError Recovery Strategies:")
         print("✓ Automatic retry with exponential backoff")
         print("✓ Fallback to alternative models")
         print("✓ Graceful degradation")
         print("✓ Detailed error reporting")
         print("✓ Cost limit enforcement")
-        
+
         return True
     except Exception as e:
         print(f"✗ Error handling demo failed: {e}")
         return False
 
+
 def demo_cost_tracking():
     """Demonstrate cost tracking features"""
     print("\n💰 Cost Tracking")
     print("=" * 40)
-    
+
     print("Cost Katana automatically tracks costs for all requests:")
     print()
     print("```python")
@@ -410,14 +427,15 @@ def demo_cost_tracking():
     print("✓ Budget alerts")
     print("✓ Cost optimization suggestions")
     print("✓ Usage analytics dashboard")
-    
+
     return True
+
 
 def demo_advanced_features():
     """Demonstrate advanced features"""
     print("\n🚀 Advanced Features")
     print("=" * 40)
-    
+
     print("Cost Katana provides enterprise-grade features:")
     print()
     print("1. **Automatic Failover**:")
@@ -454,14 +472,15 @@ def demo_advanced_features():
     print("   - REST API access")
     print("   - SDK for multiple languages")
     print("   - Plugin architecture")
-    
+
     return True
+
 
 def demo_integration_examples():
     """Demonstrate integration examples"""
     print("\n🔗 Integration Examples")
     print("=" * 40)
-    
+
     print("Cost Katana integrates seamlessly with popular frameworks:")
     print()
     print("**FastAPI Integration**:")
@@ -498,15 +517,16 @@ def demo_integration_examples():
     print("        st.write(response.text)")
     print("        st.metric('Cost', f'${response.usage_metadata.cost:.4f}')")
     print("```")
-    
+
     return True
+
 
 def main():
     """Run all demonstrations"""
     print("🎯 Cost Katana Python SDK - Comprehensive Demo")
     print("=" * 60)
     print()
-    
+
     demos = [
         demo_configuration,
         demo_client_setup,
@@ -520,20 +540,20 @@ def main():
         demo_advanced_features,
         demo_integration_examples,
     ]
-    
+
     passed = 0
     total = len(demos)
-    
+
     for demo in demos:
         try:
             if demo():
                 passed += 1
         except Exception as e:
             print(f"✗ Demo {demo.__name__} crashed: {e}")
-    
+
     print("\n" + "=" * 60)
     print(f"Results: {passed}/{total} demos completed successfully")
-    
+
     if passed == total:
         print("🎉 All demos completed! The SDK is ready for production use.")
         print()
@@ -545,11 +565,14 @@ def main():
         print("Documentation:")
         print("- SDK Docs: https://docs.costkatana.com")
         print("- API Reference: https://docs.costkatana.com/api-reference")
-        print("- Examples: https://github.com/Hypothesize-Tech/cost-katana-python/tree/main/examples")
+        print(
+            "- Examples: https://github.com/Hypothesize-Tech/cost-katana-python/tree/main/examples"
+        )
         return 0
     else:
         print("❌ Some demos failed. Please check the implementation.")
         return 1
 
+
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())

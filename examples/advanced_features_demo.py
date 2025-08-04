@@ -17,22 +17,26 @@ from dataclasses import dataclass
 
 # Add the parent directory to the path so we can import cost_katana
 import sys
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
 
 @dataclass
 class BenchmarkResult:
     """Result from model benchmarking"""
+
     model: str
     latency: float
     cost: float
     tokens: int
     quality_score: float
 
+
 def demo_batch_processing():
     """Demonstrate batch processing capabilities"""
     print("🔄 Batch Processing")
     print("=" * 40)
-    
+
     try:
         print("Cost Katana supports efficient batch processing:")
         print()
@@ -40,22 +44,28 @@ def demo_batch_processing():
         print("import asyncio")
         print("import cost_katana as ck")
         print("")
-        print("async def process_batch(prompts: List[str], "
-              "model_name: str = 'nova-lite'):")
+        print(
+            "async def process_batch(prompts: List[str], "
+            "model_name: str = 'nova-lite'):"
+        )
         print("    ck.configure(api_key='dak_your_key_here')")
         print("    model = ck.create_generative_model(model_name)")
         print("    ")
         print("    # Create tasks for parallel processing")
-        print("    tasks = [model.generate_content_async(prompt) "
-              "for prompt in prompts]")
+        print(
+            "    tasks = [model.generate_content_async(prompt) "
+            "for prompt in prompts]"
+        )
         print("    ")
         print("    # Execute all tasks concurrently")
         print("    responses = await asyncio.gather(*tasks)")
         print("    ")
         print("    # Process results")
         print("    total_cost = sum(r.usage_metadata.cost for r in responses)")
-        print("    total_tokens = sum(r.usage_metadata.total_tokens "
-              "for r in responses)")
+        print(
+            "    total_tokens = sum(r.usage_metadata.total_tokens "
+            "for r in responses)"
+        )
         print("    ")
         print("    print(f'Processed {len(prompts)} prompts')")
         print("    print(f'Total cost: ${total_cost:.4f}')")
@@ -72,17 +82,18 @@ def demo_batch_processing():
         print("")
         print("responses = await process_batch(prompts)")
         print("```")
-        
+
         return True
     except Exception as e:
         print(f"✗ Batch processing demo failed: {e}")
         return False
 
+
 def demo_streaming_responses():
     """Demonstrate streaming response capabilities"""
     print("\n🌊 Streaming Responses")
     print("=" * 40)
-    
+
     try:
         print("Cost Katana supports real-time streaming responses:")
         print()
@@ -109,17 +120,18 @@ def demo_streaming_responses():
         print("✓ Better user experience")
         print("✓ Progressive content generation")
         print("✓ Token-by-token cost tracking")
-        
+
         return True
     except Exception as e:
         print(f"✗ Streaming demo failed: {e}")
         return False
 
+
 def demo_cost_optimization():
     """Demonstrate cost optimization strategies"""
     print("\n💰 Cost Optimization")
     print("=" * 40)
-    
+
     try:
         print("Cost Katana provides intelligent cost optimization:")
         print()
@@ -144,8 +156,7 @@ def demo_cost_optimization():
         print("        )")
         print("        ")
         print("        try:")
-        print("            response = model.generate_content(prompt, "
-              "config=config)")
+        print("            response = model.generate_content(prompt, " "config=config)")
         print("            cost = response.usage_metadata.cost")
         print("            ")
         print("            if cost <= budget:")
@@ -153,31 +164,31 @@ def demo_cost_optimization():
         print("                print(f'Cost: ${cost:.4f}')")
         print("                return response")
         print("            else:")
-        print("                print(f'✗ {model_name} too expensive: "
-              "${cost:.4f}')")
+        print("                print(f'✗ {model_name} too expensive: " "${cost:.4f}')")
         print("        except Exception as e:")
         print("            print(f'✗ {model_name} failed: {e}')")
         print("    ")
         print("    raise ValueError('No model fits within budget')")
         print("```")
-        
+
         print("\nOptimization Strategies:")
         print("✓ Model selection based on cost")
         print("✓ Token limit optimization")
         print("✓ Parameter tuning")
         print("✓ Budget enforcement")
         print("✓ Quality-cost trade-offs")
-        
+
         return True
     except Exception as e:
         print(f"✗ Cost optimization demo failed: {e}")
         return False
 
+
 def demo_advanced_analytics():
     """Demonstrate advanced analytics capabilities"""
     print("\n📊 Advanced Analytics")
     print("=" * 40)
-    
+
     try:
         print("Cost Katana provides comprehensive analytics:")
         print()
@@ -196,8 +207,10 @@ def demo_advanced_analytics():
         print("    ")
         print("    # Cost breakdown")
         print("    print(f'Total cost: ${analytics.total_cost:.4f}')")
-        print("    print(f'Average cost per request: "
-              "${analytics.avg_cost_per_request:.4f}')")
+        print(
+            "    print(f'Average cost per request: "
+            "${analytics.avg_cost_per_request:.4f}')"
+        )
         print("    print(f'Total requests: {analytics.total_requests}')")
         print("    ")
         print("    # Model performance")
@@ -205,10 +218,8 @@ def demo_advanced_analytics():
         print("    for model_stats in analytics.model_stats:")
         print("        print(f'  {model_stats.model}:')")
         print("        print(f'    Requests: {model_stats.requests}')")
-        print("        print(f'    Avg latency: "
-              "{model_stats.avg_latency:.2f}s')")
-        print("        print(f'    Success rate: "
-              "{model_stats.success_rate:.1%}')")
+        print("        print(f'    Avg latency: " "{model_stats.avg_latency:.2f}s')")
+        print("        print(f'    Success rate: " "{model_stats.success_rate:.1%}')")
         print("    ")
         print("    # Cost trends")
         print("    print('\\nCost Trends:')")
@@ -219,10 +230,11 @@ def demo_advanced_analytics():
         print("    print('\\nOptimization Recommendations:')")
         print("    for rec in analytics.recommendations:")
         print("        print(f'  • {rec.description}')")
-        print("        print(f'    Potential savings: "
-              "${rec.potential_savings:.4f}')")
+        print(
+            "        print(f'    Potential savings: " "${rec.potential_savings:.4f}')"
+        )
         print("```")
-        
+
         print("\nAnalytics Features:")
         print("✓ Real-time usage monitoring")
         print("✓ Cost trend analysis")
@@ -230,17 +242,18 @@ def demo_advanced_analytics():
         print("✓ Optimization recommendations")
         print("✓ Budget tracking")
         print("✓ Usage forecasting")
-        
+
         return True
     except Exception as e:
         print(f"✗ Advanced analytics demo failed: {e}")
         return False
 
+
 def demo_multi_agent_orchestration():
     """Demonstrate multi-agent orchestration"""
     print("\n🤖 Multi-Agent Orchestration")
     print("=" * 40)
-    
+
     try:
         print("Cost Katana supports complex multi-agent workflows:")
         print()
@@ -255,36 +268,35 @@ def demo_multi_agent_orchestration():
         print("        self.models = {")
         print("            'researcher': ck.create_generative_model('nova-pro'),")
         print("            'writer': ck.create_generative_model('nova-lite'),")
-        print("            'reviewer': ck.create_generative_model("
-              "'claude-3-haiku')")
+        print("            'reviewer': ck.create_generative_model(" "'claude-3-haiku')")
         print("        }")
         print("    ")
         print("    async def research_topic(self, topic: str) -> str:")
         print("        model = self.models['researcher']")
-        print("        prompt = f'Research and provide key facts about: "
-              "{topic}'")
+        print("        prompt = f'Research and provide key facts about: " "{topic}'")
         print("        response = await model.generate_content_async(prompt)")
         print("        return response.text")
         print("    ")
-        print("    async def write_content(self, research: str, "
-              "style: str) -> str:")
+        print("    async def write_content(self, research: str, " "style: str) -> str:")
         print("        model = self.models['writer']")
-        print("        prompt = f'Write content in {style} style based on: "
-              "{research}'")
+        print(
+            "        prompt = f'Write content in {style} style based on: " "{research}'"
+        )
         print("        response = await model.generate_content_async(prompt)")
         print("        return response.text")
         print("    ")
-        print("    async def review_content(self, content: str) -> "
-              "Dict[str, Any]:")
+        print("    async def review_content(self, content: str) -> " "Dict[str, Any]:")
         print("        model = self.models['reviewer']")
-        print("        prompt = f'Review this content and provide feedback: "
-              "{content}'")
+        print(
+            "        prompt = f'Review this content and provide feedback: " "{content}'"
+        )
         print("        response = await model.generate_content_async(prompt)")
-        print("        return {'feedback': response.text, "
-              "'quality_score': 0.85}")
+        print("        return {'feedback': response.text, " "'quality_score': 0.85}")
         print("    ")
-        print("    async def create_content(self, topic: str, "
-              "style: str = 'professional'):")
+        print(
+            "    async def create_content(self, topic: str, "
+            "style: str = 'professional'):"
+        )
         print("        # Step 1: Research")
         print("        research = await self.research_topic(topic)")
         print("        ")
@@ -302,28 +314,30 @@ def demo_multi_agent_orchestration():
         print("")
         print("# Usage example")
         print("orchestrator = AgentOrchestrator()")
-        print("result = await orchestrator.create_content("
-              "'artificial intelligence')")
+        print(
+            "result = await orchestrator.create_content(" "'artificial intelligence')"
+        )
         print("print(result['content'])")
         print("```")
-        
+
         print("\nOrchestration Benefits:")
         print("✓ Parallel agent execution")
         print("✓ Specialized model selection")
         print("✓ Workflow automation")
         print("✓ Quality assurance")
         print("✓ Cost optimization")
-        
+
         return True
     except Exception as e:
         print(f"✗ Multi-agent orchestration demo failed: {e}")
         return False
 
+
 def demo_custom_providers():
     """Demonstrate custom provider integration"""
     print("\n🔧 Custom Provider Integration")
     print("=" * 40)
-    
+
     try:
         print("Cost Katana supports custom provider integration:")
         print()
@@ -336,11 +350,14 @@ def demo_custom_providers():
         print("    def __init__(self, api_key: str, base_url: str = None):")
         print("        super().__init__('custom-provider')")
         print("        self.api_key = api_key")
-        print("        self.base_url = base_url or "
-              "'https://api.custom-provider.com'")
+        print(
+            "        self.base_url = base_url or " "'https://api.custom-provider.com'"
+        )
         print("    ")
-        print("    async def generate_content(self, prompt: str, "
-              "config: dict) -> GenerationResponse:")
+        print(
+            "    async def generate_content(self, prompt: str, "
+            "config: dict) -> GenerationResponse:"
+        )
         print("        # Custom implementation")
         print("        # This would make actual API calls to your custom provider")
         print("        ")
@@ -351,7 +368,9 @@ def demo_custom_providers():
         print("            text=response_text,")
         print("            usage_metadata=UsageMetadata(")
         print("                cost=0.001,  # Custom pricing")
-        print("                total_tokens=len(prompt.split()) + len(response_text.split()),")
+        print(
+            "                total_tokens=len(prompt.split()) + len(response_text.split()),"
+        )
         print("                model='custom-model',")
         print("                provider='custom-provider'")
         print("            )")
@@ -361,28 +380,31 @@ def demo_custom_providers():
         print("ck.register_provider('custom-provider', CustomProvider)")
         print("")
         print("# Use custom provider")
-        print("model = ck.create_generative_model('custom-model', provider='custom-provider')")
+        print(
+            "model = ck.create_generative_model('custom-model', provider='custom-provider')"
+        )
         print("response = model.generate_content('Hello from custom provider!')")
         print("print(response.text)")
         print("```")
-        
+
         print("\nCustom Provider Benefits:")
         print("✓ Integrate any AI provider")
         print("✓ Custom pricing models")
         print("✓ Specialized capabilities")
         print("✓ Unified interface")
         print("✓ Cost tracking integration")
-        
+
         return True
     except Exception as e:
         print(f"✗ Custom provider demo failed: {e}")
         return False
 
+
 def demo_benchmarking_suite():
     """Demonstrate comprehensive benchmarking"""
     print("\n⚡ Benchmarking Suite")
     print("=" * 40)
-    
+
     try:
         print("Cost Katana provides comprehensive benchmarking tools:")
         print()
@@ -392,7 +414,9 @@ def demo_benchmarking_suite():
         print("import cost_katana as ck")
         print("from typing import List")
         print("")
-        print("async def benchmark_models(prompts: List[str], models: List[str]) -> List[BenchmarkResult]:")
+        print(
+            "async def benchmark_models(prompts: List[str], models: List[str]) -> List[BenchmarkResult]:"
+        )
         print("    ck.configure(api_key='dak_your_key_here')")
         print("    results = []")
         print("    ")
@@ -417,7 +441,9 @@ def demo_benchmarking_suite():
         print("        avg_tokens = sum(tokens) / len(tokens)")
         print("        ")
         print("        # Simple quality score (placeholder)")
-        print("        quality_score = 0.8  # Would be calculated based on response quality")
+        print(
+            "        quality_score = 0.8  # Would be calculated based on response quality"
+        )
         print("        ")
         print("        results.append(BenchmarkResult(")
         print("            model=model_name,")
@@ -447,18 +473,19 @@ def demo_benchmarking_suite():
         print("    print(f'  Tokens: {result.tokens:.0f}')")
         print("    print(f'  Quality: {result.quality_score:.2f}')")
         print("```")
-        
+
         return True
     except Exception as e:
         print(f"✗ Benchmarking suite demo failed: {e}")
         return False
+
 
 def main():
     """Run all advanced demonstrations"""
     print("🚀 Cost Katana Python SDK - Advanced Features Demo")
     print("=" * 60)
     print()
-    
+
     demos = [
         demo_batch_processing,
         demo_streaming_responses,
@@ -468,20 +495,20 @@ def main():
         demo_custom_providers,
         demo_benchmarking_suite,
     ]
-    
+
     passed = 0
     total = len(demos)
-    
+
     for demo in demos:
         try:
             if demo():
                 passed += 1
         except Exception as e:
             print(f"✗ Demo {demo.__name__} crashed: {e}")
-    
+
     print("\n" + "=" * 60)
     print(f"Results: {passed}/{total} advanced demos completed successfully")
-    
+
     if passed == total:
         print("🎉 All advanced demos completed! Ready for enterprise use.")
         print()
@@ -498,5 +525,6 @@ def main():
         print("❌ Some advanced demos failed. Please check the implementation.")
         return 1
 
+
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())
