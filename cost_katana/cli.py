@@ -123,7 +123,7 @@ def test_connection(args):
         console.print("[bold blue]Testing Cost Katana connection...[/bold blue]")
 
         # Test with a simple model
-        model = GenerativeModel("gemini-2.0-flash")
+        model = create_generative_model("gemini-2.0-flash")
         response = model.generate_content(
             "Hello! Please respond with just 'OK' to test the connection."
         )
@@ -213,7 +213,7 @@ def start_chat(args):
             )
         )
 
-        model = GenerativeModel(model_name)
+        model = create_generative_model(model_name)
         chat = model.start_chat()
 
         total_cost = 0.0
