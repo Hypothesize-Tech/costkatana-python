@@ -21,7 +21,7 @@ Example:
 """
 
 from .client import CostKatanaClient, get_global_client
-from .models import GenerativeModel, ChatSession
+from .models import ChatSession
 from .exceptions import (
     CostKatanaError,
     AuthenticationError,
@@ -34,7 +34,7 @@ from .config import Config
 __version__ = "1.0.0"
 __all__ = [
     "configure",
-    "GenerativeModel",
+    "create_generative_model",
     "ChatSession",
     "CostKatanaClient",
     "CostKatanaError",
@@ -49,7 +49,7 @@ __all__ = [
 from .client import configure
 
 
-def GenerativeModel(model_name: str, **kwargs):
+def create_generative_model(model_name: str, **kwargs):
     """
     Create a generative model instance.
 

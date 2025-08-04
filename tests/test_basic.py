@@ -70,7 +70,7 @@ class TestModels:
         ck.configure(api_key="test_key")
         
         # Test generation
-        model = ck.GenerativeModel('nova-lite')
+        model = ck.create_generative_model('nova-lite')
         response = model.generate_content("Hello")
         
         assert response.text == "Hello, world!"
@@ -102,13 +102,13 @@ class TestIntegration:
     
     def test_import_structure(self):
         """Test that all public APIs are importable"""
-        from cost_katana import configure, GenerativeModel, CostKatanaClient
+        from cost_katana import configure, create_generative_model, CostKatanaClient
         from cost_katana.exceptions import CostKatanaError, AuthenticationError
         from cost_katana.config import Config
         
         # Test that classes exist
         assert configure is not None
-        assert GenerativeModel is not None
+        assert create_generative_model is not None
         assert CostKatanaClient is not None
         assert CostKatanaError is not None
         assert AuthenticationError is not None

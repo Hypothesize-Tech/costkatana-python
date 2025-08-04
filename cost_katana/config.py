@@ -5,7 +5,7 @@ Configuration management for Cost Katana
 import json
 import os
 from typing import Dict, Any, Optional
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, fields
 from pathlib import Path
 
 
@@ -71,25 +71,29 @@ class Config:
             }
         }
         """
-        config_path = Path(config_path).expanduser()
+        config_path_obj = Path(config_path).expanduser()
 
-        if not config_path.exists():
-            raise FileNotFoundError(f"Configuration file not found: {config_path}")
+        if not config_path_obj.exists():
+            raise FileNotFoundError(
+                f"Configuration file not found: {config_path}"
+            )
 
         try:
-            with open(config_path, "r", encoding="utf-8") as f:
+            with open(config_path_obj, "r", encoding="utf-8") as f:
                 data = json.load(f)
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid JSON in config file: {e}")
 
         # Extract known fields
-        config_fields = {field.name for field in cls.__dataclass_fields__.values()}
+        config_fields = {field.name for field in fields(cls)}
 
         config_data = {k: v for k, v in data.items() if k in config_fields}
         config = cls(**config_data)
 
         # Store additional data
-        config._extra_data = {k: v for k, v in data.items() if k not in config_fields}
+        setattr(config, '_extra_data', {
+            k: v for k, v in data.items() if k not in config_fields
+        })
 
         return config
 
@@ -105,10 +109,10 @@ class Config:
 
     def save(self, config_path: str):
         """Save configuration to JSON file"""
-        config_path = Path(config_path).expanduser()
-        config_path.parent.mkdir(parents=True, exist_ok=True)
+        config_path_obj = Path(config_path).expanduser()
+        config_path_obj.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(config_path, "w", encoding="utf-8") as f:
+        with open(config_path_obj, "w", encoding="utf-8") as f:
             json.dump(self.to_dict(), f, indent=2, ensure_ascii=False)
 
     def get_provider_config(self, provider: str) -> Dict[str, Any]:

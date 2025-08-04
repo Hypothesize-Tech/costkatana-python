@@ -21,7 +21,10 @@ _global_client = None
 
 
 def configure(
-    api_key: str = None, base_url: str = None, config_file: str = None, **kwargs
+    api_key: Optional[str] = None,
+    base_url: Optional[str] = None,
+    config_file: Optional[str] = None,
+    **kwargs
 ):
     """
     Configure Cost Katana client globally.
@@ -60,9 +63,9 @@ class CostKatanaClient:
 
     def __init__(
         self,
-        api_key: str = None,
-        base_url: str = None,
-        config_file: str = None,
+        api_key: Optional[str] = None,
+        base_url: Optional[str] = None,
+        config_file: Optional[str] = None,
         timeout: int = 30,
         **kwargs,
     ):
@@ -154,7 +157,7 @@ class CostKatanaClient:
         self,
         message: str,
         model_id: str,
-        conversation_id: str = None,
+        conversation_id: Optional[str] = None,
         temperature: float = 0.7,
         max_tokens: int = 2000,
         chat_mode: str = "balanced",
@@ -198,7 +201,7 @@ class CostKatanaClient:
             raise CostKatanaError(f"Failed to send message: {str(e)}")
 
     def create_conversation(
-        self, title: str = None, model_id: str = None
+        self, title: Optional[str] = None, model_id: Optional[str] = None
     ) -> Dict[str, Any]:
         """Create a new conversation"""
         payload = {}

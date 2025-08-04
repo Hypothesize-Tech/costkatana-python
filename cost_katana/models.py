@@ -3,7 +3,7 @@ Generative AI Models - Simple interface similar to google-generative-ai
 """
 
 import time
-from typing import Dict, Any, Optional, List, Iterator, Union
+from typing import Dict, Any, Optional, List, Union
 from dataclasses import dataclass
 from .client import CostKatanaClient
 from .exceptions import CostKatanaError, ModelNotAvailableError
@@ -89,7 +89,7 @@ class ChatSession:
         client: CostKatanaClient,
         model_id: str,
         generation_config: Optional[GenerationConfig] = None,
-        conversation_id: str = None,
+        conversation_id: Optional[str] = None,
     ):
         self.client = client
         self.model_id = model_id
@@ -171,12 +171,15 @@ class ChatSession:
 
     def get_history(self) -> List[Dict[str, Any]]:
         """Get the conversation history"""
+        if not self.conversation_id:
+            return self.history
+
         try:
             history_response = self.client.get_conversation_history(
                 self.conversation_id
             )
             return history_response.get("data", [])
-        except Exception as e:
+        except Exception:
             # Fall back to local history if API call fails
             return self.history
 
