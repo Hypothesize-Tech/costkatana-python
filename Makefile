@@ -15,11 +15,11 @@ install-dev:  ## Install development dependencies
 	pip install -r requirements-dev.txt
 
 test:  ## Run tests
-	python -m pytest tests/ -v --cov=cost_katana --cov-report=html --cov-report=term
+	python3 -m pytest tests/ -v --cov=cost_katana --cov-report=html --cov-report=term
 
 test-examples:  ## Test example scripts
 	@echo "Testing example scripts..."
-	python -m py_compile examples/*.py
+	python3 -m py_compile examples/*.py
 	@echo "✅ All examples compile successfully"
 
 lint:  ## Run linting
@@ -45,47 +45,45 @@ clean:  ## Clean build artifacts
 	find . -type f -name "*.pyc" -delete
 
 build:  ## Build package
-	python -m build
+	python3 -m build
 
 upload-test:  ## Upload to TestPyPI
-	python -m twine upload --repository testpypi dist/*
+	python3 -m twine upload --repository testpypi dist/*
 
 upload:  ## Upload to PyPI
-	python -m twine upload dist/*
+	python3 -m twine upload dist/*
 
 docs:  ## Generate documentation
 	@echo "Generating documentation..."
-	python -c "import cost_katana; help(cost_katana)" > docs/api_reference.txt
+	python3 -c "import cost_katana; help(cost_katana)" > docs/api_reference.txt
 	@echo "✅ Documentation generated in docs/"
 
 demo:  ## Run interactive demo
-	python examples/basic_usage.py
+	python3 examples/basic_usage.py
 
 demo-chat:  ## Run chat demo
-	python examples/chat_session.py
+	python3 examples/chat_session.py
 
 demo-comparison:  ## Run provider comparison demo
-	python examples/provider_comparison.py
+	python3 examples/provider_comparison.py
 
 demo-config:  ## Run configuration demo
-	python examples/config_example.py
+	python3 examples/config_example.py
 
 demo-old-vs-new:  ## Run old vs new comparison
-	python examples/old_vs_new.py
+	python3 examples/old_vs_new.py
 
 setup-config:  ## Create sample configuration
 	@echo "Creating sample configuration..."
-	@cat > config.json << 'EOF'
-{
-  "api_key": "dak_your_api_key_here",
-  "base_url": "https://api.costkatana.com",
-  "default_model": "gemini-2.0-flash",
-  "default_temperature": 0.7,
-  "cost_limit_per_day": 50.0,
-  "enable_optimization": true,
-  "enable_failover": true
-}
-EOF
+	@echo '{' > config.json
+	@echo '  "api_key": "dak_your_api_key_here",' >> config.json
+	@echo '  "base_url": "https://cost-katana-backend.store",' >> config.json
+	@echo '  "default_model": "gemini-2.0-flash",' >> config.json
+	@echo '  "default_temperature": 0.7,' >> config.json
+	@echo '  "cost_limit_per_day": 50.0,' >> config.json
+	@echo '  "enable_optimization": true,' >> config.json
+	@echo '  "enable_failover": true' >> config.json
+	@echo '}' >> config.json
 	@echo "✅ Created config.json - edit with your API key"
 
 cli-init:  ## Initialize CLI configuration
@@ -102,8 +100,8 @@ cli-chat:  ## Start CLI chat session
 
 verify-install:  ## Verify installation
 	@echo "Verifying Cost Katana installation..."
-	python -c "import cost_katana; print(f'✅ Cost Katana {cost_katana.__version__} installed successfully')"
-	python -c "from cost_katana import GenerativeModel, configure; print('✅ All imports working')"
+	python3 -c "import cost_katana; print(f'✅ Cost Katana {cost_katana.__version__} installed successfully')"
+	python3 -c "from cost_katana import GenerativeModel, configure; print('✅ All imports working')"
 	@echo "🚀 Ready to use Cost Katana!"
 
 check-deps:  ## Check dependencies
@@ -123,14 +121,14 @@ release-check: clean lint type-check test build  ## Pre-release checks
 
 # CI/CD helpers
 ci-test:  ## Run tests for CI
-	python -m pytest tests/ -v --cov=cost_katana --cov-report=xml
+	python3 -m pytest tests/ -v --cov=cost_katana --cov-report=xml
 
 # Package info
 info:  ## Show package information
 	@echo "Cost Katana Python SDK"
 	@echo "====================="
-	@echo "Version: $(shell python -c 'import cost_katana; print(cost_katana.__version__)')"
-	@echo "Location: $(shell python -c 'import cost_katana; print(cost_katana.__file__)')"
+	@echo "Version: $(shell python3 -c 'import cost_katana; print(cost_katana.__version__)')"
+	@echo "Location: $(shell python3 -c 'import cost_katana; print(cost_katana.__file__)')"
 	@echo "Dependencies: $(shell pip freeze | grep -E '(requests|httpx|pydantic|rich)' | wc -l) core packages"
 	@echo ""
 	@echo "🌐 Website: https://costkatana.com"

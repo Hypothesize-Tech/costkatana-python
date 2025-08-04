@@ -49,6 +49,7 @@ example_config.json
 *.env
 .env.local
 .env.production
+.pypirc.*
 
 # Logs
 *.log
