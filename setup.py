@@ -16,11 +16,11 @@ setup(
     name="cost-katana",
     version="1.0.0",
     author="Cost Katana Team",
-    author_email="support@costkatana.com",
+    author_email="abdul@hypothesize.tech",
     description="Unified AI interface with cost optimization and failover",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/your-org/cost-katana-python",
+    url="https://github.com/Hypothesize-Tech/cost-katana-python",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -40,8 +40,8 @@ setup(
     install_requires=requirements,
     keywords="ai, machine learning, cost optimization, openai, anthropic, aws bedrock, gemini",
     project_urls={
-        "Bug Reports": "https://github.com/your-org/cost-katana-python/issues",
-        "Source": "https://github.com/your-org/cost-katana-python",
+        "Bug Reports": "https://github.com/Hypothesize-Tech/cost-katana-python/issues",
+        "Source": "https://github.com/Hypothesize-Tech/cost-katana-python",
         "Documentation": "https://docs.costkatana.com",
     },
     entry_points={
