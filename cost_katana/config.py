@@ -54,7 +54,7 @@ class Config:
         Example config.json:
         {
             "api_key": "dak_your_key_here",
-            "base_url": "https://api.costkatana.com",
+            "base_url": "https://cost-katana-backend.store",
             "default_model": "claude-3-sonnet",
             "default_temperature": 0.3,
             "cost_limit_per_day": 100.0,

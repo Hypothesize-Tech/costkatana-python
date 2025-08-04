@@ -368,8 +368,9 @@ class GenerateContentResponse:
 
 - **Documentation**: [docs.costkatana.com](https://docs.costkatana.com)
 - **Discord Community**: [discord.gg/costkatana](https://discord.gg/costkatana)
-- **Email Support**: support@costkatana.com
+- **Email Support**: abdul@hypothesize.tech
 - **GitHub Issues**: [github.com/cost-katana/python-sdk](https://github.com/cost-katana/python-sdk)
+- **GitHub Repository**: [github.com/Hypothesize-Tech/cost-katana-python](https://github.com/Hypothesize-Tech/cost-katana-python)
 
 ## 📄 License
 

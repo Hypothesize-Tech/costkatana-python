@@ -16,7 +16,7 @@ def create_sample_config():
     """Create a sample configuration file"""
     config_data = {
         "api_key": "dak_your_api_key_here",
-        "base_url": "https://api.costkatana.com",
+        "base_url": "https://cost-katana-backend.store",
         "default_model": "gemini-2.0-flash",
         "default_temperature": 0.7,
         "default_max_tokens": 2000,

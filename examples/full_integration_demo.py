@@ -40,7 +40,7 @@ def main():
         print("Creating sample configuration...")
         sample_config = {
             "api_key": "dak_your_api_key_here", 
-            "base_url": "https://api.costkatana.com",
+            "base_url": "https://cost-katana-backend.store",
             "default_model": "gemini-2.0-flash",
             "default_temperature": 0.7,
             "cost_limit_per_request": 2.0,

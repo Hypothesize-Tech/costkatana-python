@@ -17,14 +17,14 @@ class TestConfiguration:
         """Test basic config creation"""
         config = Config(api_key="test_key")
         assert config.api_key == "test_key"
-        assert config.base_url == "https://api.costkatana.com"
+        assert config.base_url == "https://cost-katana-backend.store"
     
     def test_model_mapping(self):
         """Test model name mapping"""
         config = Config()
         
         # Test default mappings
-        assert config.get_model_mapping("gemini") == "gemini-2.0-flash-exp"
+        assert config.get_model_mapping("gemini-2.0-flash") == "amazon.nova-lite-v1:0"
         assert config.get_model_mapping("claude-3-sonnet") == "anthropic.claude-3-sonnet-20240229-v1:0"
         
         # Test unmapped names (should return as-is)
@@ -54,7 +54,7 @@ class TestModels:
     def test_generate_content(self, mock_send, mock_models):
         """Test content generation"""
         # Setup mocks
-        mock_models.return_value = [{"id": "gemini-2.0-flash", "name": "Gemini 2.0 Flash"}]
+        mock_models.return_value = [{"id": "nova-lite", "name": "Nova Lite"}]
         mock_send.return_value = {
             "success": True,
             "data": {
@@ -62,12 +62,15 @@ class TestModels:
                 "cost": 0.001,
                 "latency": 1.5,
                 "tokenCount": 10,
-                "model": "gemini-2.0-flash"
+                "model": "nova-lite"
             }
         }
         
+        # Configure first
+        ck.configure(api_key="test_key")
+        
         # Test generation
-        model = ck.GenerativeModel('gemini-2.0-flash')
+        model = ck.GenerativeModel('nova-lite')
         response = model.generate_content("Hello")
         
         assert response.text == "Hello, world!"
@@ -78,7 +81,7 @@ class TestModels:
         mock_send.assert_called_once()
         call_args = mock_send.call_args[1]
         assert call_args['message'] == "Hello"
-        assert call_args['model_id'] == "gemini-2.0-flash"
+        assert call_args['model_id'] == "amazon.nova-lite-v1:0"
 
 
 class TestExceptions:
