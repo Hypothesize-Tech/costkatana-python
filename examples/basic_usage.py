@@ -15,7 +15,7 @@ def main():
     print("=" * 50)
 
     # Step 1: Configure Cost Katana with your API key
-    # Get your API key from: https://costkatana.com/dashboard/api-keys
+    # Get your API key from: https://costkatana.com/integrations
     api_key = input("Enter your Cost Katana API key (starts with 'dak_'): ").strip()
 
     if not api_key.startswith("dak_"):

@@ -182,7 +182,7 @@ quick-start:  ## Quick start guide
 	@echo "   pip install cost-katana"
 	@echo ""
 	@echo "2. Get your API key:"
-	@echo "   Visit: https://costkatana.com/dashboard/api-keys"
+	@echo "   Visit: https://costkatana.com/integrations"
 	@echo ""
 	@echo "3. Configure:"
 	@echo "   cost-katana init"

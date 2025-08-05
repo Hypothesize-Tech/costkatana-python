@@ -93,7 +93,7 @@ class CostKatanaClient:
         # Validate configuration
         if not self.config.api_key:
             raise AuthenticationError(
-                "API key is required. Get one from https://costkatana.com/dashboard/api-keys"
+                "API key is required. Get one from https://costkatana.com/integrations"
             )
 
         # Initialize HTTP client
