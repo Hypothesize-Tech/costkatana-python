@@ -43,7 +43,7 @@ jobs:
     - name: Get current version
       id: current_version
       run: |
-        CURRENT_VERSION=$(python -c "import re; setup_content = open('setup.py').read(); version_match = re.search(r\"version=['\"]([^'\"]*)['\"]\", setup_content); print(version_match.group(1))")
+        CURRENT_VERSION=$(python -c "import re; content = open('setup.py').read(); match = re.search(r'version=\"([^\"]+)\"', content); print(match.group(1))")
         echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
         echo "Current version: $CURRENT_VERSION"
     
