@@ -82,7 +82,7 @@ jobs:
     - name: Extract version from setup.py
       id: version
       run: |
-        VERSION=$(python -c "import re; setup_content = open('setup.py').read(); version_match = re.search(r\"version=['\"]([^'\"]*)['\"]\", setup_content); print(version_match.group(1))")
+        VERSION=$(python setup.py --version)
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         echo "Extracted version: $VERSION"
     
