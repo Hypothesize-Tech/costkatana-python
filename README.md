@@ -114,7 +114,7 @@ model = ck.GenerativeModel('gemini')  # Uses mapping from config
 ### Environment Variables
 
 ```bash
-export COST_KATANA_API_KEY=dak_your_key_here
+export API_KEY=dak_your_key_here
 export COST_KATANA_DEFAULT_MODEL=claude-3-sonnet
 ```
 

@@ -47,7 +47,7 @@ def demo_configuration():
 
         # Show environment variable support
         print("\nEnvironment Variables:")
-        print("  COST_KATANA_API_KEY - Your API key")
+        print("  API_KEY - Your API key")
         print("  COST_KATANA_BASE_URL - Custom base URL")
         print("  COST_KATANA_DEFAULT_MODEL - Default model")
 
@@ -75,7 +75,7 @@ def demo_client_setup():
         # Show configuration with API key
         print("\nConfiguration Methods:")
         print("1. Environment variable:")
-        print("   export COST_KATANA_API_KEY='dak_your_key_here'")
+        print("   export API_KEY='dak_your_key_here'")
         print()
         print("2. Direct configuration:")
         print("   import cost_katana as ck")
@@ -507,7 +507,7 @@ def demo_integration_examples():
     print("import streamlit as st")
     print("import cost_katana as ck")
     print("")
-    print("ck.configure(api_key=st.secrets['cost_katana_api_key'])")
+    print("ck.configure(api_key=st.secrets['API_KEY'])")
     print("model = ck.create_generative_model('nova-lite')")
     print("")
     print("prompt = st.text_input('Enter your prompt:')")

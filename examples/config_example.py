@@ -79,7 +79,7 @@ def demo_basic_config():
 
     # Method 2: Environment variables (demo)
     print("\n2. Environment variables (example):")
-    print("   export COST_KATANA_API_KEY=dak_your_key")
+    print("   export API_KEY=dak_your_key")
     print("   export COST_KATANA_DEFAULT_MODEL=claude-3-sonnet")
 
     # Method 3: Config file

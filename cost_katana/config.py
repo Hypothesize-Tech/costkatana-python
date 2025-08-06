@@ -31,7 +31,7 @@ class Config:
     def __post_init__(self):
         """Load from environment variables if not set"""
         if not self.api_key:
-            self.api_key = os.getenv("COST_KATANA_API_KEY")
+            self.api_key = os.getenv("API_KEY")
 
         # Override with environment variables if they exist
         if os.getenv("COST_KATANA_BASE_URL"):
