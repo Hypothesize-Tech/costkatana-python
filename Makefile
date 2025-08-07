@@ -133,7 +133,7 @@ info:  ## Show package information
 	@echo ""
 	@echo "🌐 Website: https://costkatana.com"
 	@echo "📚 Docs: https://docs.costkatana.com" 
-	@echo "💬 Discord: https://discord.gg/costkatana"
+	@echo "💬 Discord: https://discord.gg/Wcwzw8wM"
 
 # Quick start for new users
 # CI/CD helpers

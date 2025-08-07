@@ -182,13 +182,13 @@ print(f"Optimizations: {metadata.optimizations_applied}")
 
 - **Full Documentation**: [docs.costkatana.com](https://docs.costkatana.com)
 - **Example Projects**: Check the `examples/` folder
-- **Community Support**: [discord.gg/costkatana](https://discord.gg/costkatana)
+- **Community Support**: [discord.gg/costkatana](https://discord.gg/Wcwzw8wM)
 - **Enterprise Features**: [costkatana.com/enterprise](https://costkatana.com/enterprise)
 
 ## 🆘 Need Help?
 
 - 📖 **Documentation**: https://docs.costkatana.com
-- 💬 **Discord**: https://discord.gg/costkatana
+- 💬 **Discord**: https://discord.gg/Wcwzw8wM
 - ✉️ **Email**: abdul@hypothesize.tech
 - 🐛 **Issues**: https://github.com/cost-katana/python-sdk/issues
 

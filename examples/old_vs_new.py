@@ -222,4 +222,4 @@ Stop managing multiple AI SDKs. Start optimizing with Cost Katana!
 
 print("🚀 Get started: https://costkatana.com")
 print("📚 Documentation: https://docs.costkatana.com")
-print("💬 Community: https://discord.gg/costkatana")
+print("💬 Community: https://discord.gg/Wcwzw8wM")
