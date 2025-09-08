@@ -124,12 +124,8 @@ class ChatSession:
         """
         # Merge generation config with kwargs
         params = {
-            "temperature": kwargs.get(
-                "temperature", self.generation_config.temperature
-            ),
-            "max_tokens": kwargs.get(
-                "max_tokens", self.generation_config.max_output_tokens
-            ),
+            "temperature": kwargs.get("temperature", self.generation_config.temperature),
+            "max_tokens": kwargs.get("max_tokens", self.generation_config.max_output_tokens),
             "chat_mode": kwargs.get("chat_mode", "balanced"),
             "use_multi_agent": kwargs.get("use_multi_agent", False),
         }
@@ -148,9 +144,7 @@ class ChatSession:
             )
 
             # Add to history
-            self.history.append(
-                {"role": "user", "content": message, "timestamp": time.time()}
-            )
+            self.history.append({"role": "user", "content": message, "timestamp": time.time()})
 
             response_text = response_data.get("data", {}).get("response", "")
             self.history.append(
@@ -175,9 +169,7 @@ class ChatSession:
             return self.history
 
         try:
-            history_response = self.client.get_conversation_history(
-                self.conversation_id
-            )
+            history_response = self.client.get_conversation_history(self.conversation_id)
             return history_response.get("data", [])
         except Exception:
             # Fall back to local history if API call fails
@@ -232,9 +224,7 @@ class GenerativeModel:
         """Validate that the model is available"""
         try:
             available_models = self.client.get_available_models()
-            model_ids = [
-                model.get("id", model.get("modelId", "")) for model in available_models
-            ]
+            model_ids = [model.get("id", model.get("modelId", "")) for model in available_models]
 
             if self.model_id not in model_ids and self.model_name not in model_ids:
                 raise ModelNotAvailableError(
@@ -303,9 +293,7 @@ class GenerativeModel:
                 raise
             raise CostKatanaError(f"Failed to generate content: {str(e)}")
 
-    def start_chat(
-        self, history: Optional[List[Dict[str, Any]]] = None, **kwargs
-    ) -> ChatSession:
+    def start_chat(self, history: Optional[List[Dict[str, Any]]] = None, **kwargs) -> ChatSession:
         """
         Start a chat session.
 

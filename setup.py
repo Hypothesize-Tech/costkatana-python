@@ -14,7 +14,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="cost-katana",
-    version="1.0.1",
+    version="1.0.3",
     author="Cost Katana Team",
     author_email="abdul@hypothesize.tech",
     description="Unified AI interface with cost optimization and failover",

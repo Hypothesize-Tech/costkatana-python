@@ -219,7 +219,7 @@ balanced_response = model.generate_content(
 
 ## 🖥️ Command Line Interface
 
-Cost Katana includes a CLI for easy interaction:
+Cost Katana includes a comprehensive CLI for easy interaction:
 
 ```bash
 # Initialize configuration
@@ -236,6 +236,198 @@ cost-katana chat --model gemini-2.0-flash
 
 # Use specific config file
 cost-katana chat --config my-config.json
+```
+
+## 🧬 SAST (Semantic Abstract Syntax Tree) Features
+
+Cost Katana includes advanced SAST capabilities for semantic optimization and analysis:
+
+### SAST Optimization
+
+```bash
+# Optimize a prompt using SAST
+cost-katana sast optimize "Write a detailed analysis of market trends"
+
+# Optimize from file
+cost-katana sast optimize --file prompt.txt --output optimized.txt
+
+# Cross-lingual optimization
+cost-katana sast optimize "Analyze data" --cross-lingual --language en
+
+# Preserve ambiguity for analysis
+cost-katana sast optimize "Complex query" --preserve-ambiguity
+```
+
+### SAST Comparison
+
+```bash
+# Compare traditional vs SAST optimization
+cost-katana sast compare "Your prompt here"
+
+# Compare with specific language
+cost-katana sast compare --file prompt.txt --language en
+```
+
+### SAST Vocabulary & Analytics
+
+```bash
+# Explore SAST vocabulary
+cost-katana sast vocabulary
+
+# Search semantic primitives
+cost-katana sast vocabulary --search "analysis" --category "action"
+
+# Get SAST performance statistics
+cost-katana sast stats
+
+# View SAST showcase with examples
+cost-katana sast showcase
+
+# Telescope ambiguity demonstration
+cost-katana sast telescope
+
+# Test universal semantics across languages
+cost-katana sast universal "concept" --languages "en,es,fr"
+```
+
+### SAST Python API
+
+```python
+import cost_katana as ck
+
+ck.configure(api_key='dak_your_key_here')
+client = ck.CostKatanaClient()
+
+# Optimize with SAST
+result = client.optimize_with_sast(
+    prompt="Your prompt here",
+    language="en",
+    cross_lingual=True,
+    preserve_ambiguity=False
+)
+
+# Compare SAST vs traditional
+comparison = client.compare_sast_vs_traditional(
+    prompt="Your prompt here",
+    language="en"
+)
+
+# Get SAST vocabulary stats
+stats = client.get_sast_vocabulary_stats()
+
+# Search semantic primitives
+primitives = client.search_semantic_primitives(
+    term="analysis",
+    category="action",
+    limit=10
+)
+
+# Test universal semantics
+universal_test = client.test_universal_semantics(
+    concept="love",
+    languages=["en", "es", "fr"]
+)
+```
+
+## 🧠 Cortex Engine Features
+
+Cost Katana's Cortex engine provides intelligent processing capabilities:
+
+### Cortex Operations
+
+```python
+import cost_katana as ck
+
+ck.configure(api_key='dak_your_key_here')
+client = ck.CostKatanaClient()
+
+# Enable Cortex with SAST processing
+result = client.optimize_with_sast(
+    prompt="Your prompt",
+    service="openai",
+    model="gpt-4o-mini",
+    # Cortex features
+    enableCortex=True,
+    cortexOperation="sast",
+    cortexStyle="conversational",
+    cortexFormat="plain",
+    cortexSemanticCache=True,
+    cortexPreserveSemantics=True,
+    cortexIntelligentRouting=True,
+    cortexSastProcessing=True,
+    cortexAmbiguityResolution=True,
+    cortexCrossLingualMode=False
+)
+```
+
+### Cortex Capabilities
+
+- **Semantic Caching**: Intelligent caching of semantic representations
+- **Intelligent Routing**: Smart routing based on content analysis
+- **Ambiguity Resolution**: Automatic resolution of ambiguous language
+- **Cross-lingual Processing**: Multi-language semantic understanding
+- **Semantic Preservation**: Maintains semantic meaning during optimization
+
+## 🌐 Gateway Features
+
+Cost Katana acts as a unified gateway to multiple AI providers:
+
+### Provider Abstraction
+
+```python
+import cost_katana as ck
+
+ck.configure(api_key='dak_your_key_here')
+
+# Same interface, different providers
+models = [
+    'nova-lite',           # Amazon Nova
+    'claude-3-sonnet',     # Anthropic Claude
+    'gemini-2.0-flash',    # Google Gemini
+    'gpt-4',               # OpenAI GPT
+    'llama-3.1-70b'        # Meta Llama
+]
+
+for model in models:
+    response = ck.GenerativeModel(model).generate_content("Hello!")
+    print(f"{model}: {response.text[:50]}...")
+```
+
+### Intelligent Routing
+
+```python
+# Cost Katana automatically routes to the best provider
+model = ck.GenerativeModel('balanced')  # Uses intelligent routing
+
+# Different optimization modes
+fast_response = model.generate_content(
+    "Quick summary",
+    chat_mode='fastest'    # Routes to fastest provider
+)
+
+cheap_response = model.generate_content(
+    "Detailed analysis",
+    chat_mode='cheapest'   # Routes to most cost-effective provider
+)
+
+balanced_response = model.generate_content(
+    "Complex reasoning",
+    chat_mode='balanced'   # Balances speed and cost
+)
+```
+
+### Failover & Redundancy
+
+```python
+# Automatic failover if primary provider is down
+model = ck.GenerativeModel('claude-3-sonnet')
+
+try:
+    response = model.generate_content("Your prompt")
+except ck.ModelNotAvailableError:
+    # Cost Katana automatically tries alternative providers
+    print("Primary model unavailable, using fallback...")
+    response = model.generate_content("Your prompt")
 ```
 
 ## 📊 Usage Analytics
@@ -355,6 +547,30 @@ class ChatSession:
     def delete_conversation(self) -> None
 ```
 
+### CostKatanaClient
+
+```python
+class CostKatanaClient:
+    def __init__(self, api_key: str = None, base_url: str = None, config_file: str = None)
+    
+    # Core Methods
+    def send_message(self, message: str, model_id: str, **kwargs) -> Dict[str, Any]
+    def get_available_models(self) -> List[Dict[str, Any]]
+    def create_conversation(self, title: str = None, model_id: str = None) -> Dict[str, Any]
+    def get_conversation_history(self, conversation_id: str) -> Dict[str, Any]
+    def delete_conversation(self, conversation_id: str) -> Dict[str, Any]
+    
+    # SAST Methods
+    def optimize_with_sast(self, prompt: str, **kwargs) -> Dict[str, Any]
+    def compare_sast_vs_traditional(self, prompt: str, **kwargs) -> Dict[str, Any]
+    def get_sast_vocabulary_stats(self) -> Dict[str, Any]
+    def search_semantic_primitives(self, term: str = None, **kwargs) -> Dict[str, Any]
+    def get_telescope_demo(self) -> Dict[str, Any]
+    def test_universal_semantics(self, concept: str, languages: List[str] = None) -> Dict[str, Any]
+    def get_sast_stats(self) -> Dict[str, Any]
+    def get_sast_showcase(self) -> Dict[str, Any]
+```
+
 ### GenerateContentResponse
 
 ```python
@@ -362,6 +578,20 @@ class GenerateContentResponse:
     text: str                           # Generated text
     usage_metadata: UsageMetadata       # Cost, tokens, latency info
     thinking: Dict                      # AI reasoning (if available)
+```
+
+### UsageMetadata
+
+```python
+class UsageMetadata:
+    model: str                          # Model used
+    cost: float                         # Cost in USD
+    latency: float                      # Response time in seconds
+    total_tokens: int                   # Total tokens used
+    cache_hit: bool                     # Whether response was cached
+    risk_level: str                     # Risk assessment level
+    agent_path: List[str]               # Multi-agent processing path
+    optimizations_applied: List[str]    # Applied optimizations
 ```
 
 ## 🤝 Support
