@@ -14,7 +14,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="cost-katana",
-    version="2.0.0",
+    version="2.0.1",
     author="Cost Katana Team",
     author_email="abdul@hypothesize.tech",
     description="Revolutionary AI SDK with Cortex Meta-Language for 70-95% token reduction",
