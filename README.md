@@ -1,6 +1,6 @@
 # Cost Katana Python SDK
 
-A revolutionary AI SDK with **Cortex Meta-Language** for 70-95% token reduction. Features built-in cost optimization, failover, and analytics. Use any AI provider through one consistent API with breakthrough LISP-based optimization!
+A unified AI SDK with cost optimization, failover, and analytics. Use any AI provider through one consistent API with built-in cost tracking and optimization.
 
 ## 🚀 Quick Start
 
@@ -55,297 +55,137 @@ total_cost = sum(msg.get('metadata', {}).get('cost', 0) for msg in chat.history)
 print(f"Total conversation cost: ${total_cost:.4f}")
 ```
 
-## 🧠 Cortex Meta-Language: Revolutionary AI Optimization
+## 🎯 Key Features
 
-Cost Katana's **Cortex** system achieves **70-95% token reduction** through a breakthrough 3-stage pipeline that generates complete answers in optimized LISP format.
+### Multi-Provider Support
+- **OpenAI**: GPT-4, GPT-3.5, GPT-4o
+- **Anthropic**: Claude 3.5 Sonnet, Claude 3 Haiku, Claude 3 Opus
+- **Google**: Gemini Pro, Gemini Ultra
+- **AWS Bedrock**: Claude, Llama, Titan models
+- **And more**: 50+ models across 10+ providers
 
-### 🚀 Enable Cortex Optimization
+### Cost Optimization
+- **Automatic failover**: Switch providers when one is down or expensive
+- **Cost tracking**: Real-time cost monitoring and analytics
+- **Smart routing**: Choose the best model for your budget and needs
+- **Usage analytics**: Detailed insights into your AI spending
+
+### Developer Experience
+- **Unified API**: Same interface for all AI providers
+- **No API key management**: Secure key storage and rotation
+- **Error handling**: Robust error handling with automatic retries
+- **Type hints**: Full type support for better IDE experience
+
+## 📊 Usage Examples
+
+### Cost-Aware Model Selection
 
 ```python
 import cost_katana as ck
 
 ck.configure(api_key='dak_your_key_here')
 
-# Enable Cortex for massive token savings
-model = ck.GenerativeModel('claude-3-sonnet')
-response = model.generate_content(
-    "Write a complete Python web scraper with error handling",
-    cortex={
-        'enabled': True,
-        'mode': 'answer_generation',  # Generate complete answers in LISP
-        'encoding_model': 'claude-3-5-sonnet',
-        'core_model': 'claude-opus-4-1',
-        'decoding_model': 'claude-3-5-sonnet',
-        'dynamic_instructions': True,  # AI-powered LISP instruction generation
-        'analytics': True
-    }
-)
+# Get available models with cost information
+client = ck.CostKatanaClient()
+models = client.get_available_models()
 
-print("Generated Answer:", response.text)
-print(f"Token Reduction: {response.cortex_metadata.token_reduction}%")
-print(f"Cost Savings: ${response.cortex_metadata.cost_savings:.4f}")
-print(f"Confidence Score: {response.cortex_metadata.confidence}%")
-print(f"Semantic Integrity: {response.cortex_metadata.semantic_integrity}%")
+for model in models:
+    print(f"{model['name']}: ${model['cost_per_1k_tokens']:.4f}/1k tokens")
+
+# Use the most cost-effective model
+cheapest_model = min(models, key=lambda x: x['cost_per_1k_tokens'])
+model = ck.GenerativeModel(cheapest_model['id'])
 ```
 
-### 🔬 Advanced Cortex Features
-
-```python
-# Bulk optimization with Cortex
-queries = [
-    "Explain machine learning algorithms",
-    "Write a React authentication component", 
-    "Create a database migration script"
-]
-
-results = model.bulk_generate_content(
-    queries,
-    cortex={
-        'enabled': True,
-        'mode': 'answer_generation',
-        'batch_processing': True,
-        'dynamic_instructions': True
-    }
-)
-
-for i, result in enumerate(results):
-    print(f"Query {i+1}: {result.cortex_metadata.token_reduction}% reduction")
-
-# Context-aware processing
-technical_response = model.generate_content(
-    "Implement a distributed caching system",
-    cortex={
-        'enabled': True,
-        'context': 'technical',
-        'complexity': 'high',
-        'include_examples': True,
-        'code_generation': True
-    }
-)
-```
-
-### 📊 Traditional vs Cortex Comparison
-
-```python
-# Compare traditional vs Cortex processing
-comparison = model.compare_cortex(
-    query="Write a REST API with authentication in Flask",
-    max_tokens=2000
-)
-
-print("=== COMPARISON RESULTS ===")
-print(f"Traditional: {comparison['traditional']['tokens_used']} tokens, ${comparison['traditional']['cost']:.4f}")
-print(f"Cortex: {comparison['cortex']['tokens_used']} tokens, ${comparison['cortex']['cost']:.4f}")
-print(f"Savings: {comparison['savings']['token_reduction']}% tokens, ${comparison['savings']['cost_savings']:.4f}")
-print(f"Semantic Integrity: {comparison['quality']['semantic_integrity']}%")
-```
-
-## 🎯 Why Cost Katana?
-
-### 🧠 Cortex-Powered Intelligence
-- **70-95% Token Reduction**: Revolutionary LISP-based answer generation
-- **3-Stage Optimization Pipeline**: Encoder → Core Processor → Decoder
-- **Dynamic LISP Instructions**: AI-powered instruction generation for any context
-- **Real-time Analytics**: Confidence, cost impact, and semantic integrity metrics
-- **Universal Context Handling**: Technical, business, and industry-specific processing
-
-### Simple Interface, Powerful Backend
-- **One API for all providers**: Use Google Gemini, Anthropic Claude, OpenAI GPT, AWS Bedrock models through one interface
-- **No API key juggling**: Store your provider keys securely in Cost Katana, use one key in your code
-- **Automatic failover**: If one provider is down, automatically switch to alternatives
-- **Intelligent routing**: Cortex-powered optimization to minimize costs while maintaining quality
-
-### Enterprise Features
-- **Cost tracking**: Real-time cost monitoring and budgets
-- **Usage analytics**: Detailed insights into model performance and usage patterns  
-- **Team management**: Share projects and manage API usage across teams
-- **Approval workflows**: Set spending limits with approval requirements
-
-## 📚 Configuration Options
-
-### Using Configuration File (Recommended)
-
-Create `config.json`:
-
-```json
-{
-  "api_key": "dak_your_key_here",
-  "default_model": "gemini-2.0-flash",
-  "default_temperature": 0.7,
-  "cost_limit_per_day": 50.0,
-  "enable_optimization": true,
-  "enable_failover": true,
-  "model_mappings": {
-    "gemini": "gemini-2.0-flash-exp",
-    "claude": "anthropic.claude-3-sonnet-20240229-v1:0",
-    "gpt4": "gpt-4-turbo-preview"
-  },
-  "providers": {
-    "google": {
-      "priority": 1,
-      "models": ["gemini-2.0-flash", "gemini-pro"]
-    },
-    "anthropic": {
-      "priority": 2, 
-      "models": ["claude-3-sonnet", "claude-3-haiku"]
-    }
-  }
-}
-```
+### Batch Processing
 
 ```python
 import cost_katana as ck
 
-# Configure from file
-ck.configure(config_file='config.json')
+ck.configure(api_key='dak_your_key_here')
 
-# Now use any model
-model = ck.GenerativeModel('gemini')  # Uses mapping from config
+# Process multiple requests efficiently
+queries = [
+    "Explain machine learning",
+    "Write a Python function",
+    "What is quantum computing?"
+]
+
+model = ck.GenerativeModel('claude-3-haiku')  # Fast and cost-effective
+responses = []
+
+for query in queries:
+    response = model.generate_content(query)
+    responses.append({
+        'query': query,
+        'response': response.text,
+        'cost': response.usage_metadata.cost
+    })
+
+total_cost = sum(r['cost'] for r in responses)
+print(f"Processed {len(queries)} queries for ${total_cost:.4f}")
 ```
+
+### Advanced Configuration
+
+```python
+import cost_katana as ck
+
+# Configure with custom settings
+ck.configure(
+    api_key='dak_your_key_here',
+    base_url='https://api.costkatana.com',  # Custom endpoint
+    timeout=60,  # Custom timeout
+    max_retries=3,  # Retry failed requests
+    cost_limit=10.0  # Daily cost limit
+)
+
+# Use with specific model parameters
+model = ck.GenerativeModel('gpt-4')
+response = model.generate_content(
+    "Write a comprehensive guide to Python",
+    temperature=0.7,
+    max_tokens=2000,
+    chat_mode='balanced'  # balanced, fastest, cheapest
+)
+```
+
+## 🔧 Configuration
 
 ### Environment Variables
 
 ```bash
-export API_KEY=dak_your_key_here
-export COST_KATANA_DEFAULT_MODEL=claude-3-sonnet
+export COST_KATANA_API_KEY="dak_your_key_here"
+export COST_KATANA_BASE_URL="https://api.costkatana.com"
+export COST_KATANA_TIMEOUT="30"
 ```
+
+### Configuration File
+
+Create a `config.json` file:
+
+```json
+{
+  "api_key": "dak_your_key_here",
+    "base_url": "https://api.costkatana.com",
+    "timeout": 30,
+    "max_retries": 3,
+    "cost_limit": 10.0,
+    "default_model": "claude-3-haiku"
+}
+```
+
+Then use it:
 
 ```python
 import cost_katana as ck
 
-# Automatically loads from environment
-ck.configure()
-
-model = ck.GenerativeModel()  # Uses default model from env
+ck.configure(config_file='config.json')
 ```
 
-## 🤖 Supported Models
+## 📈 Analytics & Monitoring
 
-### Amazon Nova Models (Primary Recommendation)
-- `nova-micro` - Ultra-fast and cost-effective for simple tasks
-- `nova-lite` - Balanced performance and cost for general use
-- `nova-pro` - High-performance model for complex tasks
-
-### Anthropic Claude Models  
-- `claude-3-haiku` - Fast and cost-effective responses
-- `claude-3-sonnet` - Balanced performance for complex tasks
-- `claude-3-opus` - Most capable Claude model for advanced reasoning
-- `claude-3.5-haiku` - Latest fast model with enhanced capabilities
-- `claude-3.5-sonnet` - Advanced reasoning and analysis
-
-### Meta Llama Models
-- `llama-3.1-8b` - Good balance of performance and efficiency
-- `llama-3.1-70b` - Large model for complex reasoning
-- `llama-3.1-405b` - Most capable Llama model
-- `llama-3.2-1b` - Compact and efficient
-- `llama-3.2-3b` - Efficient for general tasks
-
-### Mistral Models
-- `mistral-7b` - Efficient open-source model
-- `mixtral-8x7b` - High-quality mixture of experts
-- `mistral-large` - Advanced reasoning capabilities
-
-### Cohere Models
-- `command` - General purpose text generation
-- `command-light` - Lighter, faster version
-- `command-r` - Retrieval-augmented generation
-- `command-r-plus` - Enhanced RAG with better reasoning
-
-### Friendly Aliases
-- `fast` → Nova Micro (optimized for speed)  
-- `balanced` → Nova Lite (balanced cost/performance)
-- `powerful` → Nova Pro (maximum capabilities)
-
-## ⚙️ Advanced Usage
-
-### Generation Configuration
-
-```python
-from cost_katana import GenerativeModel, GenerationConfig
-
-config = GenerationConfig(
-    temperature=0.3,
-    max_output_tokens=1000,
-    top_p=0.9
-)
-
-model = GenerativeModel('claude-3-sonnet', generation_config=config)
-response = model.generate_content("Write a haiku about programming")
-```
-
-### Multi-Agent Processing
-
-```python
-# Enable multi-agent processing for complex queries
-model = GenerativeModel('gemini-2.0-flash')
-response = model.generate_content(
-    "Analyze the economic impact of AI on job markets",
-    use_multi_agent=True,
-    chat_mode='balanced'
-)
-
-# See which agents were involved
-print("Agent path:", response.usage_metadata.agent_path)
-print("Optimizations applied:", response.usage_metadata.optimizations_applied)
-```
-
-### Cost Optimization Modes
-
-```python
-# Different optimization strategies
-fast_response = model.generate_content(
-    "Quick summary of today's news",
-    chat_mode='fastest'  # Prioritize speed
-)
-
-cheap_response = model.generate_content(
-    "Detailed analysis of market trends", 
-    chat_mode='cheapest'  # Prioritize cost
-)
-
-balanced_response = model.generate_content(
-    "Help me debug this Python code",
-    chat_mode='balanced'  # Balance speed and cost
-)
-```
-
-## 🖥️ Command Line Interface
-
-Cost Katana includes a comprehensive CLI for easy interaction:
-
-```bash
-# Initialize configuration
-cost-katana init
-
-# Test your setup
-cost-katana test
-
-# List available models
-cost-katana models
-
-# Start interactive chat
-cost-katana chat --model gemini-2.0-flash
-
-# Use specific config file
-cost-katana chat --config my-config.json
-```
-
-    category="action",
-    limit=10
-)
-
-# Test universal semantics
-universal_test = client.test_universal_semantics(
-    concept="love",
-    languages=["en", "es", "fr"]
-)
-```
-
-## 🧠 Cortex Engine Features
-
-Cost Katana's Cortex engine provides intelligent processing capabilities:
-
-### Cortex Operations
+### Usage Analytics
 
 ```python
 import cost_katana as ck
@@ -353,271 +193,139 @@ import cost_katana as ck
 ck.configure(api_key='dak_your_key_here')
 client = ck.CostKatanaClient()
 
-# Enable Cortex with SAST processing
-result = client.optimize_with_sast(
-    prompt="Your prompt",
-    service="openai",
-    model="gpt-4o-mini",
-    # Cortex features
-    enableCortex=True,
-    cortexOperation="sast",
-    cortexStyle="conversational",
-    cortexFormat="plain",
-    cortexSemanticCache=True,
-    cortexPreserveSemantics=True,
-    cortexIntelligentRouting=True,
-    cortexSastProcessing=True,
-    cortexAmbiguityResolution=True,
-    cortexCrossLingualMode=False
-)
+# Get usage statistics
+stats = client.get_usage_stats()
+print(f"Total requests: {stats['total_requests']}")
+print(f"Total cost: ${stats['total_cost']:.4f}")
+print(f"Average cost per request: ${stats['avg_cost_per_request']:.4f}")
+
+# Get cost breakdown by model
+breakdown = client.get_cost_breakdown()
+for model, cost in breakdown.items():
+    print(f"{model}: ${cost:.4f}")
 ```
 
-### Cortex Capabilities
+### Real-time Monitoring
 
-- **Semantic Caching**: Intelligent caching of semantic representations
-- **Intelligent Routing**: Smart routing based on content analysis
-- **Ambiguity Resolution**: Automatic resolution of ambiguous language
-- **Cross-lingual Processing**: Multi-language semantic understanding
-- **Semantic Preservation**: Maintains semantic meaning during optimization
+```python
+# Monitor costs in real-time
+def monitor_costs():
+    client = ck.CostKatanaClient()
+    while True:
+        stats = client.get_usage_stats()
+        if stats['total_cost'] > 5.0:  # Alert if cost exceeds $5
+            print(f"⚠️ Cost alert: ${stats['total_cost']:.4f}")
+        time.sleep(60)  # Check every minute
+```
 
-## 🌐 Gateway Features
+## 🛠️ Advanced Features
 
-Cost Katana acts as a unified gateway to multiple AI providers:
+### Custom Error Handling
 
-### Provider Abstraction
+```python
+import cost_katana as ck
+from cost_katana.exceptions import CostKatanaError, RateLimitError
+
+try:
+    model = ck.GenerativeModel('gpt-4')
+    response = model.generate_content("Your prompt here")
+except RateLimitError as e:
+    print(f"Rate limit exceeded: {e}")
+    # Implement backoff strategy
+except CostKatanaError as e:
+    print(f"API error: {e}")
+    # Handle other API errors
+```
+
+### Model Comparison
 
 ```python
 import cost_katana as ck
 
 ck.configure(api_key='dak_your_key_here')
 
-# Same interface, different providers
-models = [
-    'nova-lite',           # Amazon Nova
-    'claude-3-sonnet',     # Anthropic Claude
-    'gemini-2.0-flash',    # Google Gemini
-    'gpt-4',               # OpenAI GPT
-    'llama-3.1-70b'        # Meta Llama
-]
+# Compare different models on the same task
+models_to_test = ['gpt-4', 'claude-3-sonnet', 'gemini-pro']
+prompt = "Explain the concept of recursion in programming"
 
-for model in models:
-    response = ck.GenerativeModel(model).generate_content("Hello!")
-    print(f"{model}: {response.text[:50]}...")
+results = []
+for model_name in models_to_test:
+    model = ck.GenerativeModel(model_name)
+    response = model.generate_content(prompt)
+    results.append({
+        'model': model_name,
+        'response': response.text,
+        'cost': response.usage_metadata.cost,
+        'tokens': response.usage_metadata.total_tokens
+    })
+
+# Find the best model for your needs
+best_model = min(results, key=lambda x: x['cost'])
+print(f"Most cost-effective: {best_model['model']} (${best_model['cost']:.4f})")
 ```
 
-### Intelligent Routing
+## 📚 API Reference
 
-```python
-# Cost Katana automatically routes to the best provider
-model = ck.GenerativeModel('balanced')  # Uses intelligent routing
+### Core Classes
 
-# Different optimization modes
-fast_response = model.generate_content(
-    "Quick summary",
-    chat_mode='fastest'    # Routes to fastest provider
-)
+- **`CostKatanaClient`**: Main client for API interactions
+- **`GenerativeModel`**: Model interface for generating content
+- **`ChatSession`**: Chat conversation management
+- **`Config`**: Configuration management
 
-cheap_response = model.generate_content(
-    "Detailed analysis",
-    chat_mode='cheapest'   # Routes to most cost-effective provider
-)
+### Key Methods
 
-balanced_response = model.generate_content(
-    "Complex reasoning",
-    chat_mode='balanced'   # Balances speed and cost
-)
+- **`configure()`**: Global configuration
+- **`get_available_models()`**: List all available models
+- **`send_message()`**: Send a message to a model
+- **`create_conversation()`**: Start a new conversation
+- **`get_usage_stats()`**: Get usage analytics
+
+### Exceptions
+
+- **`CostKatanaError`**: Base exception class
+- **`AuthenticationError`**: Authentication failures
+- **`ModelNotAvailableError`**: Model not found
+- **`RateLimitError`**: Rate limit exceeded
+- **`CostLimitExceededError`**: Cost limit exceeded
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](https://github.com/Hypothesize-Tech/cost-katana-python/blob/main/CONTRIBUTING.md) for details.
+
+### Development Setup
+
+```bash
+git clone https://github.com/Hypothesize-Tech/cost-katana-python.git
+cd cost-katana-python
+pip install -e .
+pip install -r requirements-dev.txt
 ```
 
-### Failover & Redundancy
+### Running Tests
 
-```python
-# Automatic failover if primary provider is down
-model = ck.GenerativeModel('claude-3-sonnet')
-
-try:
-    response = model.generate_content("Your prompt")
-except ck.ModelNotAvailableError:
-    # Cost Katana automatically tries alternative providers
-    print("Primary model unavailable, using fallback...")
-    response = model.generate_content("Your prompt")
+```bash
+pytest tests/
 ```
-
-## 📊 Usage Analytics
-
-Track your AI usage and costs:
-
-```python
-import cost_katana as ck
-
-ck.configure(config_file='config.json')
-
-model = ck.GenerativeModel('claude-3-sonnet')
-response = model.generate_content("Explain machine learning")
-
-# Detailed usage information
-metadata = response.usage_metadata
-print(f"Model used: {metadata.model}")
-print(f"Cost: ${metadata.cost:.4f}")
-print(f"Latency: {metadata.latency:.2f}s")
-print(f"Tokens: {metadata.total_tokens}")
-print(f"Cache hit: {metadata.cache_hit}")
-print(f"Risk level: {metadata.risk_level}")
-```
-
-## 🔧 Error Handling
-
-```python
-from cost_katana import GenerativeModel
-from cost_katana.exceptions import (
-    CostLimitExceededError,
-    ModelNotAvailableError,
-    RateLimitError
-)
-
-try:
-    model = GenerativeModel('expensive-model')
-    response = model.generate_content("Complex analysis task")
-    
-except CostLimitExceededError:
-    print("Cost limit reached! Check your budget settings.")
-    
-except ModelNotAvailableError:
-    print("Model is currently unavailable. Trying fallback...")
-    model = GenerativeModel('backup-model')
-    response = model.generate_content("Complex analysis task")
-    
-except RateLimitError:
-    print("Rate limit hit. Please wait before retrying.")
-```
-
-## 🌟 Comparison with Direct Provider SDKs
-
-### Before (Google Gemini)
-```python
-import google.generativeai as genai
-
-# Need to manage API key
-genai.configure(api_key="your-google-api-key")
-
-# Provider-specific code
-model = genai.GenerativeModel('gemini-2.0-flash')
-response = model.generate_content("Hello")
-
-# No cost tracking, no failover, provider lock-in
-```
-
-### After (Cost Katana)
-```python
-import cost_katana as ck
-
-# One API key for all providers
-ck.configure(api_key='dak_your_key_here')
-
-# Same interface, any provider
-model = ck.GenerativeModel('nova-lite')
-response = model.generate_content("Hello")
-
-# Built-in cost tracking, failover, optimization
-print(f"Cost: ${response.usage_metadata.cost:.4f}")
-```
-
-## 🏢 Enterprise Features
-
-- **Team Management**: Share configurations across team members
-- **Cost Centers**: Track usage by project or department  
-- **Approval Workflows**: Require approval for high-cost operations
-- **Analytics Dashboard**: Web interface for usage insights
-- **Custom Models**: Support for fine-tuned and custom models
-- **SLA Monitoring**: Track model availability and performance
-
-## 🔒 Security & Privacy
-
-- **Secure Key Storage**: API keys encrypted at rest
-- **No Data Retention**: Your prompts and responses are not stored
-- **Audit Logs**: Complete audit trail of API usage
-- **GDPR Compliant**: Full compliance with data protection regulations
-
-## 📖 API Reference
-
-### GenerativeModel
-
-```python
-class GenerativeModel:
-    def __init__(self, model_name: str, generation_config: GenerationConfig = None)
-    def generate_content(self, prompt: str, **kwargs) -> GenerateContentResponse
-    def start_chat(self, history: List = None) -> ChatSession
-    def count_tokens(self, prompt: str) -> Dict[str, int]
-```
-
-### ChatSession
-
-```python
-class ChatSession:
-    def send_message(self, message: str, **kwargs) -> GenerateContentResponse
-    def get_history(self) -> List[Dict]
-    def clear_history(self) -> None
-    def delete_conversation(self) -> None
-```
-
-### CostKatanaClient
-
-```python
-class CostKatanaClient:
-    def __init__(self, api_key: str = None, base_url: str = None, config_file: str = None)
-    
-    # Core Methods
-    def send_message(self, message: str, model_id: str, **kwargs) -> Dict[str, Any]
-    def get_available_models(self) -> List[Dict[str, Any]]
-    def create_conversation(self, title: str = None, model_id: str = None) -> Dict[str, Any]
-    def get_conversation_history(self, conversation_id: str) -> Dict[str, Any]
-    def delete_conversation(self, conversation_id: str) -> Dict[str, Any]
-    
-    # SAST Methods
-    def optimize_with_sast(self, prompt: str, **kwargs) -> Dict[str, Any]
-    def compare_sast_vs_traditional(self, prompt: str, **kwargs) -> Dict[str, Any]
-    def get_sast_vocabulary_stats(self) -> Dict[str, Any]
-    def search_semantic_primitives(self, term: str = None, **kwargs) -> Dict[str, Any]
-    def get_telescope_demo(self) -> Dict[str, Any]
-    def test_universal_semantics(self, concept: str, languages: List[str] = None) -> Dict[str, Any]
-    def get_sast_stats(self) -> Dict[str, Any]
-    def get_sast_showcase(self) -> Dict[str, Any]
-```
-
-### GenerateContentResponse
-
-```python
-class GenerateContentResponse:
-    text: str                           # Generated text
-    usage_metadata: UsageMetadata       # Cost, tokens, latency info
-    thinking: Dict                      # AI reasoning (if available)
-```
-
-### UsageMetadata
-
-```python
-class UsageMetadata:
-    model: str                          # Model used
-    cost: float                         # Cost in USD
-    latency: float                      # Response time in seconds
-    total_tokens: int                   # Total tokens used
-    cache_hit: bool                     # Whether response was cached
-    risk_level: str                     # Risk assessment level
-    agent_path: List[str]               # Multi-agent processing path
-    optimizations_applied: List[str]    # Applied optimizations
-```
-
-## 🤝 Support
-
-- **Documentation**: [docs.costkatana.com](https://docs.costkatana.com)
-- **Discord Community**: [discord.gg/costkatana](https://discord.gg/Wcwzw8wM)
-- **Email Support**: support@costkatana.com
-- **GitHub Issues**: [github.com/cost-katana/python-sdk](https://github.com/cost-katana/python-sdk)
-- **GitHub Repository**: [github.com/Hypothesize-Tech/cost-katana-python](https://github.com/Hypothesize-Tech/cost-katana-python)
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- **Documentation**: [https://docs.costkatana.com](https://docs.costkatana.com)
+- **Issues**: [GitHub Issues](https://github.com/Hypothesize-Tech/cost-katana-python/issues)
+- **Email**: support@costkatana.com
+- **Discord**: [Join our community](https://discord.gg/costkatana)
+
+## 🚀 What's Next?
+
+- **More AI providers**: We're constantly adding new AI providers
+- **Advanced analytics**: Enhanced cost tracking and optimization
+- **Enterprise features**: Team management, advanced security
+- **SDK improvements**: Better error handling, more features
 
 ---
 
-**Ready to optimize your AI costs?** Get started at [costkatana.com](https://costkatana.com) 🚀# cost-katana-python
+**Cost Katana** - Making AI accessible, affordable, and reliable for everyone.

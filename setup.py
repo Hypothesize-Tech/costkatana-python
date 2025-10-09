@@ -14,10 +14,10 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="cost-katana",
-    version="2.0.1",
+    version="2.0.2",
     author="Cost Katana Team",
     author_email="support@costkatana.com",
-    description="Revolutionary AI SDK with Cortex Meta-Language for 70-95% token reduction",
+    description="Unified AI SDK with cost optimization, failover, and analytics",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Hypothesize-Tech/cost-katana-python",
@@ -38,7 +38,7 @@ setup(
     ],
     python_requires=">=3.8",
     install_requires=requirements,
-    keywords="ai, machine learning, cost optimization, cortex, lisp, token reduction, openai, anthropic, aws bedrock, gemini, claude opus",
+    keywords="ai, machine learning, cost optimization, openai, anthropic, aws bedrock, gemini, claude",
     project_urls={
         "Bug Reports": "https://github.com/Hypothesize-Tech/cost-katana-python/issues",
         "Source": "https://github.com/Hypothesize-Tech/cost-katana-python",
