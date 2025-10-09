@@ -610,7 +610,7 @@ class UsageMetadata:
 
 - **Documentation**: [docs.costkatana.com](https://docs.costkatana.com)
 - **Discord Community**: [discord.gg/costkatana](https://discord.gg/Wcwzw8wM)
-- **Email Support**: abdul@hypothesize.tech
+- **Email Support**: support@costkatana.com
 - **GitHub Issues**: [github.com/cost-katana/python-sdk](https://github.com/cost-katana/python-sdk)
 - **GitHub Repository**: [github.com/Hypothesize-Tech/cost-katana-python](https://github.com/Hypothesize-Tech/cost-katana-python)
 

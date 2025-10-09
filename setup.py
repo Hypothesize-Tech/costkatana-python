@@ -16,7 +16,7 @@ setup(
     name="cost-katana",
     version="2.0.1",
     author="Cost Katana Team",
-    author_email="abdul@hypothesize.tech",
+    author_email="support@costkatana.com",
     description="Revolutionary AI SDK with Cortex Meta-Language for 70-95% token reduction",
     long_description=long_description,
     long_description_content_type="text/markdown",

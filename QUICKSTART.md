@@ -189,7 +189,7 @@ print(f"Optimizations: {metadata.optimizations_applied}")
 
 - 📖 **Documentation**: https://docs.costkatana.com
 - 💬 **Discord**: https://discord.gg/Wcwzw8wM
-- ✉️ **Email**: abdul@hypothesize.tech
+- ✉️ **Email**: support@costkatana.com
 - 🐛 **Issues**: https://github.com/cost-katana/python-sdk/issues
 
 ---

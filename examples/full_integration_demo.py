@@ -322,7 +322,7 @@ def main():
     print("\n🚀 Ready to transform your AI development?")
     print("   Visit: https://costkatana.com")
     print("   Docs: https://docs.costkatana.com")
-    print("   Support: abdul@hypothesize.tech")
+    print("   Support: support@costkatana.com")
 
     # Cleanup
     try:
