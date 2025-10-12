@@ -13,8 +13,8 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
 
 setup(
-    name="costkatana",
-    version="2.0.0",
+    name="cost-katana",
+    version="2.0.4",
     author="Cost Katana Team",
     author_email="support@costkatana.com",
     description="The simplest way to use AI in Python with automatic cost tracking and optimization",
