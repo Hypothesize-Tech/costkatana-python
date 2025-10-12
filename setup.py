@@ -13,11 +13,11 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
 
 setup(
-    name="cost-katana",
-    version="2.0.2",
+    name="costkatana",
+    version="2.0.0",
     author="Cost Katana Team",
     author_email="support@costkatana.com",
-    description="Unified AI SDK with cost optimization, failover, and analytics",
+    description="The simplest way to use AI in Python with automatic cost tracking and optimization",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Hypothesize-Tech/cost-katana-python",
@@ -46,7 +46,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'cost-katana=cost_katana.cli:main',
+            'costkatana=cost_katana.cli:main',
         ],
     },
 )
