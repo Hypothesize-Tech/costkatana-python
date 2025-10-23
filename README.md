@@ -524,7 +524,7 @@ response = ck.ai('gpt-4', 'Hello', retry=True)
 - **Documentation**: [docs.costkatana.com](https://docs.costkatana.com)
 - **GitHub**: [github.com/Hypothesize-Tech/cost-katana-python](https://github.com/Hypothesize-Tech/cost-katana-python)
 - **Email**: support@costkatana.com
-- **Discord**: [discord.gg/Wcwzw8wM](https://discord.gg/Wcwzw8wM)
+- **Discord**: [discord.gg/Wcwzw8wM](https://discord.gg/D8nDArmKbY)
 
 ## License
 

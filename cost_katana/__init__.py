@@ -21,7 +21,7 @@ from .exceptions import (
 )
 from .config import Config
 
-__version__ = "2.0.6"
+__version__ = "2.0.7"
 
 # Import configure function from client
 from .client import configure

@@ -259,7 +259,7 @@ cost-katana compare "Test" --models gpt-4,claude-3-sonnet
 
 - **Documentation**: https://docs.costkatana.com/python
 - **Examples**: Check the `examples/` folder
-- **Discord**: https://discord.gg/Wcwzw8wM
+- **Discord**: https://discord.gg/D8nDArmKbY
 - **Email**: support@costkatana.com
 - **Dashboard**: https://costkatana.com/dashboard
 
