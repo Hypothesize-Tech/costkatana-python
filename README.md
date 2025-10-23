@@ -59,7 +59,7 @@ print(f"Total cost: ${chat.total_cost}")
 
 **What's included:**
 - ✅ 44 feature sections covering every Cost Katana capability
-- ✅ Python SDK examples in [Section 8](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/8-python-sdk) and throughout
+- ✅ Python SDK examples in [Section 8](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/8-python-sdk) and throughout
 - ✅ HTTP REST API examples (`.http` files)
 - ✅ TypeScript/Node.js examples
 - ✅ Framework integrations (Express, Next.js, Fastify, NestJS, **FastAPI**)
@@ -67,12 +67,12 @@ print(f"Total cost: ${chat.total_cost}")
 - ✅ Production-ready code with full error handling
 
 **Popular examples:**
-- [Python SDK Examples](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/8-python-sdk) - Complete Python guides
-- [Cost Tracking](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/1-cost-tracking) - Track costs across all providers
-- [Webhooks](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/10-webhooks) - Real-time notifications
-- [Workflows](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/13-workflows) - Multi-step AI orchestration
-- [Semantic Caching](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/14-cache) - 30-40% cost reduction
-- [FastAPI Integration](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/7-frameworks) - Framework examples
+- [Python SDK Examples](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/8-python-sdk) - Complete Python guides
+- [Cost Tracking](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/1-cost-tracking) - Track costs across all providers
+- [Webhooks](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/10-webhooks) - Real-time notifications
+- [Workflows](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/13-workflows) - Multi-step AI orchestration
+- [Semantic Caching](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/14-cache) - 30-40% cost reduction
+- [FastAPI Integration](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/7-frameworks) - Framework examples
 
 ---
 

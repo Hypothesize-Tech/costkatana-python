@@ -2,6 +2,15 @@
 
 All notable changes to Cost Katana Python SDK will be documented in this file.
 
+## [2.0.6] - 2025-01-23
+
+### 📚 Documentation Updates
+- Updated package metadata and documentation
+- Improved examples and usage guides
+- Enhanced README with better examples repository links
+
+---
+
 ## [2.0.5] - 2025-01-23
 
 ### 📚 Documentation Updates
