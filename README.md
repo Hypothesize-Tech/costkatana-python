@@ -49,6 +49,33 @@ chat.send('Tell me a joke')
 print(f"Total cost: ${chat.total_cost}")
 ```
 
+---
+
+## 📚 **More Examples**
+
+**Looking for more comprehensive examples?** Check out our complete examples repository
+
+**🔗 [github.com/Hypothesize-Tech/costkatana-examples](https://github.com/Hypothesize-Tech/costkatana-examples)**
+
+**What's included:**
+- ✅ 44 feature sections covering every Cost Katana capability
+- ✅ Python SDK examples in [Section 8](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/8-python-sdk) and throughout
+- ✅ HTTP REST API examples (`.http` files)
+- ✅ TypeScript/Node.js examples
+- ✅ Framework integrations (Express, Next.js, Fastify, NestJS, **FastAPI**)
+- ✅ Real-world use cases with best practices
+- ✅ Production-ready code with full error handling
+
+**Popular examples:**
+- [Python SDK Examples](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/8-python-sdk) - Complete Python guides
+- [Cost Tracking](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/1-cost-tracking) - Track costs across all providers
+- [Webhooks](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/10-webhooks) - Real-time notifications
+- [Workflows](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/13-workflows) - Multi-step AI orchestration
+- [Semantic Caching](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/14-cache) - 30-40% cost reduction
+- [FastAPI Integration](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/7-frameworks) - Framework examples
+
+---
+
 ### Compare Models
 
 ```python
@@ -128,7 +155,7 @@ response = ck.ai('gpt-4', 'Hello')
 
 ```bash
 # Option 1: Cost Katana (Recommended - all features)
-export COST_KATANA_KEY="dak_your_key_here"
+export COST_KATANA_API_KEY="dak_your_key_here"
 
 # Option 2: Direct provider keys (limited features)
 export OPENAI_API_KEY="sk-..."
@@ -467,7 +494,7 @@ response = ck.ai('gemini-pro', 'Hello')
 
 ```bash
 # Set Cost Katana key (recommended)
-export COST_KATANA_KEY="dak_your_key"
+export COST_KATANA_API_KEY="dak_your_key"
 
 # Or set provider keys directly
 export OPENAI_API_KEY="sk-..."

@@ -179,7 +179,7 @@ def main():
         if not has_key:
             print("⚠️  No API key found!")
             print("\nTo run these examples, set your API key:")
-            print("  export COST_KATANA_KEY='dak_your_key'")
+            print("  export COST_KATANA_API_KEY='dak_your_key'")
             print("\nOr configure in the code:")
             print("  ck.configure(api_key='dak_your_key')")
             print("\nGet your key at: https://costkatana.com/settings\n")

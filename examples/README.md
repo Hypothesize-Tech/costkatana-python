@@ -9,7 +9,7 @@ Simple, practical examples showing how to use Cost Katana in Python.
 pip install costkatana
 
 # Set your API key
-export COST_KATANA_KEY="dak_your_key"
+export COST_KATANA_API_KEY="dak_your_key"
 
 # Run an example
 python examples/basic_usage.py

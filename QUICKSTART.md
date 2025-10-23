@@ -98,7 +98,7 @@ print(r2.cached)  # True
 ### Option 1: Environment Variable
 
 ```bash
-export COST_KATANA_KEY="dak_your_key_here"
+export COST_KATANA_API_KEY="dak_your_key_here"
 ```
 
 Then in Python:

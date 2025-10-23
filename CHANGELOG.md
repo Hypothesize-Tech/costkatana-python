@@ -2,6 +2,21 @@
 
 All notable changes to Cost Katana Python SDK will be documented in this file.
 
+## [2.0.5] - 2025-01-23
+
+### 📚 Documentation Updates
+- Added prominent "More Examples" section in README linking to complete examples repository
+- Added direct links to [costkatana-examples repository](https://github.com/Hypothesize-Tech/costkatana-examples)
+- Highlighted 300+ production-ready code samples across HTTP, TypeScript, Python, and frameworks
+- Special emphasis on Python SDK examples (Section 8) and FastAPI integration
+
+### 🔗 Resources
+- New Examples Repository: https://github.com/Hypothesize-Tech/costkatana-examples
+- 44 feature sections with comprehensive examples
+- Framework integrations: Express, Next.js, Fastify, NestJS, FastAPI
+
+---
+
 ## [2.0.0] - 2025-01-XX
 
 ### 🚀 Major Release: Complete Simplification
@@ -31,7 +46,7 @@ print(f"Total: ${session.total_cost}")
 
 #### Auto-Configuration
 - Automatically detects API keys from environment
-- Works with `COST_KATANA_KEY` or provider keys directly
+- Works with `COST_KATANA_API_KEY` or provider keys directly
 - Zero setup if environment is configured
 - Smart error messages with actionable steps
 

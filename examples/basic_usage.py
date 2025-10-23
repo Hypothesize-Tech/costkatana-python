@@ -19,7 +19,7 @@ def main():
         ck.configure(api_key=api_key)
         print("✅ Configured with your API key\n")
     else:
-        print("⚠️  Using API key from environment (COST_KATANA_KEY)\n")
+        print("⚠️  Using API key from environment (COST_KATANA_API_KEY)\n")
     
     # Step 2: Use the simple API
     print("📝 Example 1: Simple Question")
@@ -115,6 +115,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n❌ Error: {e}")
         print("\n💡 Make sure you have:")
-        print("  1. Set your API key: export COST_KATANA_KEY='dak_...'")
+        print("  1. Set your API key: export COST_KATANA_API_KEY='dak_...'")
         print("  2. Active internet connection")
         print("  3. Valid Cost Katana account at costkatana.com")
