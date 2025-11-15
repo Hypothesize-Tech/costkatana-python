@@ -10,6 +10,8 @@ Example:
     print(f"Cost: ${response.cost}")
 """
 
+from typing import Optional, List, Dict, Any
+
 from .client import CostKatanaClient, get_global_client
 from .models import ChatSession
 from .exceptions import (
@@ -82,11 +84,13 @@ class SimpleResponse:
 class SimpleChat:
     """Simple chat session with automatic cost tracking."""
 
-    def __init__(self, model: str, system_message: str = None, **options):
+    def __init__(
+        self, model: str, system_message: Optional[str] = None, **options: Any
+    ):
         self.model = model
         self.system_message = system_message
         self.options = options
-        self.history = []
+        self.history: List[Dict[str, str]] = []
         self.total_cost = 0.0
         self.total_tokens = 0
 
@@ -194,7 +198,9 @@ def ai(model: str, prompt: str, **options) -> SimpleResponse:
         )
 
 
-def chat(model: str, system_message: str = None, **options) -> SimpleChat:
+def chat(
+    model: str, system_message: Optional[str] = None, **options: Any
+) -> SimpleChat:
     """
     Create a chat session with conversation history.
 
