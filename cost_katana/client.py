@@ -51,7 +51,9 @@ def configure(
 def get_global_client():
     """Get the global client instance"""
     if _global_client is None:
-        raise CostKatanaError("Cost Katana not configured. Call cost_katana.configure() first.")
+        raise CostKatanaError(
+            "Cost Katana not configured. Call cost_katana.configure() first."
+        )
     return _global_client
 
 
@@ -133,7 +135,9 @@ class CostKatanaClient:
         elif response.status_code == 400 and "cost" in data.get("message", "").lower():
             raise CostLimitExceededError(data.get("message", "Cost limit exceeded"))
         elif not response.is_success:
-            raise CostKatanaError(data.get("message", f"API error: {response.status_code}"))
+            raise CostKatanaError(
+                data.get("message", f"API error: {response.status_code}")
+            )
 
         return data
 
@@ -216,7 +220,9 @@ class CostKatanaClient:
     def get_conversation_history(self, conversation_id: str) -> Dict[str, Any]:
         """Get conversation history"""
         try:
-            response = self.client.get(f"/api/chat/conversations/{conversation_id}/history")
+            response = self.client.get(
+                f"/api/chat/conversations/{conversation_id}/history"
+            )
             return self._handle_response(response)
         except Exception as e:
             if isinstance(e, CostKatanaError):
@@ -232,6 +238,3 @@ class CostKatanaClient:
             if isinstance(e, CostKatanaError):
                 raise
             raise CostKatanaError(f"Failed to delete conversation: {str(e)}")
-
-
-

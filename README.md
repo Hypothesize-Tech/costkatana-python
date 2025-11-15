@@ -233,7 +233,7 @@ def handle_customer_query(query: str):
 import cost_katana as ck
 
 def generate_blog_post(topic: str):
-    # Use Cortex for long-form content (70-95% savings)
+    # Use Cortex for long-form content (40-75% savings)
     post = ck.ai('gpt-4', f'Write a blog post about {topic}',
                  cortex=True, max_tokens=2000)
     

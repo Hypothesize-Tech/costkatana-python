@@ -57,7 +57,9 @@ def init_config(args):
     config_path = Path(args.config or "cost_katana_config.json")
 
     if config_path.exists() and not args.force:
-        console.print(f"[yellow]Configuration file already exists: {config_path}[/yellow]")
+        console.print(
+            f"[yellow]Configuration file already exists: {config_path}[/yellow]"
+        )
         if not Confirm.ask("Overwrite existing configuration?"):
             return
 
@@ -80,7 +82,9 @@ def init_config(args):
 
     # Create configuration
     config_data = create_sample_config()
-    config_data.update({"api_key": api_key, "base_url": base_url, "default_model": default_model})
+    config_data.update(
+        {"api_key": api_key, "base_url": base_url, "default_model": default_model}
+    )
 
     # Save configuration
     try:
@@ -108,7 +112,9 @@ def test_connection(args):
         elif args.api_key:
             configure(api_key=args.api_key)
         else:
-            console.print("[red]No configuration found. Run 'cost-katana init' first.[/red]")
+            console.print(
+                "[red]No configuration found. Run 'cost-katana init' first.[/red]"
+            )
             return
 
         console.print("[bold blue]Testing Cost Katana connection...[/bold blue]")
@@ -145,10 +151,14 @@ def list_models(args):
         elif args.api_key:
             configure(api_key=args.api_key)
         else:
-            console.print("[red]No configuration found. Run 'cost-katana init' first.[/red]")
+            console.print(
+                "[red]No configuration found. Run 'cost-katana init' first.[/red]"
+            )
             return
 
-        client = CostKatanaClient(config_file=config_path if Path(config_path).exists() else None)
+        client = CostKatanaClient(
+            config_file=config_path if Path(config_path).exists() else None
+        )
         models = client.get_available_models()
 
         table = Table(title="Available Models")
@@ -184,7 +194,9 @@ def start_chat(args):
             configure(api_key=args.api_key)
             config = Config(api_key=args.api_key)
         else:
-            console.print("[red]No configuration found. Run 'cost-katana init' first.[/red]")
+            console.print(
+                "[red]No configuration found. Run 'cost-katana init' first.[/red]"
+            )
             return
 
         model_name = args.model or config.default_model
@@ -214,7 +226,9 @@ def start_chat(args):
                     console.print("[yellow]Chat history cleared.[/yellow]")
                     continue
                 elif message.lower() == "cost":
-                    console.print(f"[green]Total session cost: ${total_cost:.4f}[/green]")
+                    console.print(
+                        f"[green]Total session cost: ${total_cost:.4f}[/green]"
+                    )
                     continue
 
                 console.print("[bold green]Assistant[/bold green]: ", end="")
@@ -268,17 +282,6 @@ def get_prompt_from_args_or_file(args):
     return Prompt.ask("Enter prompt to process")
 
 
-
-
-
-
-
-
-
-
-
-
-
 def main():
     """Main CLI entry point"""
     parser = argparse.ArgumentParser(
@@ -295,7 +298,9 @@ def main():
 
     # Init command
     init_parser = subparsers.add_parser("init", help="Initialize configuration")
-    init_parser.add_argument("--force", action="store_true", help="Overwrite existing config")
+    init_parser.add_argument(
+        "--force", action="store_true", help="Overwrite existing config"
+    )
 
     # Test command
     subparsers.add_parser("test", help="Test API connection")

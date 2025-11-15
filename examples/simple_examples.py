@@ -12,8 +12,8 @@ def example_1_hello_world():
     """The simplest possible example."""
     print("📝 Example 1: Hello World")
     print("-" * 50)
-    
-    response = ck.ai('gpt-4', 'Hello, world!')
+
+    response = ck.ai("gpt-4", "Hello, world!")
     print(response.text)
     print(f"Cost: ${response.cost:.6f}")
     print()
@@ -23,10 +23,10 @@ def example_2_model_comparison():
     """Compare costs across different models."""
     print("📝 Example 2: Model Comparison")
     print("-" * 50)
-    
-    models = ['gpt-4', 'gpt-3.5-turbo', 'claude-3-haiku']
-    prompt = 'Explain machine learning in one sentence'
-    
+
+    models = ["gpt-4", "gpt-3.5-turbo", "claude-3-haiku"]
+    prompt = "Explain machine learning in one sentence"
+
     for model in models:
         try:
             response = ck.ai(model, prompt)
@@ -40,22 +40,21 @@ def example_3_chat_conversation():
     """Multi-turn conversation with cost tracking."""
     print("📝 Example 3: Chat Conversation")
     print("-" * 50)
-    
-    chat = ck.chat('gpt-3.5-turbo', 
-                   system_message='You are a helpful Python expert.')
-    
+
+    chat = ck.chat("gpt-3.5-turbo", system_message="You are a helpful Python expert.")
+
     questions = [
-        'Hello! Can you help me with Python?',
-        'How do I read a file?',
-        'Show me an example'
+        "Hello! Can you help me with Python?",
+        "How do I read a file?",
+        "Show me an example",
     ]
-    
+
     for question in questions:
         print(f"You: {question}")
         response = chat.send(question)
         print(f"AI: {response[:100]}...")
         print()
-    
+
     print(f"💰 Total cost: ${chat.total_cost:.6f}")
     print(f"📊 Total messages: {len(chat.history)}")
     print()
@@ -65,17 +64,17 @@ def example_4_cost_optimization():
     """Compare standard vs optimized costs."""
     print("📝 Example 4: Cost Optimization")
     print("-" * 50)
-    
-    prompt = 'Write a comprehensive guide to lists in Python'
-    
+
+    prompt = "Write a comprehensive guide to lists in Python"
+
     # Standard
-    standard = ck.ai('gpt-4', prompt)
+    standard = ck.ai("gpt-4", prompt)
     print(f"Standard cost: ${standard.cost:.6f}")
-    
+
     # Optimized with Cortex
-    optimized = ck.ai('gpt-4', prompt, cortex=True)
+    optimized = ck.ai("gpt-4", prompt, cortex=True)
     print(f"Optimized cost: ${optimized.cost:.6f}")
-    
+
     savings = standard.cost - optimized.cost
     if savings > 0:
         percent = (savings / standard.cost) * 100
@@ -87,17 +86,17 @@ def example_5_smart_caching():
     """Demonstrate smart caching."""
     print("📝 Example 5: Smart Caching")
     print("-" * 50)
-    
-    question = 'What is the capital of France?'
-    
+
+    question = "What is the capital of France?"
+
     # First call
-    r1 = ck.ai('gpt-3.5-turbo', question, cache=True)
+    r1 = ck.ai("gpt-3.5-turbo", question, cache=True)
     print(f"First call:  ${r1.cost:.6f}, Cached: {r1.cached}")
-    
+
     # Second call - should be cached
-    r2 = ck.ai('gpt-3.5-turbo', question, cache=True)
+    r2 = ck.ai("gpt-3.5-turbo", question, cache=True)
     print(f"Second call: ${r2.cost:.6f}, Cached: {r2.cached}")
-    
+
     if r2.cached:
         print("✅ Second call was free from cache!")
     print()
@@ -107,20 +106,21 @@ def example_6_content_generation():
     """Generate different types of content."""
     print("📝 Example 6: Content Generation")
     print("-" * 50)
-    
+
     # Blog post
-    blog = ck.ai('gpt-4', 'Write a 100-word blog post about AI',
-                 max_tokens=200)
+    blog = ck.ai("gpt-4", "Write a 100-word blog post about AI", max_tokens=200)
     print(f"Blog post: {len(blog.text.split())} words, ${blog.cost:.6f}")
-    
+
     # Code
-    code = ck.ai('claude-3-sonnet', 'Write a Python function to sort a list',
-                 cache=True)
+    code = ck.ai(
+        "claude-3-sonnet", "Write a Python function to sort a list", cache=True
+    )
     print(f"Code generated: {len(code.text)} chars, ${code.cost:.6f}")
-    
+
     # Translation
-    translation = ck.ai('gpt-3.5-turbo', 'Translate to Spanish: Hello world',
-                        cache=True)
+    translation = ck.ai(
+        "gpt-3.5-turbo", "Translate to Spanish: Hello world", cache=True
+    )
     print(f"Translation: {translation.text}, ${translation.cost:.6f}")
     print()
 
@@ -129,10 +129,10 @@ def example_7_error_handling():
     """Handle errors gracefully."""
     print("📝 Example 7: Error Handling")
     print("-" * 50)
-    
+
     try:
         # Try with invalid model
-        response = ck.ai('invalid-model', 'Hello')
+        response = ck.ai("invalid-model", "Hello")
     except ck.CostKatanaError as e:
         print(f"Caught error: {str(e)[:100]}...")
         print("Error includes helpful troubleshooting steps ✅")
@@ -143,20 +143,16 @@ def example_8_batch_processing():
     """Process multiple prompts efficiently."""
     print("📝 Example 8: Batch Processing")
     print("-" * 50)
-    
-    prompts = [
-        'What is Python?',
-        'What is JavaScript?',
-        'What is TypeScript?'
-    ]
-    
+
+    prompts = ["What is Python?", "What is JavaScript?", "What is TypeScript?"]
+
     total_cost = 0
-    
+
     for prompt in prompts:
-        response = ck.ai('gpt-3.5-turbo', prompt, cache=True)
+        response = ck.ai("gpt-3.5-turbo", prompt, cache=True)
         total_cost += response.cost
         print(f"• {prompt}: ${response.cost:.6f}")
-    
+
     print(f"\n💰 Total cost: ${total_cost:.6f}")
     print(f"📊 Average: ${total_cost/len(prompts):.6f} per question")
     print()
@@ -165,17 +161,17 @@ def example_8_batch_processing():
 def main():
     """Run all examples."""
     print("\n🥷 Cost Katana Python - Simple Examples\n")
-    
+
     try:
         # Check if configured
         has_key = False
         try:
             # Try to use without explicit config
-            test = ck.ai('gpt-3.5-turbo', 'test', max_tokens=5)
+            test = ck.ai("gpt-3.5-turbo", "test", max_tokens=5)
             has_key = True
         except:
             pass
-        
+
         if not has_key:
             print("⚠️  No API key found!")
             print("\nTo run these examples, set your API key:")
@@ -184,7 +180,7 @@ def main():
             print("  ck.configure(api_key='dak_your_key')")
             print("\nGet your key at: https://costkatana.com/settings\n")
             return
-        
+
         # Run examples
         example_1_hello_world()
         example_2_model_comparison()
@@ -194,7 +190,7 @@ def main():
         example_6_content_generation()
         example_7_error_handling()
         example_8_batch_processing()
-        
+
         print("=" * 50)
         print("\n✅ All examples completed successfully!")
         print("\n💡 Tips:")
@@ -203,7 +199,7 @@ def main():
         print("  • Enable cortex=True for 70-95% cost savings")
         print("  • Check your dashboard at https://costkatana.com for analytics")
         print()
-        
+
     except KeyboardInterrupt:
         print("\n\n👋 Goodbye!")
     except Exception as e:
@@ -216,4 +212,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

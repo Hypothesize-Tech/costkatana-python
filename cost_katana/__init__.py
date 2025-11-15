@@ -44,6 +44,7 @@ def create_generative_model(model_name: str, **kwargs):
     """
     client = get_global_client()
     from .models import GenerativeModel as GM
+
     return GM(client, model_name, **kwargs)
 
 
@@ -51,11 +52,20 @@ def create_generative_model(model_name: str, **kwargs):
 # ULTRA-SIMPLE API - The easiest way to use AI in Python
 # ============================================================================
 
+
 class SimpleResponse:
     """Simple response object with all the info you need."""
-    
-    def __init__(self, text: str, cost: float, tokens: int, model: str, provider: str, 
-                 cached: bool = False, optimized: bool = False):
+
+    def __init__(
+        self,
+        text: str,
+        cost: float,
+        tokens: int,
+        model: str,
+        provider: str,
+        cached: bool = False,
+        optimized: bool = False,
+    ):
         self.text = text
         self.cost = cost
         self.tokens = tokens
@@ -64,14 +74,14 @@ class SimpleResponse:
         self.cached = cached
         self.optimized = optimized
         self.saved_amount = 0.0
-    
+
     def __repr__(self):
         return f"<Response text='{self.text[:50]}...' cost=${self.cost:.4f}>"
 
 
 class SimpleChat:
     """Simple chat session with automatic cost tracking."""
-    
+
     def __init__(self, model: str, system_message: str = None, **options):
         self.model = model
         self.system_message = system_message
@@ -79,37 +89,41 @@ class SimpleChat:
         self.history = []
         self.total_cost = 0.0
         self.total_tokens = 0
-        
+
         # Use the existing GenerativeModel under the hood
         self._gen_model = create_generative_model(model, **options)
-        self._chat = self._gen_model.start_chat(history=[], system_message=system_message)
-    
+        self._chat = self._gen_model.start_chat(
+            history=[], system_message=system_message
+        )
+
     def send(self, message: str) -> str:
         """Send a message and get response."""
         response = self._chat.send_message(message)
-        
+
         # Track metrics
-        if hasattr(response, 'usage_metadata'):
-            self.total_cost += getattr(response.usage_metadata, 'cost', 0)
-            self.total_tokens += getattr(response.usage_metadata, 'total_tokens', 0)
-        
-        self.history.append({'role': 'user', 'content': message})
-        self.history.append({'role': 'assistant', 'content': response.text})
-        
+        if hasattr(response, "usage_metadata"):
+            self.total_cost += getattr(response.usage_metadata, "cost", 0)
+            self.total_tokens += getattr(response.usage_metadata, "total_tokens", 0)
+
+        self.history.append({"role": "user", "content": message})
+        self.history.append({"role": "assistant", "content": response.text})
+
         return response.text
-    
+
     def clear(self):
         """Clear conversation history."""
         self.history = []
         self.total_cost = 0.0
         self.total_tokens = 0
-        self._chat = self._gen_model.start_chat(history=[], system_message=self.system_message)
+        self._chat = self._gen_model.start_chat(
+            history=[], system_message=self.system_message
+        )
 
 
 def ai(model: str, prompt: str, **options) -> SimpleResponse:
     """
     The simplest way to use AI in Python.
-    
+
     Args:
         model: AI model name (e.g., 'gpt-4', 'claude-3-sonnet', 'gemini-pro')
         prompt: Your prompt text
@@ -119,10 +133,10 @@ def ai(model: str, prompt: str, **options) -> SimpleResponse:
             - max_tokens (int): Max response tokens, default 1000
             - cache (bool): Enable caching, default False
             - cortex (bool): Enable optimization, default False
-    
+
     Returns:
         SimpleResponse with text, cost, tokens, model, provider
-    
+
     Example:
         >>> import cost_katana as ck
         >>> response = ck.ai('gpt-4', 'Hello, world!')
@@ -134,21 +148,30 @@ def ai(model: str, prompt: str, **options) -> SimpleResponse:
     try:
         # Get or create model
         gen_model = create_generative_model(model)
-        
+
         # Generate content
-        response = gen_model.generate_content(
-            prompt,
-            **options
-        )
-        
+        response = gen_model.generate_content(prompt, **options)
+
         # Extract metadata
-        cost = getattr(response.usage_metadata, 'cost', 0.0) if hasattr(response, 'usage_metadata') else 0.0
-        tokens = getattr(response.usage_metadata, 'total_tokens', 0) if hasattr(response, 'usage_metadata') else 0
-        cached = getattr(response.usage_metadata, 'cache_hit', False) if hasattr(response, 'usage_metadata') else False
-        
+        cost = (
+            getattr(response.usage_metadata, "cost", 0.0)
+            if hasattr(response, "usage_metadata")
+            else 0.0
+        )
+        tokens = (
+            getattr(response.usage_metadata, "total_tokens", 0)
+            if hasattr(response, "usage_metadata")
+            else 0
+        )
+        cached = (
+            getattr(response.usage_metadata, "cache_hit", False)
+            if hasattr(response, "usage_metadata")
+            else False
+        )
+
         # Determine provider from model name
         provider = _infer_provider(model)
-        
+
         return SimpleResponse(
             text=response.text,
             cost=cost,
@@ -156,9 +179,9 @@ def ai(model: str, prompt: str, **options) -> SimpleResponse:
             model=model,
             provider=provider,
             cached=cached,
-            optimized=options.get('cortex', False)
+            optimized=options.get("cortex", False),
         )
-        
+
     except Exception as e:
         raise CostKatanaError(
             f"AI request failed: {str(e)}\n\n"
@@ -174,15 +197,15 @@ def ai(model: str, prompt: str, **options) -> SimpleResponse:
 def chat(model: str, system_message: str = None, **options) -> SimpleChat:
     """
     Create a chat session with conversation history.
-    
+
     Args:
         model: AI model name
         system_message: Optional system prompt for the session
         **options: Additional options (temperature, max_tokens, etc.)
-    
+
     Returns:
         SimpleChat session object
-    
+
     Example:
         >>> import cost_katana as ck
         >>> session = ck.chat('gpt-4')
@@ -199,21 +222,21 @@ def chat(model: str, system_message: str = None, **options) -> SimpleChat:
 def _infer_provider(model: str) -> str:
     """Infer provider from model name."""
     model_lower = model.lower()
-    
-    if 'gpt' in model_lower or 'dall-e' in model_lower:
-        return 'openai'
-    elif 'claude' in model_lower:
-        return 'anthropic'
-    elif 'gemini' in model_lower or 'palm' in model_lower:
-        return 'google'
-    elif 'nova' in model_lower or 'titan' in model_lower:
-        return 'aws'
-    elif 'command' in model_lower:
-        return 'cohere'
-    elif 'llama' in model_lower or 'mixtral' in model_lower:
-        return 'meta'
+
+    if "gpt" in model_lower or "dall-e" in model_lower:
+        return "openai"
+    elif "claude" in model_lower:
+        return "anthropic"
+    elif "gemini" in model_lower or "palm" in model_lower:
+        return "google"
+    elif "nova" in model_lower or "titan" in model_lower:
+        return "aws"
+    elif "command" in model_lower:
+        return "cohere"
+    elif "llama" in model_lower or "mixtral" in model_lower:
+        return "meta"
     else:
-        return 'unknown'
+        return "unknown"
 
 
 # Legacy compatibility - keep GenerativeModel
@@ -225,20 +248,17 @@ __all__ = [
     "ai",
     "chat",
     "configure",
-    
     # Traditional API (compatibility)
     "GenerativeModel",
     "create_generative_model",
     "ChatSession",
     "CostKatanaClient",
-    
     # Exceptions
     "CostKatanaError",
     "AuthenticationError",
     "ModelNotAvailableError",
     "RateLimitError",
     "CostLimitExceededError",
-    
     # Config
     "Config",
 ]

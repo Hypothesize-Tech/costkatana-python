@@ -174,6 +174,33 @@ release-push:  ## Push release to GitHub
 
 release-full: release-prepare release-push  ## Complete release process
 
+release-patch:  ## Bump patch version and release (e.g., 2.0.7 -> 2.0.8)
+	@echo "🔖 Bumping patch version..."
+	@python3 scripts/bump_version.py patch
+	@git add setup.py
+	@git commit -m "chore: bump version to $$(python3 setup.py --version)"
+	@git tag v$$(python3 setup.py --version)
+	@git push origin master --follow-tags
+	@echo "✅ Released v$$(python3 setup.py --version)"
+
+release-minor:  ## Bump minor version and release (e.g., 2.0.7 -> 2.1.0)
+	@echo "🔖 Bumping minor version..."
+	@python3 scripts/bump_version.py minor
+	@git add setup.py
+	@git commit -m "chore: bump version to $$(python3 setup.py --version)"
+	@git tag v$$(python3 setup.py --version)
+	@git push origin master --follow-tags
+	@echo "✅ Released v$$(python3 setup.py --version)"
+
+release-major:  ## Bump major version and release (e.g., 2.0.7 -> 3.0.0)
+	@echo "🔖 Bumping major version..."
+	@python3 scripts/bump_version.py major
+	@git add setup.py
+	@git commit -m "chore: bump version to $$(python3 setup.py --version)"
+	@git tag v$$(python3 setup.py --version)
+	@git push origin master --follow-tags
+	@echo "✅ Released v$$(python3 setup.py --version)"
+
 quick-start:  ## Quick start guide
 	@echo "🚀 Cost Katana Python SDK - Quick Start"
 	@echo "========================================"
