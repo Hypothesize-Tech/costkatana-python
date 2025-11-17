@@ -14,6 +14,8 @@ from .exceptions import (
     RateLimitError,
     CostLimitExceededError,
 )
+from .logging import AILogger, ai_logger
+from .templates import TemplateManager, template_manager
 
 # Global client instance for the configure function
 _global_client = None
@@ -102,8 +104,24 @@ class CostKatanaClient:
             headers={
                 "Authorization": f"Bearer {self.config.api_key}",
                 "Content-Type": "application/json",
-                "User-Agent": f"cost-katana-python/1.0.0",
+                "User-Agent": f"cost-katana-python/2.1.0",
             },
+        )
+
+        # Initialize AI logger
+        if getattr(self.config, 'enable_ai_logging', True):
+            self.ai_logger = AILogger(
+                api_key=self.config.api_key,
+                base_url=self.config.base_url,
+                enable_logging=True,
+            )
+        else:
+            self.ai_logger = None
+
+        # Initialize template manager
+        self.template_manager = TemplateManager(
+            api_key=self.config.api_key,
+            base_url=self.config.base_url,
         )
 
     def __enter__(self):
@@ -161,6 +179,8 @@ class CostKatanaClient:
         max_tokens: int = 2000,
         chat_mode: str = "balanced",
         use_multi_agent: bool = False,
+        template_id: Optional[str] = None,
+        template_variables: Optional[Dict[str, Any]] = None,
         **kwargs,
     ) -> Dict[str, Any]:
         """
@@ -174,12 +194,22 @@ class CostKatanaClient:
             max_tokens: Maximum tokens to generate
             chat_mode: Chat optimization mode ('fastest', 'cheapest', 'balanced')
             use_multi_agent: Whether to use multi-agent processing
+            template_id: Optional template ID to use
+            template_variables: Optional variables for template
 
         Returns:
             Response data from the API
         """
+        # Handle template if provided
+        actual_message = message
+        if template_id and self.template_manager:
+            resolution = self.template_manager.resolve_template(
+                template_id, template_variables or {}
+            )
+            actual_message = resolution["prompt"]
+
         payload = {
-            "message": message,
+            "message": actual_message,
             "modelId": model_id,
             "temperature": temperature,
             "maxTokens": max_tokens,
@@ -190,6 +220,10 @@ class CostKatanaClient:
 
         if conversation_id:
             payload["conversationId"] = conversation_id
+        if template_id:
+            payload["templateId"] = template_id
+            if template_variables:
+                payload["templateVariables"] = template_variables
 
         try:
             response = self.client.post("/api/chat/message", json=payload)

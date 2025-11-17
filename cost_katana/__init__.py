@@ -22,8 +22,10 @@ from .exceptions import (
     CostLimitExceededError,
 )
 from .config import Config
+from .logging import AILogger, ai_logger, Logger, logger
+from .templates import TemplateManager, template_manager
 
-__version__ = "2.0.7"
+__version__ = "2.1.0"
 
 # Import configure function from client
 from .client import configure
@@ -100,9 +102,22 @@ class SimpleChat:
             history=[], system_message=system_message
         )
 
-    def send(self, message: str) -> str:
+    def send(
+        self, 
+        message: str,
+        template_id: str = None,
+        template_variables: dict = None
+    ) -> str:
         """Send a message and get response."""
-        response = self._chat.send_message(message)
+        # Handle template if provided
+        actual_message = message
+        if template_id:
+            resolution = template_manager.resolve_template(
+                template_id, template_variables or {}
+            )
+            actual_message = resolution["prompt"]
+
+        response = self._chat.send_message(actual_message)
 
         # Track metrics
         if hasattr(response, "usage_metadata"):
@@ -124,13 +139,23 @@ class SimpleChat:
         )
 
 
-def ai(model: str, prompt: str, **options) -> SimpleResponse:
+def ai(
+    model: str,
+    prompt: str,
+    template_id: str = None,
+    template_variables: dict = None,
+    enable_ai_logging: bool = True,
+    **options
+) -> SimpleResponse:
     """
     The simplest way to use AI in Python.
 
     Args:
         model: AI model name (e.g., 'gpt-4', 'claude-3-sonnet', 'gemini-pro')
         prompt: Your prompt text
+        template_id: Optional template ID to use
+        template_variables: Optional variables for template
+        enable_ai_logging: Enable AI logging (default: True)
         **options: Optional parameters:
             - system_message (str): System prompt
             - temperature (float): 0-2, default 0.7
@@ -149,12 +174,28 @@ def ai(model: str, prompt: str, **options) -> SimpleResponse:
         >>> print(f"Cost: ${response.cost}")
         Cost: $0.0012
     """
+    import time
+    start_time = time.time()
+    actual_prompt = prompt
+    template_used = False
+    template_name_val = None
+
     try:
+        # Handle template if provided
+        if template_id:
+            resolution = template_manager.resolve_template(
+                template_id, template_variables or {}
+            )
+            actual_prompt = resolution["prompt"]
+            template_used = True
+            template_name_val = resolution["template"].get("name")
+            logger.debug(f"Template resolved: {template_id}")
+
         # Get or create model
         gen_model = create_generative_model(model)
 
         # Generate content
-        response = gen_model.generate_content(prompt, **options)
+        response = gen_model.generate_content(actual_prompt, **options)
 
         # Extract metadata
         cost = (
@@ -175,8 +216,31 @@ def ai(model: str, prompt: str, **options) -> SimpleResponse:
 
         # Determine provider from model name
         provider = _infer_provider(model)
+        response_time = int((time.time() - start_time) * 1000)
 
-        return SimpleResponse(
+        # Log AI call if enabled
+        if enable_ai_logging:
+            ai_logger.log_ai_call({
+                "service": provider,
+                "operation": "chat_completion",
+                "aiModel": model,
+                "statusCode": 200,
+                "responseTime": response_time,
+                "prompt": actual_prompt,
+                "result": response.text,
+                "inputTokens": getattr(response.usage_metadata, "prompt_tokens", 0) if hasattr(response, "usage_metadata") else 0,
+                "outputTokens": getattr(response.usage_metadata, "completion_tokens", 0) if hasattr(response, "usage_metadata") else 0,
+                "totalTokens": tokens,
+                "cost": cost,
+                "success": True,
+                "cacheHit": cached,
+                "cortexEnabled": options.get("cortex", False),
+                "templateId": template_id,
+                "templateName": template_name_val,
+                "templateVariables": template_variables,
+            })
+
+        result = SimpleResponse(
             text=response.text,
             cost=cost,
             tokens=tokens,
@@ -185,6 +249,8 @@ def ai(model: str, prompt: str, **options) -> SimpleResponse:
             cached=cached,
             optimized=options.get("cortex", False),
         )
+        result.templateUsed = template_used
+        return result
 
     except Exception as e:
         raise CostKatanaError(
@@ -259,6 +325,13 @@ __all__ = [
     "create_generative_model",
     "ChatSession",
     "CostKatanaClient",
+    # Logging & Templates
+    "AILogger",
+    "ai_logger",
+    "Logger",
+    "logger",
+    "TemplateManager",
+    "template_manager",
     # Exceptions
     "CostKatanaError",
     "AuthenticationError",

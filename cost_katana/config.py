@@ -27,6 +27,12 @@ class Config:
     enable_failover: bool = True
     cost_limit_per_request: Optional[float] = None
     cost_limit_per_day: Optional[float] = None
+    
+    # Logging configuration
+    enable_ai_logging: bool = True
+    ai_logging_batch_size: int = 50
+    ai_logging_flush_interval: float = 5.0
+    log_level: str = 'info'
 
     def __post_init__(self):
         """Load from environment variables if not set"""
