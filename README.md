@@ -205,10 +205,21 @@ response = ck.ai('gpt-4', 'Hello')
 # Option 1: Cost Katana (Recommended - all features)
 export COST_KATANA_API_KEY="dak_your_key_here"
 
-# Option 2: Direct provider keys (limited features)
-export OPENAI_API_KEY="sk-..."
-export ANTHROPIC_API_KEY="sk-ant-..."
+# Option 2: Direct provider keys (for self-hosted)
+# ⚠️ USER PROVIDED - CostKATANA does not include these keys
+export OPENAI_API_KEY="sk-..."              # Required for OpenAI models (GPT-4, GPT-3.5)
+export GEMINI_API_KEY="..."                 # Required for Gemini models (Gemini 2.5, etc.)
+export ANTHROPIC_API_KEY="sk-ant-..."       # For Claude models
+export AWS_ACCESS_KEY_ID="..."              # For AWS Bedrock (Claude, Nova)
+export AWS_SECRET_ACCESS_KEY="..."
+export AWS_REGION="us-east-1"
 ```
+
+> **⚠️ Important for Self-Hosted Users**: 
+> - **OpenAI and Gemini providers require YOUR OWN API keys** 
+> - Cost Katana **does not provide** OpenAI or Google API keys
+> - Without `OPENAI_API_KEY`, OpenAI models (GPT-*) will not be available
+> - Without `GEMINI_API_KEY`, Gemini models will not be available
 
 ### Manual Configuration
 

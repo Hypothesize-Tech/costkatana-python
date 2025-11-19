@@ -2,6 +2,27 @@
 
 All notable changes to Cost Katana Python SDK will be documented in this file.
 
+## [2.2.1] - 2025-01-19
+
+### 📚 Documentation Updates
+- **Clarified API Key Requirements**: Updated documentation to clearly state that OpenAI and Gemini providers require user-provided API keys
+- Added prominent warnings that Cost Katana does not provide OpenAI or Google API keys
+- Updated environment variable documentation with detailed explanations for all providers
+- Added clear consequences for missing API keys
+- Improved consistency across all documentation files
+
+### 🔧 Configuration
+- Enhanced environment variable documentation with user-provided key requirements:
+  - `OPENAI_API_KEY` - Required for OpenAI models (GPT-4, GPT-3.5, etc.) - **USER PROVIDED**
+  - `GEMINI_API_KEY` - Required for Google Gemini models (Gemini 2.5 Pro, Flash, etc.) - **USER PROVIDED**
+  - `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` - Required for AWS Bedrock models (Claude, Nova, etc.) - **USER PROVIDED**
+  - `ANTHROPIC_API_KEY` - Optional for direct Anthropic API access - **USER PROVIDED**
+- Added specific notes about which providers require user API keys
+- Updated README.md with comprehensive API key setup instructions
+- All API keys must be provided by users - Cost Katana does not include any provider API keys
+
+---
+
 ## [2.0.7] - 2025-01-23
 
 ### 📚 Documentation Updates
