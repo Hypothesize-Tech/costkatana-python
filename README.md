@@ -49,6 +49,54 @@ chat.send('Tell me a joke')
 print(f"Total cost: ${chat.total_cost}")
 ```
 
+### Type-Safe Model Selection (Recommended) ✨
+
+Use model constants instead of strings to prevent typos and get autocomplete:
+
+```python
+import cost_katana as ck
+from cost_katana import openai, anthropic, google
+
+# Type-safe model selection (recommended)
+response = ck.ai(openai.gpt_4, 'Hello, world!')
+print(response.text)
+
+# Compare models easily
+models = [openai.gpt_4, anthropic.claude_3_5_sonnet_20241022, google.gemini_2_5_pro]
+for model in models:
+    response = ck.ai(model, 'Explain AI in one sentence')
+    print(f"Cost: ${response.cost}")
+```
+
+**Benefits:**
+- ✅ IDE autocomplete for all models
+- ✅ No spelling mistakes
+- ✅ Type checking in editors
+- ✅ Self-documenting code
+
+**Available namespaces:**
+- `openai` - GPT-4, GPT-3.5, DALL-E, Whisper, etc.
+- `anthropic` - Claude 3.5 Sonnet, Haiku, Opus, etc.
+- `google` - Gemini 2.5 Pro, Flash, etc.
+- `aws_bedrock` - Nova, Claude on Bedrock, etc.
+- `xai` - Grok models
+- `deepseek` - DeepSeek models
+- `mistral` - Mistral AI models
+- `cohere` - Command models
+- `groq` - Groq models
+- `meta` - Llama models
+
+**Migration from string names:**
+
+```python
+# Old way (still works with warning)
+response = ck.ai('gpt-4', 'Hello')
+
+# New way (recommended)
+from cost_katana import openai
+response = ck.ai(openai.gpt_4, 'Hello')
+```
+
 ---
 
 ## 📚 **More Examples**

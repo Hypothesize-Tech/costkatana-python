@@ -24,6 +24,21 @@ from .exceptions import (
 from .config import Config
 from .logging import AILogger, ai_logger, Logger, logger
 from .templates import TemplateManager, template_manager
+from .models_constants import (
+    openai,
+    anthropic,
+    google,
+    aws_bedrock,
+    xai,
+    deepseek,
+    mistral,
+    cohere,
+    groq,
+    meta,
+    is_model_constant,
+    get_all_model_constants,
+    get_provider_from_model,
+)
 
 __version__ = "2.1.0"
 
@@ -151,7 +166,7 @@ def ai(
     The simplest way to use AI in Python.
 
     Args:
-        model: AI model name (e.g., 'gpt-4', 'claude-3-sonnet', 'gemini-pro')
+        model: AI model name or constant (e.g., openai.gpt_4, 'gpt-4')
         prompt: Your prompt text
         template_id: Optional template ID to use
         template_variables: Optional variables for template
@@ -168,13 +183,29 @@ def ai(
 
     Example:
         >>> import cost_katana as ck
-        >>> response = ck.ai('gpt-4', 'Hello, world!')
+        >>> from cost_katana import openai
+        >>> response = ck.ai(openai.gpt_4, 'Hello, world!')
         >>> print(response.text)
         Hello! How can I help you today?
         >>> print(f"Cost: ${response.cost}")
         Cost: $0.0012
     """
     import time
+    import warnings
+    
+    # Add deprecation warning for string model names
+    if not is_model_constant(model):
+        warnings.warn(
+            "⚠️  Deprecation Warning: Using string model names is deprecated and will be removed in a future version.\n"
+            "   Please use type-safe model constants instead for better autocomplete and error prevention:\n"
+            "   Example: from cost_katana import openai, anthropic, google\n"
+            "            response = ck.ai(openai.gpt_4, 'your prompt')\n"
+            "            response = ck.ai(anthropic.claude_3_5_sonnet_20241022, 'your prompt')\n"
+            "            response = ck.ai(google.gemini_2_5_pro, 'your prompt')",
+            DeprecationWarning,
+            stacklevel=2
+        )
+    
     start_time = time.time()
     actual_prompt = prompt
     template_used = False
@@ -271,7 +302,7 @@ def chat(
     Create a chat session with conversation history.
 
     Args:
-        model: AI model name
+        model: AI model name or constant (e.g., openai.gpt_4, 'gpt-4')
         system_message: Optional system prompt for the session
         **options: Additional options (temperature, max_tokens, etc.)
 
@@ -280,7 +311,8 @@ def chat(
 
     Example:
         >>> import cost_katana as ck
-        >>> session = ck.chat('gpt-4')
+        >>> from cost_katana import openai
+        >>> session = ck.chat(openai.gpt_4)
         >>> session.send('Hello!')
         'Hi! How can I help you today?'
         >>> session.send('Tell me a joke')
@@ -288,6 +320,20 @@ def chat(
         >>> print(f"Total: ${session.total_cost}")
         Total: $0.0023
     """
+    import warnings
+    
+    # Add deprecation warning for string model names
+    if not is_model_constant(model):
+        warnings.warn(
+            "⚠️  Deprecation Warning: Using string model names is deprecated and will be removed in a future version.\n"
+            "   Please use type-safe model constants instead:\n"
+            "   Example: from cost_katana import openai, anthropic\n"
+            "            session = ck.chat(openai.gpt_4, system_message='...')\n"
+            "            session = ck.chat(anthropic.claude_3_5_sonnet_20241022, system_message='...')",
+            DeprecationWarning,
+            stacklevel=2
+        )
+    
     return SimpleChat(model, system_message, **options)
 
 
@@ -320,6 +366,20 @@ __all__ = [
     "ai",
     "chat",
     "configure",
+    # Model Constants
+    "openai",
+    "anthropic",
+    "google",
+    "aws_bedrock",
+    "xai",
+    "deepseek",
+    "mistral",
+    "cohere",
+    "groq",
+    "meta",
+    "is_model_constant",
+    "get_all_model_constants",
+    "get_provider_from_model",
     # Traditional API (compatibility)
     "GenerativeModel",
     "create_generative_model",

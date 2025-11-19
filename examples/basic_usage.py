@@ -6,6 +6,7 @@ This example shows the simplest way to use Cost Katana.
 """
 
 import cost_katana as ck
+from cost_katana import openai, anthropic, google
 
 
 def main():
@@ -25,7 +26,8 @@ def main():
     print("📝 Example 1: Simple Question")
     print("-" * 50)
 
-    response = ck.ai("gemini-2.0-flash", "What is Python?")
+    # NEW: Type-safe model selection
+    response = ck.ai(google.gemini_2_0_flash, "What is Python?")
 
     print(f"Response: {response.text[:200]}...")
     print(f"💰 Cost: ${response.cost:.6f}")
@@ -38,15 +40,20 @@ def main():
     print("📝 Example 2: Model Comparison")
     print("-" * 50)
 
-    models = ["gpt-3.5-turbo", "claude-3-haiku", "gemini-flash"]
+    # NEW: Using type-safe constants
+    models = [
+        ("gpt-3.5-turbo", openai.gpt_3_5_turbo),
+        ("claude-3-haiku", anthropic.claude_3_haiku_20240307),
+        ("gemini-flash", google.gemini_1_5_flash),
+    ]
     prompt = "Explain AI in one sentence"
 
-    for model in models:
+    for name, constant in models:
         try:
-            response = ck.ai(model, prompt)
-            print(f"{model:20s} ${response.cost:.6f}")
+            response = ck.ai(constant, prompt)
+            print(f"{name:20s} ${response.cost:.6f}")
         except Exception as e:
-            print(f"{model:20s} Error: {str(e)[:50]}")
+            print(f"{name:20s} Error: {str(e)[:50]}")
 
     print()
 
@@ -54,7 +61,7 @@ def main():
     print("📝 Example 3: Chat Session")
     print("-" * 50)
 
-    chat = ck.chat("gpt-3.5-turbo")
+    chat = ck.chat(openai.gpt_3_5_turbo)
 
     print("User: Hello!")
     response1 = chat.send("Hello!")
@@ -73,11 +80,11 @@ def main():
     print("-" * 50)
 
     # Without optimization
-    standard = ck.ai("gpt-4", "Write a short poem about coding")
+    standard = ck.ai(openai.gpt_4, "Write a short poem about coding")
     print(f"Standard cost: ${standard.cost:.6f}")
 
     # With Cortex optimization
-    optimized = ck.ai("gpt-4", "Write a short poem about coding", cortex=True)
+    optimized = ck.ai(openai.gpt_4, "Write a short poem about coding", cortex=True)
     print(f"Optimized cost: ${optimized.cost:.6f}")
 
     savings = standard.cost - optimized.cost
@@ -91,11 +98,11 @@ def main():
     print("-" * 50)
 
     # First call - costs money
-    r1 = ck.ai("gpt-3.5-turbo", "What is 2+2?", cache=True)
+    r1 = ck.ai(openai.gpt_3_5_turbo, "What is 2+2?", cache=True)
     print(f"First call: ${r1.cost:.6f}, Cached: {r1.cached}")
 
     # Second call - free from cache
-    r2 = ck.ai("gpt-3.5-turbo", "What is 2+2?", cache=True)
+    r2 = ck.ai(openai.gpt_3_5_turbo, "What is 2+2?", cache=True)
     print(f"Second call: ${r2.cost:.6f}, Cached: {r2.cached}")
     print()
 

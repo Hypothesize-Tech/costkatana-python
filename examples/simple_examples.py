@@ -6,6 +6,7 @@ Shows the easiest ways to use Cost Katana for common tasks.
 """
 
 import cost_katana as ck
+from cost_katana import openai, anthropic, google
 
 
 def example_1_hello_world():
@@ -13,7 +14,8 @@ def example_1_hello_world():
     print("📝 Example 1: Hello World")
     print("-" * 50)
 
-    response = ck.ai("gpt-4", "Hello, world!")
+    # NEW: Type-safe model selection
+    response = ck.ai(openai.gpt_4, "Hello, world!")
     print(response.text)
     print(f"Cost: ${response.cost:.6f}")
     print()
@@ -24,15 +26,20 @@ def example_2_model_comparison():
     print("📝 Example 2: Model Comparison")
     print("-" * 50)
 
-    models = ["gpt-4", "gpt-3.5-turbo", "claude-3-haiku"]
+    # NEW: Using type-safe constants
+    models = [
+        ("gpt-4", openai.gpt_4),
+        ("gpt-3.5-turbo", openai.gpt_3_5_turbo),
+        ("claude-3-haiku", anthropic.claude_3_haiku_20240307),
+    ]
     prompt = "Explain machine learning in one sentence"
 
-    for model in models:
+    for name, constant in models:
         try:
-            response = ck.ai(model, prompt)
-            print(f"{model:20s} ${response.cost:.6f} - {response.text[:60]}...")
+            response = ck.ai(constant, prompt)
+            print(f"{name:20s} ${response.cost:.6f} - {response.text[:60]}...")
         except Exception as e:
-            print(f"{model:20s} Failed: {str(e)[:40]}")
+            print(f"{name:20s} Failed: {str(e)[:40]}")
     print()
 
 
@@ -41,7 +48,8 @@ def example_3_chat_conversation():
     print("📝 Example 3: Chat Conversation")
     print("-" * 50)
 
-    chat = ck.chat("gpt-3.5-turbo", system_message="You are a helpful Python expert.")
+    # NEW: Type-safe model
+    chat = ck.chat(openai.gpt_3_5_turbo, system_message="You are a helpful Python expert.")
 
     questions = [
         "Hello! Can you help me with Python?",
@@ -68,11 +76,11 @@ def example_4_cost_optimization():
     prompt = "Write a comprehensive guide to lists in Python"
 
     # Standard
-    standard = ck.ai("gpt-4", prompt)
+    standard = ck.ai(openai.gpt_4, prompt)
     print(f"Standard cost: ${standard.cost:.6f}")
 
     # Optimized with Cortex
-    optimized = ck.ai("gpt-4", prompt, cortex=True)
+    optimized = ck.ai(openai.gpt_4, prompt, cortex=True)
     print(f"Optimized cost: ${optimized.cost:.6f}")
 
     savings = standard.cost - optimized.cost
@@ -90,11 +98,11 @@ def example_5_smart_caching():
     question = "What is the capital of France?"
 
     # First call
-    r1 = ck.ai("gpt-3.5-turbo", question, cache=True)
+    r1 = ck.ai(openai.gpt_3_5_turbo, question, cache=True)
     print(f"First call:  ${r1.cost:.6f}, Cached: {r1.cached}")
 
     # Second call - should be cached
-    r2 = ck.ai("gpt-3.5-turbo", question, cache=True)
+    r2 = ck.ai(openai.gpt_3_5_turbo, question, cache=True)
     print(f"Second call: ${r2.cost:.6f}, Cached: {r2.cached}")
 
     if r2.cached:
@@ -108,18 +116,18 @@ def example_6_content_generation():
     print("-" * 50)
 
     # Blog post
-    blog = ck.ai("gpt-4", "Write a 100-word blog post about AI", max_tokens=200)
+    blog = ck.ai(openai.gpt_4, "Write a 100-word blog post about AI", max_tokens=200)
     print(f"Blog post: {len(blog.text.split())} words, ${blog.cost:.6f}")
 
     # Code
     code = ck.ai(
-        "claude-3-sonnet", "Write a Python function to sort a list", cache=True
+        anthropic.claude_3_5_sonnet_20241022, "Write a Python function to sort a list", cache=True
     )
     print(f"Code generated: {len(code.text)} chars, ${code.cost:.6f}")
 
     # Translation
     translation = ck.ai(
-        "gpt-3.5-turbo", "Translate to Spanish: Hello world", cache=True
+        openai.gpt_3_5_turbo, "Translate to Spanish: Hello world", cache=True
     )
     print(f"Translation: {translation.text}, ${translation.cost:.6f}")
     print()
@@ -149,7 +157,7 @@ def example_8_batch_processing():
     total_cost = 0
 
     for prompt in prompts:
-        response = ck.ai("gpt-3.5-turbo", prompt, cache=True)
+        response = ck.ai(openai.gpt_3_5_turbo, prompt, cache=True)
         total_cost += response.cost
         print(f"• {prompt}: ${response.cost:.6f}")
 
@@ -167,7 +175,7 @@ def main():
         has_key = False
         try:
             # Try to use without explicit config
-            test = ck.ai("gpt-3.5-turbo", "test", max_tokens=5)
+            test = ck.ai(openai.gpt_3_5_turbo, "test", max_tokens=5)
             has_key = True
         except:
             pass
