@@ -204,7 +204,7 @@ def main():
         print("\n💡 Tips:")
         print("  • The simple API auto-detects your configuration")
         print("  • Use ck.chat() for conversations with cost tracking")
-        print("  • Enable cortex=True for 70-95% cost savings")
+        print("  • Enable cortex=True for 40-75% cost savings")
         print("  • Check your dashboard at https://costkatana.com for analytics")
         print()
 

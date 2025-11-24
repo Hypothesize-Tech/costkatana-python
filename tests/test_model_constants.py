@@ -63,7 +63,7 @@ class TestModelConstants:
         assert cohere.command_r == 'command-r'
     
     def test_groq_constants(self):
-        """Test Groq model constants"""
+        """Test Grok model constants"""
         assert groq.llama_3_3_70b_versatile == 'llama-3.3-70b-versatile'
         assert groq.mixtral_8x7b_32768 == 'mixtral-8x7b-32768'
     
@@ -141,9 +141,9 @@ class TestModelConstants:
         assert get_provider_from_model('command-r') == 'Cohere'
     
     def test_get_provider_from_model_groq(self):
-        """Test get_provider_from_model utility for Groq"""
-        assert get_provider_from_model('llama-3.3-70b-versatile') == 'Groq'
-        assert get_provider_from_model('mixtral-8x7b-32768') == 'Groq'
+        """Test get_provider_from_model utility for Grok"""
+        assert get_provider_from_model('llama-3.3-70b-versatile') == 'Grok'
+        assert get_provider_from_model('mixtral-8x7b-32768') == 'Grok'
     
     def test_get_provider_from_model_meta(self):
         """Test get_provider_from_model utility for Meta"""

@@ -328,7 +328,7 @@ class cohere:
 # ============================================================================
 
 class groq:
-    """Groq model constants"""
+    """Grok model constants"""
     
     llama_3_3_70b_versatile = 'llama-3.3-70b-versatile'
     llama_3_1_8b_instant = 'llama-3.1-8b-instant'
@@ -442,7 +442,7 @@ def get_provider_from_model(model_id: str) -> str:
     
     for attr in dir(groq):
         if not attr.startswith('_') and getattr(groq, attr, None) == model_id:
-            return 'Groq'
+            return 'Grok'
     
     for attr in dir(meta):
         if not attr.startswith('_') and getattr(meta, attr, None) == model_id:

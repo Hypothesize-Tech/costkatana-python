@@ -83,7 +83,7 @@ for model in models:
 - `deepseek` - DeepSeek models
 - `mistral` - Mistral AI models
 - `cohere` - Command models
-- `groq` - Groq models
+- `groq` - Grok models
 - `meta` - Llama models
 
 **Migration from string names:**
@@ -167,7 +167,7 @@ print(r2.cached)  # True - saved money!
 
 ### ⚡ Cortex Optimization
 
-Reduce costs by 70-95%:
+Reduce costs by 40-75%:
 
 ```python
 response = ck.ai('gpt-4', 'Write a comprehensive guide to Python', 
@@ -228,7 +228,7 @@ import cost_katana as ck
 
 ck.configure(
     api_key='dak_your_key',
-    cortex=True,     # 70-95% cost savings
+    cortex=True,     # 40-75% cost savings
     cache=True,      # Smart caching
     firewall=True    # Security
 )
@@ -444,7 +444,7 @@ ck.ai('gpt-4', 'Common question', cache=True)
 ### 3. Use Cortex for Long Content
 
 ```python
-# 70-95% savings on long-form content
+# 40-75% savings on long-form content
 ck.ai('gpt-4', 'Write a book chapter', cortex=True)
 ```
 

@@ -73,7 +73,7 @@ for model in models:
 ```python
 import cost_katana as ck
 
-# Cortex: 70-95% cost reduction
+# Cortex: 40-75% cost reduction
 response = ck.ai('gpt-4', 'Write a comprehensive guide',
                  cortex=True)
 
@@ -201,7 +201,7 @@ def chat_view(request):
 ck.ai('gpt-3.5-turbo', 'Simple question')    # 10x cheaper
 
 # Enable optimization for long content
-ck.ai('gpt-4', 'Long article', cortex=True)  # 70-95% savings
+ck.ai('gpt-4', 'Long article', cortex=True)  # 40-75% savings
 
 # Cache repeated queries
 ck.ai('gpt-4', 'FAQ answer', cache=True)     # Free on repeats
