@@ -18,7 +18,7 @@ class TemplateManager:
     def __init__(
         self,
         api_key: Optional[str] = None,
-        base_url: str = "https://cost-katana-backend.store",
+        base_url: str = "https://api.costkatana.com",
         enable_caching: bool = True,
         cache_ttl: int = 300,  # 5 minutes in seconds
     ):

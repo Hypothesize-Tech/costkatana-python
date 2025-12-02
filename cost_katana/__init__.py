@@ -40,7 +40,7 @@ from .models_constants import (
     get_provider_from_model,
 )
 
-__version__ = "2.2.2"
+__version__ = "2.2.4"
 
 # Import configure function from client
 from .client import configure

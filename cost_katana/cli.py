@@ -27,7 +27,7 @@ def create_sample_config():
     """Create a sample configuration file"""
     sample_config = {
         "api_key": "dak_your_api_key_here",
-        "base_url": "https://cost-katana-backend.store",
+        "base_url": "https://api.costkatana.com",
         "default_model": "gemini-2.0-flash",
         "default_temperature": 0.7,
         "default_max_tokens": 2000,
@@ -71,7 +71,7 @@ def init_config(args):
     )
 
     # Get base URL
-    base_url = Prompt.ask("Enter base URL", default="https://cost-katana-backend.store")
+    base_url = Prompt.ask("Enter base URL", default="https://api.costkatana.com")
 
     # Get default model
     default_model = Prompt.ask(

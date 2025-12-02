@@ -17,7 +17,7 @@ class TestConfiguration:
         """Test basic config creation"""
         config = Config(api_key="test_key")
         assert config.api_key == "test_key"
-        assert config.base_url == "https://cost-katana-backend.store"
+        assert config.base_url == "https://api.costkatana.com"
     
     def test_model_mapping(self):
         """Test model name mapping"""

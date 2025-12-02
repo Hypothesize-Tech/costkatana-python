@@ -24,7 +24,7 @@ class AILogger:
         self,
         api_key: Optional[str] = None,
         project_id: Optional[str] = None,
-        base_url: str = "https://cost-katana-backend.store",
+        base_url: str = "https://api.costkatana.com",
         batch_size: int = 50,
         flush_interval: float = 5.0,
         enable_logging: bool = True,

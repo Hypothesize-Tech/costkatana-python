@@ -77,7 +77,7 @@ setup-config:  ## Create sample configuration
 	@echo "Creating sample configuration..."
 	@echo '{' > config.json
 	@echo '  "api_key": "dak_your_api_key_here",' >> config.json
-	@echo '  "base_url": "https://cost-katana-backend.store",' >> config.json
+	@echo '  "base_url": "https://api.costkatana.com",' >> config.json
 	@echo '  "default_model": "gemini-2.0-flash",' >> config.json
 	@echo '  "default_temperature": 0.7,' >> config.json
 	@echo '  "cost_limit_per_day": 50.0,' >> config.json

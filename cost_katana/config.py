@@ -14,7 +14,7 @@ class Config:
     """Configuration class for Cost Katana client"""
 
     api_key: Optional[str] = None
-    base_url: str = "https://cost-katana-backend.store"
+    base_url: str = "https://api.costkatana.com"
     timeout: int = 30
     max_retries: int = 3
     retry_delay: float = 1.0
@@ -61,7 +61,7 @@ class Config:
         Example config.json:
         {
             "api_key": "dak_your_key_here",
-            "base_url": "https://cost-katana-backend.store",
+            "base_url": "https://api.costkatana.com",
             "default_model": "claude-3-sonnet",
             "default_temperature": 0.3,
             "cost_limit_per_day": 100.0,
