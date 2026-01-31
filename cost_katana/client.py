@@ -30,6 +30,8 @@ def configure(
     """
     Configure Cost Katana client globally.
 
+    Usage and cost tracking is always on; no option to disable.
+
     Args:
         api_key: Your Cost Katana API key (starts with 'dak_')
         base_url: Base URL for Cost Katana API (optional)

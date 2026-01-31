@@ -14,7 +14,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="cost-katana",
-    version="2.2.5",
+    version="2.2.6",
     author="Cost Katana Team",
     author_email="support@costkatana.com",
     description="The simplest way to use AI in Python with automatic cost tracking and optimization",

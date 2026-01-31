@@ -1,6 +1,9 @@
 """
 Cost Katana - The Simplest AI SDK for Python
 
+Usage and cost tracking is always on; there is no option to disable it
+(required for usage attribution and cost visibility).
+
 Example:
     import cost_katana as ck
 
@@ -40,7 +43,7 @@ from .models_constants import (
     get_provider_from_model,
 )
 
-__version__ = "2.2.5"
+__version__ = "2.2.6"
 
 # Import configure function from client
 from .client import configure
@@ -99,7 +102,7 @@ class SimpleResponse:
 
 
 class SimpleChat:
-    """Simple chat session with automatic cost tracking."""
+    """Simple chat session with automatic cost tracking (always on; no option to disable)."""
 
     def __init__(
         self, model: str, system_message: Optional[str] = None, **options: Any
@@ -164,6 +167,8 @@ def ai(
 ) -> SimpleResponse:
     """
     The simplest way to use AI in Python.
+
+    Usage and cost tracking is always on; no configuration required.
 
     Args:
         model: AI model name or constant (e.g., openai.gpt_4, 'gpt-4')

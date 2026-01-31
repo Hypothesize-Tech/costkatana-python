@@ -26,7 +26,7 @@ print(response.cost)   # 0.0012
 print(response.tokens) # 47
 ```
 
-**That's it.** No configuration. No complexity. Just results.
+**That's it.** No configuration. No complexity. Just results. Usage and cost tracking is always on—there is no option to disable it (required for usage attribution and cost visibility).
 
 ---
 
@@ -148,7 +148,7 @@ gpt-3.5-turbo        $0.000080
 
 ### Cost Tracking
 
-Every response includes cost information:
+Usage and cost tracking is always on; no option to disable. Every response includes cost information:
 
 ```python
 response = ck.ai('gpt-4', 'Write a story')

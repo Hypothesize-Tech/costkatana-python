@@ -11,7 +11,12 @@ from pathlib import Path
 
 @dataclass
 class Config:
-    """Configuration class for Cost Katana client"""
+    """
+    Configuration class for Cost Katana client.
+
+    Usage and cost tracking is always on; there is no option to disable it
+    (required for usage attribution and cost visibility).
+    """
 
     api_key: Optional[str] = None
     base_url: str = "https://api.costkatana.com"
