@@ -133,6 +133,10 @@ class openai:
 class anthropic:
     """Anthropic model constants"""
     
+    # Claude 4.6 Series (Latest)
+    claude_opus_4_6 = 'claude-opus-4-6'
+    claude_opus_4_6_v1 = 'claude-opus-4-6-v1'
+    
     # Claude 4.5 Series (Latest)
     claude_sonnet_4_5_20250929 = 'claude-sonnet-4-5-20250929'
     claude_sonnet_4_5 = 'claude-sonnet-4-5'
@@ -272,6 +276,7 @@ class aws_bedrock:
     nova_reel = 'amazon.nova-reel-v1:0'
     
     # Anthropic Claude on Bedrock
+    claude_opus_4_6 = 'anthropic.claude-opus-4-6-v1'
     claude_sonnet_4_5 = 'anthropic.claude-sonnet-4-5-v1:0'
     claude_haiku_4_5 = 'anthropic.claude-haiku-4-5-v1:0'
     claude_opus_4_1_20250805 = 'anthropic.claude-opus-4-1-20250805-v1:0'
