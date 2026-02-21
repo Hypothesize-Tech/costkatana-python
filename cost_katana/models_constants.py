@@ -136,8 +136,9 @@ class anthropic:
     # Claude 4.6 Series (Latest)
     claude_opus_4_6 = 'claude-opus-4-6'
     claude_opus_4_6_v1 = 'claude-opus-4-6-v1'
+    claude_sonnet_4_6 = 'claude-sonnet-4-6'
     
-    # Claude 4.5 Series (Latest)
+    # Claude 4.5 Series
     claude_sonnet_4_5_20250929 = 'claude-sonnet-4-5-20250929'
     claude_sonnet_4_5 = 'claude-sonnet-4-5'
     claude_haiku_4_5_20251001 = 'claude-haiku-4-5-20251001'
@@ -277,6 +278,7 @@ class aws_bedrock:
     
     # Anthropic Claude on Bedrock
     claude_opus_4_6 = 'anthropic.claude-opus-4-6-v1'
+    claude_sonnet_4_6 = 'anthropic.claude-sonnet-4-6-v1:0'
     claude_sonnet_4_5 = 'anthropic.claude-sonnet-4-5-v1:0'
     claude_haiku_4_5 = 'anthropic.claude-haiku-4-5-v1:0'
     claude_opus_4_1_20250805 = 'anthropic.claude-opus-4-1-20250805-v1:0'
