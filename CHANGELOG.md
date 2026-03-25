@@ -4,6 +4,10 @@ All notable changes to Cost Katana Python SDK will be documented in this file.
 
 ## [Unreleased]
 
+### Documentation
+
+- **API paths**: Confirmed the SDK uses `https://api.costkatana.com` with REST paths under `/api/...` (e.g. chat, templates) and OpenAI-compatible gateway calls under `/api/gateway/v1/...`; no code changes were required for backend route consistency.
+
 ## [2.5.1] - 2025-03-25
 
 ### Added
