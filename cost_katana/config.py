@@ -1,5 +1,12 @@
 """
 Configuration management for Cost Katana
+
+Only two environment variables are part of the public contract:
+  - COST_KATANA_API_KEY (required for API calls)
+  - PROJECT_ID (optional; per-project dashboard scope)
+
+Base URL, default model, and timeouts are package constants —
+not configured via env.
 """
 
 import json
@@ -7,6 +14,11 @@ import os
 from typing import Dict, Any, Optional
 from dataclasses import dataclass, asdict, fields
 from pathlib import Path
+
+# Package constants — not environment variables
+_BASE_URL = "https://api.costkatana.com"
+_DEFAULT_MODEL = "nova-lite"
+_DEFAULT_TIMEOUT = 30
 
 
 @dataclass
@@ -19,11 +31,12 @@ class Config:
     """
 
     api_key: Optional[str] = None
-    base_url: str = "https://api.costkatana.com"
-    timeout: int = 30
+    project_id: Optional[str] = None
+    base_url: str = _BASE_URL
+    timeout: int = _DEFAULT_TIMEOUT
     max_retries: int = 3
     retry_delay: float = 1.0
-    default_model: str = "nova-lite"
+    default_model: str = _DEFAULT_MODEL
     default_temperature: float = 0.7
     default_max_tokens: int = 2000
     default_chat_mode: str = "balanced"
@@ -32,25 +45,34 @@ class Config:
     enable_failover: bool = True
     cost_limit_per_request: Optional[float] = None
     cost_limit_per_day: Optional[float] = None
-    
+
     # Logging configuration
     enable_ai_logging: bool = True
     ai_logging_batch_size: int = 50
     ai_logging_flush_interval: float = 5.0
-    log_level: str = 'info'
+    log_level: str = "info"
 
     def __post_init__(self):
-        """Load from environment variables if not set"""
+        """Load the two supported environment variables if fields are unset."""
         if not self.api_key:
-            self.api_key = os.getenv("API_KEY")
+            self.api_key = os.getenv("COST_KATANA_API_KEY")
+        if not self.project_id:
+            self.project_id = (
+                os.getenv("PROJECT_ID")
+                or os.getenv("COST_KATANA_PROJECT")
+                or os.getenv("COSTKATANA_PROJECT_ID")
+            )
 
-        # Override with environment variables if they exist
-        if os.getenv("COST_KATANA_BASE_URL"):
-            self.base_url = os.getenv("COST_KATANA_BASE_URL")
-        if os.getenv("COST_KATANA_DEFAULT_MODEL"):
-            self.default_model = os.getenv("COST_KATANA_DEFAULT_MODEL")
-        if os.getenv("COST_KATANA_TIMEOUT"):
-            self.timeout = int(os.getenv("COST_KATANA_TIMEOUT"))
+    @classmethod
+    def from_env(cls) -> "Config":
+        """
+        Build configuration from environment.
+
+        Reads COST_KATANA_API_KEY and PROJECT_ID (optional).
+        All other fields use package defaults (base URL, default model,
+        timeout, etc.).
+        """
+        return cls()
 
     @classmethod
     def from_file(cls, config_path: str) -> "Config":
@@ -66,8 +88,7 @@ class Config:
         Example config.json:
         {
             "api_key": "dak_your_key_here",
-            "base_url": "https://api.costkatana.com",
-            "default_model": "claude-3-sonnet",
+            "project_id": "your_project_id",
             "default_temperature": 0.3,
             "cost_limit_per_day": 100.0,
             "providers": {
@@ -85,7 +106,9 @@ class Config:
         config_path_obj = Path(config_path).expanduser()
 
         if not config_path_obj.exists():
-            raise FileNotFoundError(f"Configuration file not found: {config_path}")
+            raise FileNotFoundError(
+                f"Configuration file not found: {config_path}"
+            )
 
         try:
             with open(config_path_obj, "r", encoding="utf-8") as f:
@@ -175,7 +198,8 @@ class Config:
             "j2-ultra": "ai21.j2-ultra-v1",
             "j2-mid": "ai21.j2-mid-v1",
             # Backwards compatibility aliases
-            "gemini-2.0-flash": "amazon.nova-lite-v1:0",  # Map to similar performance
+            # Map to similar performance
+            "gemini-2.0-flash": "amazon.nova-lite-v1:0",
             "gemini-pro": "amazon.nova-pro-v1:0",
             "gpt-4": "anthropic.claude-3-5-sonnet-20241022-v2:0",
             "gpt-3.5-turbo": "anthropic.claude-3-haiku-20240307-v1:0",

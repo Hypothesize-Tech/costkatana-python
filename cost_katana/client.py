@@ -4,6 +4,7 @@ Handles communication with the Cost Katana backend API
 """
 
 import json
+import os
 from typing import Dict, Any, Optional, List
 import httpx
 from .config import Config
@@ -14,11 +15,59 @@ from .exceptions import (
     RateLimitError,
     CostLimitExceededError,
 )
-from .logging import AILogger, ai_logger
-from .templates import TemplateManager, template_manager
+from .logging import AILogger
+from .logging.logger import logger
+from .templates import TemplateManager
 
 # Global client instance for the configure function
 _global_client = None
+
+_hosted_models_notice_logged = False
+
+
+def _has_direct_provider_keys_in_env() -> bool:
+    return bool(
+        os.getenv("OPENAI_API_KEY")
+        or os.getenv("ANTHROPIC_API_KEY")
+        or os.getenv("GOOGLE_API_KEY")
+        or (
+            os.getenv("AWS_ACCESS_KEY_ID")
+            and os.getenv("AWS_SECRET_ACCESS_KEY")
+        )
+    )
+
+
+def _maybe_log_hosted_models_notice() -> None:
+    """Log once when no direct provider keys are set (hosted / Cost Katana–mediated models)."""
+    global _hosted_models_notice_logged
+    if _hosted_models_notice_logged:
+        return
+    if not _has_direct_provider_keys_in_env():
+        logger.info(
+            "No direct provider API keys in environment — routing through Cost Katana hosted models."
+        )
+    _hosted_models_notice_logged = True
+
+
+def auto_configure() -> None:
+    """
+    Lazily initialize the global client from the environment if COST_KATANA_API_KEY is set.
+    Idempotent; safe to call before ai(), chat(), or track().
+    """
+    global _global_client
+    if _global_client is not None:
+        return
+    if os.getenv("COST_KATANA_API_KEY"):
+        _global_client = CostKatanaClient.from_env()
+
+
+def from_env() -> "CostKatanaClient":
+    """
+    Create a CostKatanaClient from environment (COST_KATANA_API_KEY, optional PROJECT_ID).
+
+    Same defaults as auto_configure(); use for explicit client instances.
+    """
+    return CostKatanaClient.from_env()
 
 
 def configure(
@@ -34,9 +83,9 @@ def configure(
 
     Args:
         api_key: Your Cost Katana API key (starts with 'dak_')
-        base_url: Base URL for Cost Katana API (optional)
+        base_url: Override API base URL (optional; default is https://api.costkatana.com)
         config_file: Path to JSON configuration file (optional)
-        **kwargs: Additional configuration options
+        **kwargs: Additional configuration options (e.g. project_id)
 
     Example:
         # Using API key
@@ -52,11 +101,15 @@ def configure(
     return _global_client
 
 
-def get_global_client():
-    """Get the global client instance"""
+def get_global_client() -> "CostKatanaClient":
+    """Return the global client, auto-configuring from env when possible."""
+    auto_configure()
     if _global_client is None:
         raise CostKatanaError(
-            "Cost Katana not configured. Call cost_katana.configure() first."
+            "Cost Katana not configured.\n"
+            "  Option 1 (recommended): export COST_KATANA_API_KEY=dak_...\n"
+            "  Option 2: cost_katana.configure(api_key='dak_...')\n"
+            "  Get your key at: https://costkatana.com/settings/api-keys"
         )
     return _global_client
 
@@ -69,7 +122,8 @@ class CostKatanaClient:
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
         config_file: Optional[str] = None,
-        timeout: int = 30,
+        timeout: Optional[int] = None,
+        config: Optional[Config] = None,
         **kwargs,
     ):
         """
@@ -77,21 +131,27 @@ class CostKatanaClient:
 
         Args:
             api_key: Your Cost Katana API key
-            base_url: Base URL for the API
+            base_url: Base URL for the API (optional override)
             config_file: Path to JSON configuration file
             timeout: Request timeout in seconds
+            config: Pre-built Config (e.g. from Config.from_env())
         """
-        self.config = Config.from_file(config_file) if config_file else Config()
+        if config is not None:
+            self.config = config
+        elif config_file:
+            self.config = Config.from_file(config_file)
+        else:
+            self.config = Config()
 
-        # Override with provided parameters
         if api_key:
             self.config.api_key = api_key
         if base_url:
             self.config.base_url = base_url
 
-        # Apply additional config
+        # Apply additional config (project_id, etc.)
         for key, value in kwargs.items():
-            setattr(self.config, key, value)
+            if hasattr(self.config, key):
+                setattr(self.config, key, value)
 
         # Validate configuration
         if not self.config.api_key:
@@ -99,21 +159,36 @@ class CostKatanaClient:
                 "API key is required. Get one from https://costkatana.com/integrations"
             )
 
+        if not self.config.project_id:
+            logger.warning(
+                "PROJECT_ID not set — usage will attribute to your account without a project scope. "
+                "Set PROJECT_ID for per-project dashboard filtering."
+            )
+
+        _maybe_log_hosted_models_notice()
+
+        effective_timeout = timeout if timeout is not None else self.config.timeout
+
+        headers: Dict[str, str] = {
+            "Authorization": f"Bearer {self.config.api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": "cost-katana-python/2.5.1",
+        }
+        if self.config.project_id:
+            headers["x-project-id"] = self.config.project_id
+
         # Initialize HTTP client
         self.client = httpx.Client(
             base_url=self.config.base_url,
-            timeout=timeout,
-            headers={
-                "Authorization": f"Bearer {self.config.api_key}",
-                "Content-Type": "application/json",
-                "User-Agent": f"cost-katana-python/2.1.0",
-            },
+            timeout=effective_timeout,
+            headers=headers,
         )
 
         # Initialize AI logger
-        if getattr(self.config, 'enable_ai_logging', True):
+        if getattr(self.config, "enable_ai_logging", True):
             self.ai_logger = AILogger(
                 api_key=self.config.api_key,
+                project_id=self.config.project_id,
                 base_url=self.config.base_url,
                 enable_logging=True,
             )
@@ -125,6 +200,11 @@ class CostKatanaClient:
             api_key=self.config.api_key,
             base_url=self.config.base_url,
         )
+
+    @classmethod
+    def from_env(cls) -> "CostKatanaClient":
+        """Zero-config client from COST_KATANA_API_KEY and optional PROJECT_ID."""
+        return cls(config=Config.from_env())
 
     def __enter__(self):
         return self

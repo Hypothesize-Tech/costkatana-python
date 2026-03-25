@@ -4,18 +4,24 @@ Cost Katana - The Simplest AI SDK for Python
 Usage and cost tracking is always on; there is no option to disable it
 (required for usage attribution and cost visibility).
 
+Environment (public contract):
+    COST_KATANA_API_KEY — required for API calls (get from dashboard).
+    PROJECT_ID — optional; set for per-project dashboard filtering.
+
+Base URL and defaults are fixed in the package (https://api.costkatana.com).
+
 Example:
     import cost_katana as ck
 
-    # Just works!
-    response = ck.ai('gpt-4', 'Hello, world!')
+    # Set COST_KATANA_API_KEY in the environment, then:
+    response = ck.ai(ck.openai.gpt_4o, 'Hello, world!')
     print(response.text)
     print(f"Cost: ${response.cost}")
 """
 
 from typing import Optional, List, Dict, Any
 
-from .client import CostKatanaClient, get_global_client
+from .client import CostKatanaClient, get_global_client, configure, auto_configure, from_env
 from .models import ChatSession
 from .exceptions import (
     CostKatanaError,
@@ -43,10 +49,35 @@ from .models_constants import (
     get_provider_from_model,
 )
 
-__version__ = "2.4.0"
+__version__ = "2.5.1"
 
-# Import configure function from client
-from .client import configure
+
+def track(entry: Dict[str, Any]) -> None:
+    """
+    Manually log an AI cost entry to the Cost Katana dashboard.
+
+    Calls :func:`auto_configure` so ``COST_KATANA_API_KEY`` is picked up from the
+    environment without a prior :func:`configure` call. The lazy :data:`ai_logger`
+    reads the same env vars as :class:`~cost_katana.config.Config`.
+
+    Args:
+        entry: Log fields such as ``service``, ``aiModel``, ``cost``, ``inputTokens``,
+            ``outputTokens``, ``responseTime``, and optional ``prompt``, ``result``,
+            ``operation``, ``success``.
+
+    Example:
+        >>> import cost_katana as ck
+        >>> ck.track({
+        ...     "service": "openai",
+        ...     "aiModel": "gpt-4o",
+        ...     "cost": 0.0012,
+        ...     "inputTokens": 250,
+        ...     "outputTokens": 180,
+        ...     "responseTime": 820,
+        ... })
+    """
+    auto_configure()
+    ai_logger.log_ai_call(entry)
 
 
 def create_generative_model(model_name: str, **kwargs):
@@ -371,6 +402,9 @@ __all__ = [
     "ai",
     "chat",
     "configure",
+    "auto_configure",
+    "from_env",
+    "track",
     # Model Constants
     "openai",
     "anthropic",

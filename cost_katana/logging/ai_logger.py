@@ -3,8 +3,7 @@ AI Logger for Cost Katana Python SDK
 Non-blocking async logging with batching for AI operations
 """
 
-import asyncio
-import hashlib
+import os
 import re
 import time
 import uuid
@@ -66,13 +65,15 @@ class AILogger:
 
     def _initialize_client(self):
         """Initialize HTTP client"""
+        headers: Dict[str, str] = {
+            "Authorization": f"Bearer {self.config['api_key']}",
+            "Content-Type": "application/json",
+        }
+        if self.config["project_id"]:
+            headers["x-project-id"] = self.config["project_id"]
         self.client = httpx.Client(
             base_url=self.config["base_url"],
-            headers={
-                "Authorization": f"Bearer {self.config['api_key']}",
-                "Content-Type": "application/json",
-                "x-project-id": self.config["project_id"],
-            },
+            headers=headers,
             timeout=10.0,
         )
 
@@ -254,6 +255,57 @@ class AILogger:
             pass
 
 
-# Export singleton instance
-ai_logger = AILogger()
+class _LazyAILogger:
+    """
+    Defers real AILogger construction until first use, reading COST_KATANA_API_KEY
+    and PROJECT_ID from the environment (same contract as Config.from_env).
+    """
+
+    __slots__ = ("_instance",)
+
+    def __init__(self) -> None:
+        self._instance: Optional[AILogger] = None
+
+    def _get(self) -> AILogger:
+        if self._instance is None:
+            self._instance = AILogger(
+                api_key=os.getenv("COST_KATANA_API_KEY", ""),
+                project_id=(
+                    os.getenv("PROJECT_ID")
+                    or os.getenv("COST_KATANA_PROJECT")
+                    or os.getenv("COSTKATANA_PROJECT_ID")
+                    or ""
+                ),
+                base_url="https://api.costkatana.com",
+            )
+        return self._instance
+
+    def log_ai_call(self, entry: Dict[str, Any]) -> None:
+        self._get().log_ai_call(entry)
+
+    def log_template_usage(
+        self,
+        template_id: str,
+        template_name: str,
+        variables: Dict[str, Any],
+        additional_data: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        self._get().log_template_usage(
+            template_id, template_name, variables, additional_data
+        )
+
+    def flush(self) -> None:
+        if self._instance is not None:
+            self._instance.flush()
+
+    def shutdown(self) -> None:
+        if self._instance is not None:
+            self._instance.shutdown()
+
+    def __getattr__(self, name: str):
+        return getattr(self._get(), name)
+
+
+# Module-level singleton — lazy so import works without env vars
+ai_logger = _LazyAILogger()
 

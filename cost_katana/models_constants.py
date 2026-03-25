@@ -415,22 +415,6 @@ class deepseek:
 class mistral:
     """Mistral AI model constants"""
     
-    mistral_large_latest = 'mistral-large-latest'
-    mistral_small_latest = 'mistral-small-latest'
-    codestral_latest = 'codestral-latest'
-    ministral_8b_latest = 'ministral-8b-latest'
-    ministral_3b_latest = 'ministral-3b-latest'
-    pixtral_large_latest = 'pixtral-large-latest'
-    pixtral_12b = 'pixtral-12b-2409'
-
-
-# ============================================================================
-# COHERE MODELS
-# ============================================================================
-
-class mistral:
-    """Mistral AI model constants"""
-    
     # Premier Models
     mistral_medium_2508 = 'mistral-medium-2508'
     mistral_medium_latest = 'mistral-medium-latest'
@@ -488,6 +472,22 @@ class mistral:
     # Embedding Models
     mistral_embed = 'mistral-embed'
     codestral_embed_2505 = 'codestral-embed-2505'
+
+
+# ============================================================================
+# GROQ MODELS (Groq inference API)
+# ============================================================================
+
+class groq:
+    """Groq-hosted model constants (Llama, Mixtral, Gemma, etc.)"""
+
+    llama_3_3_70b_versatile = 'llama-3.3-70b-versatile'
+    llama_3_1_8b_instant = 'llama-3.1-8b-instant'
+    llama_3_70b_8192 = 'llama3-70b-8192'
+    llama_3_8b_8192 = 'llama3-8b-8192'
+    mixtral_8x7b_32768 = 'mixtral-8x7b-32768'
+    gemma2_9b_it = 'gemma2-9b-it'
+    gemma_7b_it = 'gemma-7b-it'
 
 
 # ============================================================================
@@ -579,7 +579,7 @@ class meta:
 # Collect all model values
 _ALL_MODEL_VALUES = set()
 
-for cls in [openai, anthropic, google, aws_bedrock, xai, deepseek, mistral, cohere, meta]:
+for cls in [openai, anthropic, google, aws_bedrock, xai, deepseek, mistral, groq, cohere, meta]:
     for attr in dir(cls):
         if not attr.startswith('_'):
             value = getattr(cls, attr)
@@ -655,7 +655,7 @@ def get_provider_from_model(model_id: str) -> str:
     
     for attr in dir(groq):
         if not attr.startswith('_') and getattr(groq, attr, None) == model_id:
-            return 'Grok'
+            return 'Groq'
     
     for attr in dir(meta):
         if not attr.startswith('_') and getattr(meta, attr, None) == model_id:
@@ -672,6 +672,7 @@ __all__ = [
     'xai',
     'deepseek',
     'mistral',
+    'groq',
     'cohere',
     'meta',
     'is_model_constant',

@@ -14,15 +14,23 @@ pip install costkatana
 
 Visit [costkatana.com/settings](https://costkatana.com/settings) and copy your API key (starts with `dak_`)
 
-## Step 3: Use It
+## Step 3: Set environment
+
+```bash
+export COST_KATANA_API_KEY="dak_your_key_here"   # required
+export PROJECT_ID="your_project_id"               # optional — per-project dashboard
+```
+
+## Step 4: Use It
 
 ### Zero Config Mode
 
 ```python
 import cost_katana as ck
+from cost_katana import openai
 
-# Just works if you have API key in environment
-response = ck.ai('gpt-4', 'Hello, world!')
+# Auto-configures from COST_KATANA_API_KEY — no ck.configure() needed
+response = ck.ai(openai.gpt_4o, 'Hello, world!')
 print(response.text)
 print(f"Cost: ${response.cost}")
 ```
@@ -99,14 +107,16 @@ print(r2.cached)  # True
 
 ```bash
 export COST_KATANA_API_KEY="dak_your_key_here"
+export PROJECT_ID="your_project_id"   # optional
 ```
 
 Then in Python:
 ```python
 import cost_katana as ck
+from cost_katana import openai
 
-# Auto-detects from environment
-response = ck.ai('gpt-4', 'Hello')
+# Auto-configures from environment (lazy init on first ai/chat/track)
+response = ck.ai(openai.gpt_4o, 'Hello')
 ```
 
 ### Option 2: Config File

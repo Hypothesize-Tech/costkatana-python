@@ -2,6 +2,32 @@
 
 All notable changes to Cost Katana Python SDK will be documented in this file.
 
+## [Unreleased]
+
+## [2.5.1] - 2025-03-25
+
+### Added
+
+- **README**: AI Gateway (HTTP) section — OpenAI-compatible (`/v1/chat/completions`) and Anthropic (`/v1/messages`) examples with `httpx`, optional `COSTKATANA_GATEWAY_URL` and `x-project-id`, plus `curl`; link to `costkatana-examples/2-gateway`.
+
+## [2.5.0] - 2025-03-25
+
+### Added
+
+- **`auto_configure()`** — lazy global client initialization from `COST_KATANA_API_KEY` (used before `ai()`, `chat()`, `track()`).
+- **`from_env()`** — returns a `CostKatanaClient` built from environment (same two-variable contract as `Config.from_env()`).
+- **`track(entry)`** — manual cost logging without wiring `AILogger`; works with lazy env-based setup.
+- **`groq`** model namespace and **`Groq`** provider label in `get_provider_from_model`.
+- **`project_id`** on `Config` with env fallbacks: `PROJECT_ID`, `COST_KATANA_PROJECT`, `COSTKATANA_PROJECT_ID`.
+
+### Changed
+
+- **Public env contract**: only **`COST_KATANA_API_KEY`** (required) and **`PROJECT_ID`** (optional). Removed reading `API_KEY`, `COST_KATANA_BASE_URL`, `COST_KATANA_DEFAULT_MODEL`, and `COST_KATANA_TIMEOUT` from the environment — base URL (`https://api.costkatana.com`), default model, and timeouts are package constants.
+- **`get_global_client()`** calls `auto_configure()` so `ai()` / `chat()` work without an explicit `configure()` when the API key is in the environment.
+- **`CostKatanaClient`** sends optional **`x-project-id`** when `project_id` is set; warns once when `PROJECT_ID` is missing.
+- **`ai_logger`** singleton is **lazy** — initializes on first use with `COST_KATANA_API_KEY` / `PROJECT_ID` from the environment.
+- **Duplicate `mistral` class** in `models_constants.py` merged into a single definition.
+
 ## [2.2.1] - 2025-01-19
 
 ### 📚 Documentation Updates

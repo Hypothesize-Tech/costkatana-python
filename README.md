@@ -14,19 +14,121 @@ One import. Any model. Automatic cost tracking.
 pip install costkatana
 ```
 
-### Step 2: Make Your First AI Call
+### Step 2: Set environment variables
+
+```bash
+export COST_KATANA_API_KEY="dak_your_key_here"   # required — from the dashboard
+export PROJECT_ID="your_project_id"               # optional — per-project dashboard filtering
+```
+
+The API base URL is fixed at `https://api.costkatana.com` (not configurable via env).
+
+### Step 3: Make Your First AI Call
 
 ```python
 import cost_katana as ck
+from cost_katana import openai
 
-response = ck.ai('gpt-4', 'Explain quantum computing in one sentence')
+response = ck.ai(openai.gpt_4o, "Explain quantum computing in one sentence")
 
 print(response.text)   # "Quantum computing uses qubits to perform..."
 print(response.cost)   # 0.0012
 print(response.tokens) # 47
 ```
 
-**That's it.** No configuration. No complexity. Just results. Usage and cost tracking is always on—there is no option to disable it (required for usage attribution and cost visibility).
+**That's it.** With `COST_KATANA_API_KEY` set, you do **not** need to call `configure()` — `ck.ai()` / `ck.chat()` auto-configure from the environment. Usage and cost tracking is always on—there is no option to disable it (required for usage attribution and cost visibility).
+
+If you only set `COST_KATANA_API_KEY` (no direct provider keys like `OPENAI_API_KEY`), requests use **Cost Katana hosted models** through the backend.
+
+### AI Gateway (HTTP) — OpenAI- & Anthropic-compatible
+
+The Python package’s high-level **`ck.ai()`** / **`ck.chat()`** APIs talk to Cost Katana’s backend. If you want the **same drop-in HTTP proxy** as the TypeScript **`gateway()`** helper (OpenAI-shaped or Anthropic-shaped JSON), call the gateway with **`httpx`** or **`requests`**.
+
+**Gateway base URL** (default): `https://api.costkatana.com/api/gateway`  
+
+
+**Headers**
+
+| Header | Value |
+|--------|--------|
+| `Authorization` | `Bearer <COST_KATANA_API_KEY>` |
+| `Content-Type` | `application/json` |
+| `x-project-id` | Optional — same as `PROJECT_ID` for dashboard scoping |
+
+**OpenAI-compatible** — `POST {GATEWAY}/v1/chat/completions`
+
+```python
+import os
+import httpx
+
+GATEWAY = os.environ.get(
+    "COSTKATANA_GATEWAY_URL",
+    "https://api.costkatana.com/api/gateway",
+).rstrip("/")
+
+headers = {
+    "Authorization": f"Bearer {os.environ['COST_KATANA_API_KEY']}",
+    "Content-Type": "application/json",
+}
+project_id = os.environ.get("PROJECT_ID")
+if project_id:
+    headers["x-project-id"] = project_id
+
+payload = {
+    "model": "gpt-4o",
+    "messages": [{"role": "user", "content": "Hello!"}],
+}
+
+with httpx.Client(timeout=60.0) as client:
+    r = client.post(f"{GATEWAY}/v1/chat/completions", headers=headers, json=payload)
+    r.raise_for_status()
+    data = r.json()
+    print(data["choices"][0]["message"]["content"])
+```
+
+**Anthropic Messages** — `POST {GATEWAY}/v1/messages`
+
+```python
+import os
+import httpx
+
+GATEWAY = os.environ.get(
+    "COSTKATANA_GATEWAY_URL",
+    "https://api.costkatana.com/api/gateway",
+).rstrip("/")
+
+headers = {
+    "Authorization": f"Bearer {os.environ['COST_KATANA_API_KEY']}",
+    "Content-Type": "application/json",
+}
+if pid := os.environ.get("PROJECT_ID"):
+    headers["x-project-id"] = pid
+
+payload = {
+    "model": "claude-3-5-sonnet-20241022",
+    "max_tokens": 256,
+    "messages": [{"role": "user", "content": "Hello!"}],
+}
+
+with httpx.Client(timeout=60.0) as client:
+    r = client.post(f"{GATEWAY}/v1/messages", headers=headers, json=payload)
+    r.raise_for_status()
+    data = r.json()
+    for block in data.get("content", []):
+        if block.get("type") == "text":
+            print(block["text"])
+```
+
+**cURL** (no Python deps):
+
+```bash
+curl -sS "https://api.costkatana.com/api/gateway/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $COST_KATANA_API_KEY" \
+  -d '{"model":"gpt-4o","messages":[{"role":"user","content":"Hello!"}]}'
+```
+
+More gateway patterns (caching, retries, headers): [costkatana-examples `2-gateway`](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/2-gateway) and [cost-katana-core `examples/GATEWAY_USAGE_AND_TRACKING.md`](https://github.com/Hypothesize-Tech/cost-katana-core/blob/main/examples/GATEWAY_USAGE_AND_TRACKING.md).
 
 ---
 
@@ -78,6 +180,7 @@ for model in models:
 | `xai` | Grok models |
 | `deepseek` | DeepSeek models |
 | `mistral` | Mistral AI models |
+| `groq` | Groq-hosted Llama / Mixtral / Gemma |
 | `cohere` | Command models |
 | `meta` | Llama models |
 
@@ -188,22 +291,30 @@ except Exception as e:
 
 ## ⚙️ Configuration
 
-### Environment Variables
+### Environment variables (public contract)
+
+| Variable | Required? | Purpose |
+|----------|-----------|---------|
+| `COST_KATANA_API_KEY` | **Yes** | Dashboard API key (`dak_...`) |
+| `PROJECT_ID` | No (warning if omitted) | Per-project dashboard scope; also `COST_KATANA_PROJECT` / `COSTKATANA_PROJECT_ID` |
 
 ```bash
-# Recommended: Use Cost Katana API key for all features
 export COST_KATANA_API_KEY="dak_your_key_here"
-
-# Or use provider keys directly (self-hosted)
-export OPENAI_API_KEY="sk-..."          # Required for GPT models
-export GEMINI_API_KEY="..."             # Required for Gemini models
-export ANTHROPIC_API_KEY="sk-ant-..."   # For Claude models
-export AWS_ACCESS_KEY_ID="..."          # For AWS Bedrock
-export AWS_SECRET_ACCESS_KEY="..."
-export AWS_REGION="us-east-1"
+export PROJECT_ID="your_project_id"   # optional
 ```
 
-> ⚠️ **Self-hosted users**: You must provide your own OpenAI/Gemini API keys.
+Base URL, default model, and timeouts are **package constants** — not set via environment variables.
+
+### Optional: direct provider keys
+
+If you call provider APIs yourself (outside Cost Katana’s hosted routing), you may set keys such as `OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, or AWS credentials for Bedrock. They are **not** required for the default hosted path when only `COST_KATANA_API_KEY` is set.
+
+### Easy helpers
+
+- **`cost_katana.from_env()`** — explicit `CostKatanaClient` built from the same two env vars (mirrors the TS SDK’s zero-config client).
+- **`cost_katana.auto_configure()`** — lazy init used internally before `ai()` / `chat()` / `track()`.
+- **`cost_katana.track({...})`** — log a manual cost row to the dashboard without wiring `AILogger` yourself.
+- **`Config.from_env()`** — same env mapping as the client.
 
 ### Programmatic Configuration
 
@@ -456,6 +567,7 @@ Explore 45+ complete examples:
 
 | Section | Description |
 |---------|-------------|
+| [Gateway (HTTP)](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/2-gateway) | Proxy routing, caching, retries, `.http` samples |
 | [Python SDK](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/8-python-sdk) | Complete Python guides |
 | [Cost Tracking](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/1-cost-tracking) | Track costs across providers |
 | [Semantic Caching](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/14-cache) | 30-40% cost reduction |
