@@ -55,6 +55,10 @@ The Python package’s high-level **`ck.ai()`** / **`ck.chat()`** APIs talk to C
 | `Content-Type` | `application/json` |
 | `x-project-id` | Optional — same as `PROJECT_ID` for dashboard scoping |
 
+The hosted gateway enables **input firewall** (LLM security) and **output moderation** by default. To opt out for a request, add `CostKatana-LLM-Security-Enabled: false` and/or `CostKatana-Output-Moderation-Enabled: false`. In Python you can merge `cost_katana.gateway_request_headers(llm_security_enabled=False)` into your headers.
+
+To fetch dashboard aggregates (blocked prompts, moderation counts), use `CostKatanaClient.get_gateway_security_summary()` (`GET /api/gateway/security/summary`).
+
 **OpenAI-compatible** — `POST {GATEWAY}/v1/chat/completions`
 
 ```python

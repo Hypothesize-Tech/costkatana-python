@@ -22,6 +22,7 @@ Example:
 from typing import Optional, List, Dict, Any
 
 from .client import CostKatanaClient, get_global_client, configure, auto_configure, from_env
+from .gateway import gateway_request_headers, GATEWAY_API_PREFIX
 from .models import ChatSession
 from .exceptions import (
     CostKatanaError,
@@ -439,4 +440,7 @@ __all__ = [
     "CostLimitExceededError",
     # Config
     "Config",
+    # Gateway (direct HTTP to /api/gateway)
+    "gateway_request_headers",
+    "GATEWAY_API_PREFIX",
 ]

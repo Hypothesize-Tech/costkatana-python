@@ -18,6 +18,7 @@ from .exceptions import (
 from .logging import AILogger
 from .logging.logger import logger
 from .templates import TemplateManager
+from .gateway import GATEWAY_API_PREFIX
 
 # Global client instance for the configure function
 _global_client = None
@@ -354,3 +355,18 @@ class CostKatanaClient:
             if isinstance(e, CostKatanaError):
                 raise
             raise CostKatanaError(f"Failed to delete conversation: {str(e)}")
+
+    def get_gateway_security_summary(self) -> Dict[str, Any]:
+        """
+        Fetch aggregated gateway security stats (input firewall ThreatLog + output moderation usage).
+
+        Calls ``GET /api/gateway/security/summary`` with the same auth as other dashboard APIs.
+        """
+        try:
+            response = self.client.get(f"{GATEWAY_API_PREFIX}/security/summary")
+            data = self._handle_response(response)
+            return data.get("data", data)
+        except Exception as e:
+            if isinstance(e, CostKatanaError):
+                raise
+            raise CostKatanaError(f"Failed to get gateway security summary: {str(e)}")
