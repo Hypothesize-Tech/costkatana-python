@@ -4,9 +4,17 @@ All notable changes to Cost Katana Python SDK will be documented in this file.
 
 ## [Unreleased]
 
+## [2.5.2] - 2026-03-27
+
+### Added
+
+- **`cost_katana.gateway`**: `gateway_request_headers()` for opt-out `CostKatana-LLM-Security-Enabled` / `CostKatana-Output-Moderation-Enabled` on direct gateway HTTP calls; `GATEWAY_API_PREFIX`.
+- **`CostKatanaClient.get_gateway_security_summary()`** — `GET /api/gateway/security/summary` (firewall + moderation aggregates).
+- **README**: gateway security defaults and security summary API.
+
 ### Documentation
 
-- **API paths**: Confirmed the SDK uses `https://api.costkatana.com` with REST paths under `/api/...` (e.g. chat, templates) and OpenAI-compatible gateway calls under `/api/gateway/v1/...`; no code changes were required for backend route consistency.
+- **API paths**: Confirmed the SDK uses `https://api.costkatana.com` with REST paths under `/api/...` (e.g. chat, templates) and OpenAI-compatible gateway calls under `/api/gateway/v1/...`.
 
 ## [2.5.1] - 2025-03-25
 
