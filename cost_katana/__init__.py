@@ -50,7 +50,7 @@ from .models_constants import (
     get_provider_from_model,
 )
 
-__version__ = "2.5.2"
+__version__ = "2.5.3"
 
 
 def track(entry: Dict[str, Any]) -> None:

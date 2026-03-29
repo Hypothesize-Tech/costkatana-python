@@ -4,6 +4,12 @@ All notable changes to Cost Katana Python SDK will be documented in this file.
 
 ## [Unreleased]
 
+## [2.5.3] - 2026-03-29
+
+### Documentation
+
+- README and QUICKSTART: PyPI install name `cost-katana`, table of contents, experimentation section, aligned examples.
+
 ## [2.5.2] - 2026-03-27
 
 ### Added

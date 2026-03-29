@@ -1,29 +1,59 @@
-# Cost Katana Python 🥷
+# Cost Katana Python
+
+[![PyPI](https://img.shields.io/pypi/v/cost-katana.svg)](https://pypi.org/project/cost-katana/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Python](https://img.shields.io/badge/python-%3E%3D3.8-blue)](https://pypi.org/project/cost-katana/)
 
 > **AI that just works. Costs that just track.**
 
 One import. Any model. Automatic cost tracking.
 
+## Table of contents
+
+1. [Installation](#installation)
+2. [Quick start](#quick-start)
+3. [AI gateway (HTTP)](#ai-gateway-http)
+4. [Core APIs](#core-apis)
+5. [Type-safe model namespaces](#type-safe-model-namespaces)
+6. [Configuration](#configuration)
+7. [Cost optimization](#cost-optimization)
+8. [Core features](#core-features)
+9. [Framework integration](#framework-integration)
+10. [Real-world examples](#real-world-examples)
+11. [Error handling](#error-handling)
+12. [Experimentation (hosted API)](#experimentation-hosted-api)
+13. [Migration guides](#migration-guides)
+14. [Package names (ecosystem)](#package-names-ecosystem)
+15. [More examples](#more-examples)
+16. [Support](#support)
+17. [License](#license)
+
 ---
 
-## 🚀 Get Started in 60 Seconds
+## Installation
 
-### Step 1: Install
+The package on PyPI is named [`cost-katana`](https://pypi.org/project/cost-katana/) (hyphen). You import it as **`cost_katana`** (underscore).
 
 ```bash
-pip install costkatana
+pip install cost-katana
 ```
 
-### Step 2: Set environment variables
+Requires **Python 3.8+**.
+
+---
+
+## Quick start
+
+### 1. Environment
 
 ```bash
 export COST_KATANA_API_KEY="dak_your_key_here"   # required — from the dashboard
 export PROJECT_ID="your_project_id"               # optional — per-project dashboard filtering
 ```
 
-The API base URL is fixed at `https://api.costkatana.com` (not configurable via env).
+The default API base URL is **`https://api.costkatana.com`** (not overridden by env in the high-level client).
 
-### Step 3: Make Your First AI Call
+### 2. First call
 
 ```python
 import cost_katana as ck
@@ -31,21 +61,31 @@ from cost_katana import openai
 
 response = ck.ai(openai.gpt_4o, "Explain quantum computing in one sentence")
 
-print(response.text)   # "Quantum computing uses qubits to perform..."
-print(response.cost)   # 0.0012
-print(response.tokens) # 47
+print(response.text)
+print(response.cost)
+print(response.tokens)
 ```
 
-**That's it.** With `COST_KATANA_API_KEY` set, you do **not** need to call `configure()` — `ck.ai()` / `ck.chat()` auto-configure from the environment. Usage and cost tracking is always on—there is no option to disable it (required for usage attribution and cost visibility).
+With **`COST_KATANA_API_KEY`** set, you do **not** need to call `configure()` first — **`ck.ai()`** / **`ck.chat()`** auto-configure from the environment. Usage and cost attribution are always on.
 
-If you only set `COST_KATANA_API_KEY` (no direct provider keys like `OPENAI_API_KEY`), requests use **Cost Katana hosted models** through the backend.
+If you only set **`COST_KATANA_API_KEY`** (no direct provider keys such as **`OPENAI_API_KEY`**), requests use **Cost Katana hosted models** through the backend.
 
-### AI Gateway (HTTP) — OpenAI- & Anthropic-compatible
+### Which surface should I use?
 
-The Python package’s high-level **`ck.ai()`** / **`ck.chat()`** APIs talk to Cost Katana’s backend. If you want the **same drop-in HTTP proxy** as the TypeScript **`gateway()`** helper (OpenAI-shaped or Anthropic-shaped JSON), call the gateway with **`httpx`** or **`requests`**.
+| Goal | Use |
+|------|-----|
+| Simple Python calls with cost on every response | **`ck.ai()`** / **`ck.chat()`** |
+| Drop-in HTTP proxy (OpenAI- or Anthropic-shaped JSON) | **Gateway** — [`httpx`](https://www.python-httpx.org/) / `requests` or cURL ([below](#ai-gateway-http)) |
+| Dashboard experiments (compare models, what-if) | **[Experimentation API](#experimentation-hosted-api)** (REST; often used via the web app) |
 
-**Gateway base URL** (default): `https://api.costkatana.com/api/gateway`  
+---
 
+## AI gateway (HTTP)
+
+The high-level **`ck.ai()`** / **`ck.chat()`** APIs call Cost Katana’s backend. For the **same drop-in HTTP proxy** as the TypeScript **`gateway()`** helper, call the gateway with **`httpx`** or **`requests`**.
+
+**Base URL (default):** `https://api.costkatana.com/api/gateway`  
+Override with **`COSTKATANA_GATEWAY_URL`** if your deployment documents one.
 
 **Headers**
 
@@ -53,11 +93,11 @@ The Python package’s high-level **`ck.ai()`** / **`ck.chat()`** APIs talk to C
 |--------|--------|
 | `Authorization` | `Bearer <COST_KATANA_API_KEY>` |
 | `Content-Type` | `application/json` |
-| `x-project-id` | Optional — same as `PROJECT_ID` for dashboard scoping |
+| `x-project-id` | Optional — same role as **`PROJECT_ID`** for dashboard scoping |
 
-The hosted gateway enables **input firewall** (LLM security) and **output moderation** by default. To opt out for a request, add `CostKatana-LLM-Security-Enabled: false` and/or `CostKatana-Output-Moderation-Enabled: false`. In Python you can merge `cost_katana.gateway_request_headers(llm_security_enabled=False)` into your headers.
+The hosted gateway enables **input firewall** (LLM security) and **output moderation** by default. To opt out for a request, add `CostKatana-LLM-Security-Enabled: false` and/or `CostKatana-Output-Moderation-Enabled: false`. You can merge `cost_katana.gateway_request_headers(llm_security_enabled=False)` into your headers.
 
-To fetch dashboard aggregates (blocked prompts, moderation counts), use `CostKatanaClient.get_gateway_security_summary()` (`GET /api/gateway/security/summary`).
+Dashboard aggregates for blocked prompts and moderation: `CostKatanaClient.get_gateway_security_summary()` (`GET /api/gateway/security/summary`).
 
 **OpenAI-compatible** — `POST {GATEWAY}/v1/chat/completions`
 
@@ -123,7 +163,7 @@ with httpx.Client(timeout=60.0) as client:
             print(block["text"])
 ```
 
-**cURL** (no Python deps):
+**cURL**
 
 ```bash
 curl -sS "https://api.costkatana.com/api/gateway/v1/chat/completions" \
@@ -132,236 +172,233 @@ curl -sS "https://api.costkatana.com/api/gateway/v1/chat/completions" \
   -d '{"model":"gpt-4o","messages":[{"role":"user","content":"Hello!"}]}'
 ```
 
-More gateway patterns (caching, retries, headers): [costkatana-examples `2-gateway`](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/2-gateway) and [cost-katana-core `examples/GATEWAY_USAGE_AND_TRACKING.md`](https://github.com/Hypothesize-Tech/cost-katana-core/blob/main/examples/GATEWAY_USAGE_AND_TRACKING.md).
+More patterns (caching, retries, headers): [costkatana-examples `2-gateway`](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/2-gateway) and [cost-katana-core `examples/GATEWAY_USAGE_AND_TRACKING.md`](https://github.com/Hypothesize-Tech/cost-katana-core/blob/main/examples/GATEWAY_USAGE_AND_TRACKING.md).
 
 ---
 
-## 📖 Tutorial: Build a Cost-Aware AI App
+## Core APIs
 
-### Part 1: Basic Chat Session
-
-```python
-import cost_katana as ck
-
-# Create a persistent chat session
-chat = ck.chat('gpt-4')
-
-chat.send('Hello! What can you help me with?')
-chat.send('Tell me a programming joke')
-chat.send('Now explain it')
-
-# See exactly what you spent
-print(f"💰 Total cost: ${chat.total_cost:.4f}")
-print(f"📊 Messages: {len(chat.history)}")
-print(f"🎯 Tokens used: {chat.total_tokens}")
-```
-
-### Part 2: Type-Safe Model Selection
-
-Stop guessing model names. Get autocomplete and catch typos:
+### `ck.ai()`
 
 ```python
 import cost_katana as ck
 from cost_katana import openai, anthropic, google
 
-# Type-safe model constants (recommended)
-response = ck.ai(openai.gpt_4, 'Hello, world!')
-
-# Compare models easily
-models = [openai.gpt_4, anthropic.claude_3_5_sonnet_20241022, google.gemini_2_5_pro]
-for model in models:
-    response = ck.ai(model, 'Explain AI in one sentence')
-    print(f"Cost: ${response.cost:.4f}")
+response = ck.ai(openai.gpt_4o, "Your prompt", temperature=0.7, max_tokens=500, cache=True, cortex=True)
 ```
 
-**Available namespaces:**
-| Namespace | Models |
-|-----------|--------|
+Prefer **namespace constants** (`openai.gpt_4o`, `anthropic.claude_3_5_sonnet_20241022`, …) over raw strings so IDs stay correct as models change.
+
+### `ck.chat()`
+
+```python
+import cost_katana as ck
+from cost_katana import openai
+
+chat = ck.chat(openai.gpt_4o, system_message="You are a helpful assistant.")
+
+chat.send("Hello! What can you help me with?")
+chat.send("Tell me a programming joke")
+
+print(f"Total cost: ${chat.total_cost:.4f}")
+print(f"Messages: {len(chat.history)}")
+print(f"Tokens: {chat.total_tokens}")
+```
+
+### Caching
+
+```python
+import cost_katana as ck
+from cost_katana import openai
+
+r1 = ck.ai(openai.gpt_4o, "What is 2+2?", cache=True)
+r2 = ck.ai(openai.gpt_4o, "What is 2+2?", cache=True)
+print(r1.cached, r2.cached)
+```
+
+### Cortex (optimization)
+
+```python
+import cost_katana as ck
+from cost_katana import openai
+
+response = ck.ai(
+    openai.gpt_4o,
+    "Write a comprehensive guide to machine learning for beginners",
+    cortex=True,
+    max_tokens=2000,
+)
+print(response.optimized, response.saved_amount)
+```
+
+### Compare models
+
+```python
+import cost_katana as ck
+from cost_katana import openai, anthropic, google
+
+prompt = "Summarize the theory of relativity in 50 words"
+models = [
+    ("GPT-4 class", openai.gpt_4o),
+    ("Claude 3.5 Sonnet", anthropic.claude_3_5_sonnet_20241022),
+    ("Gemini 2.5 Pro", google.gemini_2_5_pro),
+    ("GPT-3.5 Turbo", openai.gpt_3_5_turbo),
+]
+
+for name, model in models:
+    r = ck.ai(model, prompt)
+    print(f"{name:22} ${r.cost:.6f}")
+```
+
+---
+
+## Type-safe model namespaces
+
+```python
+from cost_katana import openai, anthropic, google, aws_bedrock, xai, deepseek, mistral, groq, cohere, meta
+```
+
+| Namespace | Examples |
+|-----------|----------|
 | `openai` | GPT-4, GPT-3.5, O1, O3, DALL-E, Whisper |
 | `anthropic` | Claude 3.5 Sonnet, Haiku, Opus |
 | `google` | Gemini 2.5 Pro, Flash |
 | `aws_bedrock` | Nova, Claude on Bedrock |
-| `xai` | Grok models |
-| `deepseek` | DeepSeek models |
-| `mistral` | Mistral AI models |
+| `xai` | Grok |
+| `deepseek` | DeepSeek |
+| `mistral` | Mistral |
 | `groq` | Groq-hosted Llama / Mixtral / Gemma |
-| `cohere` | Command models |
-| `meta` | Llama models |
-
-### Part 3: Smart Caching
-
-Cache identical questions to avoid paying twice:
-
-```python
-import cost_katana as ck
-
-# First call - hits the API
-r1 = ck.ai('gpt-4', 'What is 2+2?', cache=True)
-print(f"Cached: {r1.cached}")  # False
-print(f"Cost: ${r1.cost}")     # $0.0008
-
-# Second call - served from cache (FREE!)
-r2 = ck.ai('gpt-4', 'What is 2+2?', cache=True)
-print(f"Cached: {r2.cached}")  # True
-print(f"Cost: ${r2.cost}")     # $0.0000 🎉
-```
-
-### Part 4: Cortex Optimization
-
-For long-form content, Cortex compresses prompts intelligently:
-
-```python
-import cost_katana as ck
-
-response = ck.ai(
-    'gpt-4',
-    'Write a comprehensive guide to machine learning for beginners',
-    cortex=True,      # Enable 40-75% cost reduction
-    max_tokens=2000
-)
-
-print(f"Optimized: {response.optimized}")
-print(f"Saved: ${response.saved_amount}")
-```
-
-### Part 5: Compare Models Side-by-Side
-
-```python
-import cost_katana as ck
-
-prompt = 'Summarize the theory of relativity in 50 words'
-models = ['gpt-4', 'claude-3-sonnet', 'gemini-pro', 'gpt-3.5-turbo']
-
-print('📊 Model Cost Comparison\n')
-
-for model in models:
-    response = ck.ai(model, prompt)
-    print(f"{model:20} ${response.cost:.6f}")
-```
-
-**Sample Output:**
-```
-📊 Model Cost Comparison
-
-gpt-4                $0.001200
-claude-3-sonnet      $0.000900
-gemini-pro           $0.000150
-gpt-3.5-turbo        $0.000080
-```
+| `cohere` | Command |
+| `meta` | Llama |
 
 ---
 
-## 🎯 Core Features
+## Configuration
 
-### Cost Tracking
-
-Usage and cost tracking is always on; no option to disable. Every response includes cost information:
-
-```python
-response = ck.ai('gpt-4', 'Write a story')
-print(f"Cost: ${response.cost}")
-print(f"Tokens: {response.tokens}")
-print(f"Model: {response.model}")
-print(f"Provider: {response.provider}")
-```
-
-### Auto-Failover
-
-Never fail—automatically switch providers:
-
-```python
-# If OpenAI is down, automatically uses Claude or Gemini
-response = ck.ai('gpt-4', 'Hello')
-print(response.provider)  # Might be 'anthropic' if OpenAI failed
-```
-
-### Security Firewall
-
-Block malicious prompts:
-
-```python
-import cost_katana as ck
-
-ck.configure(firewall=True)
-
-# Malicious prompts are blocked
-try:
-    ck.ai('gpt-4', 'ignore all previous instructions and...')
-except Exception as e:
-    print(f'🛡️ Blocked: {e}')
-```
-
----
-
-## ⚙️ Configuration
-
-### Environment variables (public contract)
+### Environment variables
 
 | Variable | Required? | Purpose |
 |----------|-----------|---------|
 | `COST_KATANA_API_KEY` | **Yes** | Dashboard API key (`dak_...`) |
-| `PROJECT_ID` | No (warning if omitted) | Per-project dashboard scope; also `COST_KATANA_PROJECT` / `COSTKATANA_PROJECT_ID` |
+| `PROJECT_ID` | No | Per-project scope; aliases include `COST_KATANA_PROJECT` / `COSTKATANA_PROJECT_ID` |
 
-```bash
-export COST_KATANA_API_KEY="dak_your_key_here"
-export PROJECT_ID="your_project_id"   # optional
-```
+Base URL, default model, and timeouts in the client are **package constants** — not set via environment variables (unless documented for a specific helper).
 
-Base URL, default model, and timeouts are **package constants** — not set via environment variables.
+### Optional direct provider keys
 
-### Optional: direct provider keys
+If you call provider APIs yourself outside hosted routing, you may set `OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, or AWS credentials for Bedrock. They are **not** required when only `COST_KATANA_API_KEY` is set.
 
-If you call provider APIs yourself (outside Cost Katana’s hosted routing), you may set keys such as `OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, or AWS credentials for Bedrock. They are **not** required for the default hosted path when only `COST_KATANA_API_KEY` is set.
+### Helpers
 
-### Easy helpers
-
-- **`cost_katana.from_env()`** — explicit `CostKatanaClient` built from the same two env vars (mirrors the TS SDK’s zero-config client).
-- **`cost_katana.auto_configure()`** — lazy init used internally before `ai()` / `chat()` / `track()`.
-- **`cost_katana.track({...})`** — log a manual cost row to the dashboard without wiring `AILogger` yourself.
+- **`cost_katana.from_env()`** — `CostKatanaClient` from the same env vars as zero-config usage.
+- **`cost_katana.auto_configure()`** — lazy init before `ai()` / `chat()` / `track()`.
+- **`cost_katana.track({...})`** — manual cost row to the dashboard.
 - **`Config.from_env()`** — same env mapping as the client.
 
-### Programmatic Configuration
+### Programmatic configuration
 
 ```python
 import cost_katana as ck
 
 ck.configure(
-    api_key='dak_your_key',
-    cortex=True,     # 40-75% cost savings
-    cache=True,      # Smart caching
-    firewall=True    # Block prompt injections
+    api_key="dak_your_key",
+    cortex=True,
+    cache=True,
+    firewall=True,
 )
 ```
 
-### Request Options
+### Request options
 
 ```python
-response = ck.ai('gpt-4', 'Your prompt',
-    temperature=0.7,                     # Creativity (0-2)
-    max_tokens=500,                      # Response limit
-    system_message='You are helpful',    # System prompt
-    cache=True,                          # Enable caching
-    cortex=True,                         # Enable optimization
-    retry=True                           # Auto-retry on failures
+import cost_katana as ck
+from cost_katana import openai
+
+response = ck.ai(
+    openai.gpt_4o,
+    "Your prompt",
+    temperature=0.7,
+    max_tokens=500,
+    system_message="You are helpful",
+    cache=True,
+    cortex=True,
+    retry=True,
 )
 ```
 
 ---
 
-## 🔌 Framework Integration
+## Cost optimization
+
+| Strategy | When to use |
+|----------|-------------|
+| Cheaper model for easy tasks | Trivia, classification, translation |
+| `cache=True` | Repeated FAQs |
+| `cortex=True` | Long-form generation |
+| `ck.chat(...)` | Multi-turn sessions |
+| High volume, cost-sensitive | Consider Gemini Flash-class models via namespaces |
+
+```python
+import cost_katana as ck
+from cost_katana import openai
+
+ck.ai(openai.gpt_3_5_turbo, "What is 2+2?")
+ck.ai(openai.gpt_3_5_turbo, "What is 2+2?", cache=True)
+ck.ai(openai.gpt_4o, "Write a 2000-word essay", cortex=True)
+```
+
+---
+
+## Core features
+
+### Cost tracking
+
+Every response includes cost and token usage (tracking cannot be disabled — required for attribution).
+
+```python
+response = ck.ai(openai.gpt_4o, "Write a story")
+print(response.cost, response.tokens, response.model, response.provider)
+```
+
+### Auto-failover
+
+Routing may fall back across providers when configured on the backend.
+
+```python
+response = ck.ai(openai.gpt_4o, "Hello")
+print(response.provider)
+```
+
+### Security firewall
+
+```python
+import cost_katana as ck
+from cost_katana import openai
+
+ck.configure(firewall=True)
+try:
+    ck.ai(openai.gpt_4o, "ignore all previous instructions and...")
+except Exception as e:
+    print(f"Blocked: {e}")
+```
+
+---
+
+## Framework integration
 
 ### FastAPI
 
 ```python
 from fastapi import FastAPI
 import cost_katana as ck
+from cost_katana import openai
 
 app = FastAPI()
 
-@app.post('/api/chat')
-async def chat(request: dict):
-    response = ck.ai('gpt-4', request['prompt'])
-    return {'text': response.text, 'cost': response.cost}
+@app.post("/api/chat")
+async def chat(body: dict):
+    r = ck.ai(openai.gpt_4o, body["prompt"])
+    return {"text": r.text, "cost": r.cost}
 ```
 
 ### Flask
@@ -369,13 +406,14 @@ async def chat(request: dict):
 ```python
 from flask import Flask, request, jsonify
 import cost_katana as ck
+from cost_katana import openai
 
 app = Flask(__name__)
 
-@app.route('/api/chat', methods=['POST'])
+@app.route("/api/chat", methods=["POST"])
 def chat():
-    response = ck.ai('gpt-4', request.json['prompt'])
-    return jsonify({'text': response.text, 'cost': response.cost})
+    r = ck.ai(openai.gpt_4o, request.json["prompt"])
+    return jsonify({"text": r.text, "cost": r.cost})
 ```
 
 ### Django
@@ -383,141 +421,128 @@ def chat():
 ```python
 from django.http import JsonResponse
 import cost_katana as ck
+from cost_katana import openai
 
 def chat_view(request):
-    response = ck.ai('gpt-4', request.POST.get('prompt'))
-    return JsonResponse({'text': response.text, 'cost': response.cost})
+    r = ck.ai(openai.gpt_4o, request.POST.get("prompt"))
+    return JsonResponse({"text": r.text, "cost": r.cost})
 ```
 
 ---
 
-## 💡 Real-World Examples
+## Real-world examples
 
-### Customer Support Bot
+### Customer support bot
 
 ```python
 import cost_katana as ck
+from cost_katana import openai
 
-support = ck.chat('gpt-3.5-turbo',
-    system_message='You are a helpful customer support agent.')
+support = ck.chat(
+    openai.gpt_3_5_turbo,
+    system_message="You are a helpful customer support agent.",
+)
 
 def handle_query(query: str):
-    response = support.send(query)
+    reply = support.send(query)
     print(f"Cost so far: ${support.total_cost:.4f}")
-    return response
+    return reply
 ```
 
-### Content Generator with Optimization
+### Content with Cortex
 
 ```python
 import cost_katana as ck
+from cost_katana import openai
 
 def generate_blog_post(topic: str):
-    # Use Cortex for long-form content (40-75% savings)
-    post = ck.ai('gpt-4', f'Write a blog post about {topic}',
-                 cortex=True, max_tokens=2000)
-    
-    return {
-        'content': post.text,
-        'cost': post.cost,
-        'word_count': len(post.text.split())
-    }
+    post = ck.ai(
+        openai.gpt_4o,
+        f"Write a blog post about {topic}",
+        cortex=True,
+        max_tokens=2000,
+    )
+    return {"content": post.text, "cost": post.cost, "word_count": len(post.text.split())}
 ```
 
-### Code Review Assistant
+### Code review (with cache)
 
 ```python
 import cost_katana as ck
+from cost_katana import anthropic
 
 def review_code(code: str):
-    review = ck.ai('claude-3-sonnet',
-        f'Review this code and suggest improvements:\n\n{code}',
-        cache=True)  # Cache for repeated reviews
-    return review.text
-```
-
-### Translation Service
-
-```python
-import cost_katana as ck
-
-def translate(text: str, target_language: str):
-    # Use cheaper model for translations
-    translated = ck.ai('gpt-3.5-turbo',
-        f'Translate to {target_language}: {text}',
-        cache=True)
-    return translated.text
+    return ck.ai(
+        anthropic.claude_3_5_sonnet_20241022,
+        f"Review this code:\n\n{code}",
+        cache=True,
+    ).text
 ```
 
 ---
 
-## 💰 Cost Optimization Cheatsheet
-
-| Strategy | Savings | Code |
-|----------|---------|------|
-| Use GPT-3.5 for simple tasks | 90% | `ck.ai('gpt-3.5-turbo', ...)` |
-| Enable caching | 100% on hits | `cache=True` |
-| Enable Cortex | 40-75% | `cortex=True` |
-| Use Gemini for high-volume | 95% vs GPT-4 | `ck.ai('gemini-pro', ...)` |
-| Batch in sessions | 10-20% | `ck.chat(...)` |
-
-```python
-# ❌ Expensive
-ck.ai('gpt-4', 'What is 2+2?')  # $0.001
-
-# ✅ Smart: Match model to task
-ck.ai('gpt-3.5-turbo', 'What is 2+2?')  # $0.0001
-
-# ✅ Smarter: Cache common queries
-ck.ai('gpt-3.5-turbo', 'What is 2+2?', cache=True)  # $0 on repeat
-
-# ✅ Smartest: Cortex for long content
-ck.ai('gpt-4', 'Write a 2000-word essay', cortex=True)  # 40-75% off
-```
-
----
-
-## 🔧 Error Handling
+## Error handling
 
 ```python
 import cost_katana as ck
+from cost_katana import openai
 from cost_katana.exceptions import CostKatanaError
 
 try:
-    response = ck.ai('gpt-4', 'Hello')
+    response = ck.ai(openai.gpt_4o, "Hello")
     print(response.text)
 except CostKatanaError as e:
-    if 'API key' in str(e):
-        print('Set COST_KATANA_API_KEY or OPENAI_API_KEY')
-    elif 'rate limit' in str(e):
-        print('Rate limited. Retrying...')
-    elif 'model' in str(e):
-        print('Model not found')
+    msg = str(e).lower()
+    if "api key" in msg:
+        print("Set COST_KATANA_API_KEY or a provider key")
+    elif "rate limit" in msg:
+        print("Rate limited — retry with backoff")
+    elif "model" in msg:
+        print("Model not found or not available")
     else:
-        print(f'Error: {e}')
+        print(f"Error: {e}")
 ```
 
 ---
 
-## 🔄 Migration Guides
+## Experimentation (hosted API)
+
+The Cost Katana backend exposes **experimentation** REST APIs under **`/api/experimentation`** on the hosted API (e.g. `https://api.costkatana.com`). The dashboard **Experimentation** experience is built on these endpoints; you can also call them with a dashboard **JWT** where required.
+
+**Highlights**
+
+- Model comparison, real-time comparison with **SSE** progress, experiment history, recommendations  
+- What-if scenarios and simulations  
+- Cost estimation before runs  
+- Fine-tuning analysis helpers  
+- Export experiment results (JSON/CSV)
+
+Public vs authenticated routes depend on deployment; see the backend controller: [`experimentation.controller.ts`](https://github.com/Hypothesize-Tech/costkatana-backend-nest/blob/main/src/modules/experimentation/experimentation.controller.ts). Real provider execution may require server flags such as **`ENABLE_REAL_MODEL_COMPARISON=true`**.
+
+For a longer overview, see [cost-katana-core `README.md` — Experimentation](https://github.com/Hypothesize-Tech/cost-katana-core/blob/main/README.md#experimentation-hosted-api).
+
+---
+
+## Migration guides
 
 ### From OpenAI SDK
 
 ```python
 # Before
 from openai import OpenAI
-client = OpenAI(api_key='sk-...')
+client = OpenAI(api_key="sk-...")
 completion = client.chat.completions.create(
-    model='gpt-4',
-    messages=[{'role': 'user', 'content': 'Hello'}]
+    model="gpt-4",
+    messages=[{"role": "user", "content": "Hello"}],
 )
 print(completion.choices[0].message.content)
 
 # After
 import cost_katana as ck
-response = ck.ai('gpt-4', 'Hello')
+from cost_katana import openai
+response = ck.ai(openai.gpt_4, "Hello")
 print(response.text)
-print(f"Cost: ${response.cost}")  # Bonus: cost tracking!
+print(f"Cost: ${response.cost}")
 ```
 
 ### From Anthropic SDK
@@ -525,15 +550,16 @@ print(f"Cost: ${response.cost}")  # Bonus: cost tracking!
 ```python
 # Before
 import anthropic
-client = anthropic.Anthropic(api_key='sk-ant-...')
+client = anthropic.Anthropic(api_key="sk-ant-...")
 message = client.messages.create(
-    model='claude-3-sonnet-20241022',
-    messages=[{'role': 'user', 'content': 'Hello'}]
+    model="claude-3-sonnet-20241022",
+    messages=[{"role": "user", "content": "Hello"}],
 )
 
 # After
 import cost_katana as ck
-response = ck.ai('claude-3-sonnet', 'Hello')
+from cost_katana import anthropic
+response = ck.ai(anthropic.claude_3_5_sonnet_20241022, "Hello")
 ```
 
 ### From Google AI SDK
@@ -541,45 +567,44 @@ response = ck.ai('claude-3-sonnet', 'Hello')
 ```python
 # Before
 import google.generativeai as genai
-genai.configure(api_key='...')
-model = genai.GenerativeModel('gemini-pro')
-response = model.generate_content('Hello')
+genai.configure(api_key="...")
+model = genai.GenerativeModel("gemini-pro")
+response = model.generate_content("Hello")
 
 # After
 import cost_katana as ck
-response = ck.ai('gemini-pro', 'Hello')
+from cost_katana import google
+response = ck.ai(google.gemini_2_5_pro, "Hello")
 ```
 
 ---
 
-## 📦 Package Names
+## Package names (ecosystem)
 
-| Language | Package | Install | Import |
-|----------|---------|---------|--------|
-| **Python** | PyPI | `pip install costkatana` | `import cost_katana` |
-| **JavaScript** | NPM | `npm install cost-katana` | `import { ai } from 'cost-katana'` |
-| **CLI (NPM)** | NPM | `npm install -g cost-katana-cli` | `cost-katana chat` |
-| **CLI (Python)** | PyPI | `pip install costkatana` | `costkatana chat` |
+| Language | Registry | Install | Import / usage |
+|----------|----------|---------|----------------|
+| **Python** | [PyPI `cost-katana`](https://pypi.org/project/cost-katana/) | `pip install cost-katana` | `import cost_katana` |
+| **JavaScript** | npm | `npm install cost-katana` | `import { ai } from 'cost-katana'` |
+| **CLI (npm)** | npm | `npm install -g cost-katana-cli` | `cost-katana chat` |
+| **CLI (Python)** | PyPI | `pip install cost-katana` | `costkatana` (console script) |
 
 ---
 
-## 📚 More Examples
+## More examples
 
-Explore 45+ complete examples:
-
-**🔗 [github.com/Hypothesize-Tech/costkatana-examples](https://github.com/Hypothesize-Tech/costkatana-examples)**
+**[github.com/Hypothesize-Tech/costkatana-examples](https://github.com/Hypothesize-Tech/costkatana-examples)** — 45+ examples.
 
 | Section | Description |
 |---------|-------------|
-| [Gateway (HTTP)](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/2-gateway) | Proxy routing, caching, retries, `.http` samples |
-| [Python SDK](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/8-python-sdk) | Complete Python guides |
-| [Cost Tracking](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/1-cost-tracking) | Track costs across providers |
-| [Semantic Caching](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/14-cache) | 30-40% cost reduction |
-| [FastAPI Integration](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/7-frameworks) | Framework examples |
+| [Gateway (HTTP)](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/2-gateway) | Proxy routing, caching, retries |
+| [Python SDK](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/8-python-sdk) | Python-focused guides |
+| [Cost tracking](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/1-cost-tracking) | Cross-provider usage |
+| [Semantic caching](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/14-cache) | Cache savings |
+| [Frameworks](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/7-frameworks) | FastAPI and others |
 
 ---
 
-## 📞 Support
+## Support
 
 | Channel | Link |
 |---------|------|
@@ -591,7 +616,7 @@ Explore 45+ complete examples:
 
 ---
 
-## 📄 License
+## License
 
 MIT © Cost Katana
 
@@ -599,15 +624,18 @@ MIT © Cost Katana
 
 <div align="center">
 
-**Start cutting AI costs today** 🥷
+**Start cutting AI costs today**
 
 ```bash
-pip install costkatana
+pip install cost-katana
 ```
 
 ```python
 import cost_katana as ck
-response = ck.ai('gpt-4', 'Hello, world!')
+from cost_katana import openai
+
+response = ck.ai(openai.gpt_4o, "Hello, world!")
+print(response.text, response.cost)
 ```
 
 </div>

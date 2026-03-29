@@ -5,10 +5,10 @@ Get started in 3 simple steps!
 ## Step 1: Install
 
 ```bash
-pip install costkatana
+pip install cost-katana
 ```
 
-> **Package Name**: `costkatana` (Python/PyPI) vs `cost-katana` (JavaScript/NPM)
+> **PyPI package name**: `cost-katana` (hyphen). **Import**: `import cost_katana` (underscore). On npm, the JS SDK is also `cost-katana`.
 
 ## Step 2: Get API Key
 
@@ -236,8 +236,8 @@ ck.ai('gpt-4', 'Question',
 The Python package includes a CLI command:
 
 ```bash
-# After installing costkatana
-pip install costkatana
+# After installing the package
+pip install cost-katana
 
 # Python CLI command
 costkatana chat
