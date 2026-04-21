@@ -72,11 +72,11 @@ If you only set **`COST_KATANA_API_KEY`** (no direct provider keys such as **`OP
 
 ### Which surface should I use?
 
-| Goal | Use |
-|------|-----|
-| Simple Python calls with cost on every response | **`ck.ai()`** / **`ck.chat()`** |
+| Goal                                                  | Use                                                                                                     |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Simple Python calls with cost on every response       | **`ck.ai()`** / **`ck.chat()`**                                                                         |
 | Drop-in HTTP proxy (OpenAI- or Anthropic-shaped JSON) | **Gateway** — [`httpx`](https://www.python-httpx.org/) / `requests` or cURL ([below](#ai-gateway-http)) |
-| Dashboard experiments (compare models, what-if) | **[Experimentation API](#experimentation-hosted-api)** (REST; often used via the web app) |
+| Dashboard experiments (compare models, what-if)       | **[Experimentation API](#experimentation-hosted-api)** (REST; often used via the web app)               |
 
 ---
 
@@ -89,11 +89,11 @@ Override with **`COSTKATANA_GATEWAY_URL`** if your deployment documents one.
 
 **Headers**
 
-| Header | Value |
-|--------|--------|
-| `Authorization` | `Bearer <COST_KATANA_API_KEY>` |
-| `Content-Type` | `application/json` |
-| `x-project-id` | Optional — same role as **`PROJECT_ID`** for dashboard scoping |
+| Header          | Value                                                          |
+| --------------- | -------------------------------------------------------------- |
+| `Authorization` | `Bearer <COST_KATANA_API_KEY>`                                 |
+| `Content-Type`  | `application/json`                                             |
+| `x-project-id`  | Optional — same role as **`PROJECT_ID`** for dashboard scoping |
 
 The hosted gateway enables **input firewall** (LLM security) and **output moderation** by default. To opt out for a request, add `CostKatana-LLM-Security-Enabled: false` and/or `CostKatana-Output-Moderation-Enabled: false`. You can merge `cost_katana.gateway_request_headers(llm_security_enabled=False)` into your headers.
 
@@ -303,18 +303,18 @@ for name, model in models:
 from cost_katana import openai, anthropic, google, aws_bedrock, xai, deepseek, mistral, groq, cohere, meta
 ```
 
-| Namespace | Examples |
-|-----------|----------|
-| `openai` | GPT-4, GPT-3.5, O1, O3, DALL-E, Whisper |
-| `anthropic` | Claude 3.5 Sonnet, Haiku, Opus |
-| `google` | Gemini 2.5 Pro, Flash |
-| `aws_bedrock` | Nova, Claude on Bedrock |
-| `xai` | Grok |
-| `deepseek` | DeepSeek |
-| `mistral` | Mistral |
-| `groq` | Groq-hosted Llama / Mixtral / Gemma |
-| `cohere` | Command |
-| `meta` | Llama |
+| Namespace     | Examples                                |
+| ------------- | --------------------------------------- |
+| `openai`      | GPT-4, GPT-3.5, O1, O3, DALL-E, Whisper |
+| `anthropic`   | Claude 3.5 Sonnet, Haiku, Opus          |
+| `google`      | Gemini 2.5 Pro, Flash                   |
+| `aws_bedrock` | Nova, Claude on Bedrock                 |
+| `xai`         | Grok                                    |
+| `deepseek`    | DeepSeek                                |
+| `mistral`     | Mistral                                 |
+| `groq`        | Groq-hosted Llama / Mixtral / Gemma     |
+| `cohere`      | Command                                 |
+| `meta`        | Llama                                   |
 
 ---
 
@@ -322,10 +322,10 @@ from cost_katana import openai, anthropic, google, aws_bedrock, xai, deepseek, m
 
 ### Environment variables
 
-| Variable | Required? | Purpose |
-|----------|-----------|---------|
-| `COST_KATANA_API_KEY` | **Yes** | Dashboard API key (`dak_...`) |
-| `PROJECT_ID` | No | Per-project scope; aliases include `COST_KATANA_PROJECT` / `COSTKATANA_PROJECT_ID` |
+| Variable              | Required? | Purpose                                                                            |
+| --------------------- | --------- | ---------------------------------------------------------------------------------- |
+| `COST_KATANA_API_KEY` | **Yes**   | Dashboard API key (`dak_...`)                                                      |
+| `PROJECT_ID`          | No        | Per-project scope; aliases include `COST_KATANA_PROJECT` / `COSTKATANA_PROJECT_ID` |
 
 Base URL, default model, and timeouts in the client are **package constants** — not set via environment variables (unless documented for a specific helper).
 
@@ -375,13 +375,13 @@ response = ck.ai(
 
 ## Cost optimization
 
-| Strategy | When to use |
-|----------|-------------|
-| Cheaper model for easy tasks | Trivia, classification, translation |
-| `cache=True` | Repeated FAQs |
-| `cortex=True` | Long-form generation |
-| `ck.chat(...)` | Multi-turn sessions |
-| High volume, cost-sensitive | Consider Gemini Flash-class models via namespaces |
+| Strategy                     | When to use                                       |
+| ---------------------------- | ------------------------------------------------- |
+| Cheaper model for easy tasks | Trivia, classification, translation               |
+| `cache=True`                 | Repeated FAQs                                     |
+| `cortex=True`                | Long-form generation                              |
+| `ck.chat(...)`               | Multi-turn sessions                               |
+| High volume, cost-sensitive  | Consider Gemini Flash-class models via namespaces |
 
 ```python
 import cost_katana as ck
@@ -556,10 +556,10 @@ The Cost Katana backend exposes **experimentation** REST APIs under **`/api/expe
 
 **Highlights**
 
-- Model comparison, real-time comparison with **SSE** progress, experiment history, recommendations  
-- What-if scenarios and simulations  
-- Cost estimation before runs  
-- Fine-tuning analysis helpers  
+- Model comparison, real-time comparison with **SSE** progress, experiment history, recommendations
+- What-if scenarios and simulations
+- Cost estimation before runs
+- Fine-tuning analysis helpers
 - Export experiment results (JSON/CSV)
 
 Public vs authenticated routes depend on deployment; see the backend controller: [`experimentation.controller.ts`](https://github.com/Hypothesize-Tech/costkatana-backend-nest/blob/main/src/modules/experimentation/experimentation.controller.ts). Real provider execution may require server flags such as **`ENABLE_REAL_MODEL_COMPARISON=true`**.
@@ -626,12 +626,12 @@ response = ck.ai(google.gemini_2_5_pro, "Hello")
 
 ## Package names (ecosystem)
 
-| Language | Registry | Install | Import / usage |
-|----------|----------|---------|----------------|
-| **Python** | [PyPI `cost-katana`](https://pypi.org/project/cost-katana/) | `pip install cost-katana` | `import cost_katana` |
-| **JavaScript** | npm | `npm install cost-katana` | `import { ai } from 'cost-katana'` |
-| **CLI (npm)** | npm | `npm install -g cost-katana-cli` | `cost-katana chat` |
-| **CLI (Python)** | PyPI | `pip install cost-katana` | `costkatana` (console script) |
+| Language         | Registry                                                    | Install                          | Import / usage                     |
+| ---------------- | ----------------------------------------------------------- | -------------------------------- | ---------------------------------- |
+| **Python**       | [PyPI `cost-katana`](https://pypi.org/project/cost-katana/) | `pip install cost-katana`        | `import cost_katana`               |
+| **JavaScript**   | npm                                                         | `npm install cost-katana`        | `import { ai } from 'cost-katana'` |
+| **CLI (npm)**    | npm                                                         | `npm install -g cost-katana-cli` | `cost-katana chat`                 |
+| **CLI (Python)** | PyPI                                                        | `pip install cost-katana`        | `costkatana` (console script)      |
 
 ---
 
@@ -639,25 +639,25 @@ response = ck.ai(google.gemini_2_5_pro, "Hello")
 
 **[github.com/Hypothesize-Tech/costkatana-examples](https://github.com/Hypothesize-Tech/costkatana-examples)** — 45+ examples.
 
-| Section | Description |
-|---------|-------------|
-| [Gateway (HTTP)](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/2-gateway) | Proxy routing, caching, retries |
-| [Python SDK](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/8-python-sdk) | Python-focused guides |
-| [Cost tracking](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/1-cost-tracking) | Cross-provider usage |
-| [Semantic caching](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/14-cache) | Cache savings |
-| [Frameworks](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/7-frameworks) | FastAPI and others |
+| Section                                                                                              | Description                     |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------- |
+| [Gateway (HTTP)](https://github.com/Hypothesize-Tech/costkatana-examples/tree/main/2-gateway)        | Proxy routing, caching, retries |
+| [Python SDK](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/8-python-sdk)       | Python-focused guides           |
+| [Cost tracking](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/1-cost-tracking) | Cross-provider usage            |
+| [Semantic caching](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/14-cache)     | Cache savings                   |
+| [Frameworks](https://github.com/Hypothesize-Tech/costkatana-examples/tree/master/7-frameworks)       | FastAPI and others              |
 
 ---
 
 ## Support
 
-| Channel | Link |
-|---------|------|
-| **Dashboard** | [costkatana.com](https://costkatana.com) |
-| **Documentation** | [docs.costkatana.com](https://docs.costkatana.com) |
-| **GitHub** | [github.com/Hypothesize-Tech/costkatana-python](https://github.com/Hypothesize-Tech/costkatana-python) |
-| **Discord** | [discord.gg/D8nDArmKbY](https://discord.gg/D8nDArmKbY) |
-| **Email** | support@costkatana.com |
+| Channel           | Link                                                                                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------ |
+| **Dashboard**     | [costkatana.com](https://costkatana.com)                                                               |
+| **Documentation** | [docs.costkatana.com](https://docs.costkatana.com)                                                     |
+| **GitHub**        | [github.com/Hypothesize-Tech/costkatana-python](https://github.com/Hypothesize-Tech/costkatana-python) |
+| **Discord**       | [discord.gg/D8nDArmKbY](https://discord.gg/D8nDArmKbY)                                                 |
+| **Email**         | support@costkatana.com                                                                                 |
 
 ---
 
