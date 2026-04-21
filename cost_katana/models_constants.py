@@ -304,7 +304,7 @@ class aws_bedrock:
     
     # Meta Llama Models on Bedrock
     llama_3_3_70b_instruct = 'meta.llama3-3-70b-instruct-v1:0'
-    llama_3_2_1b_instruct = 'meta.llama3-2-1b-instruct-v1:0'
+    llama_3_2_1b_instruct = 'meta.llama4-scout-17b-instruct-v1:0'
     llama_3_2_3b_instruct = 'meta.llama3-2-3b-instruct-v1:0'
     llama_3_2_11b_vision_instruct = 'meta.llama3-2-11b-vision-instruct-v1:0'
     llama_3_2_90b_vision_instruct = 'meta.llama3-2-90b-vision-instruct-v1:0'

@@ -4,6 +4,17 @@ All notable changes to Cost Katana Python SDK will be documented in this file.
 
 ## [Unreleased]
 
+## [2.5.4] - 2026-04-22
+
+### Added
+
+- **`CostKatanaClient.send_message`**: `thinking`, `thinking_effort`, and `thinking_budget_tokens` — enables Claude extended thinking on supported models; payload includes `thinking` with `enabled`, optional `effort`, and optional `budgetTokens`.
+- **`ck.ai()`**: same options via `**options`; **`SimpleResponse.thinking`** is set when the API returns reasoning content.
+
+### Changed
+
+- **AWS Bedrock**: alias `llama-3.2-1b` / `aws_bedrock.llama_3_2_1b_instruct` now maps to `meta.llama4-scout-17b-instruct-v1:0` (replaces retired `meta.llama3-2-1b-instruct-v1:0`).
+
 ## [2.5.3] - 2026-03-29
 
 ### Documentation

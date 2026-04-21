@@ -50,7 +50,7 @@ from .models_constants import (
     get_provider_from_model,
 )
 
-__version__ = "2.5.3"
+__version__ = "2.5.4"
 
 
 def track(entry: Dict[str, Any]) -> None:
@@ -119,6 +119,7 @@ class SimpleResponse:
         provider: str,
         cached: bool = False,
         optimized: bool = False,
+        thinking: Any = None,
     ):
         self.text = text
         self.cost = cost
@@ -128,6 +129,7 @@ class SimpleResponse:
         self.cached = cached
         self.optimized = optimized
         self.saved_amount = 0.0
+        self.thinking = thinking
 
     def __repr__(self):
         return f"<Response text='{self.text[:50]}...' cost=${self.cost:.4f}>"
@@ -214,9 +216,19 @@ def ai(
             - max_tokens (int): Max response tokens, default 1000
             - cache (bool): Enable caching, default False
             - cortex (bool): Enable optimization, default False
+            - thinking (bool): Enable Claude extended thinking for
+              supported Claude models (Opus 4.x, Sonnet 4.x, Sonnet 3.7).
+              The reasoning budget is auto-sized per task and model
+              pricing. Thinking tokens are billed as output tokens.
+            - thinking_effort (str): Adaptive thinking effort for
+              Opus 4.6/4.7 and Sonnet 4.6 ('low' | 'medium' | 'high' | 'max').
+            - thinking_budget_tokens (int): Advanced — pin a fixed
+              budget for enabled-mode models. Usually unneeded.
 
     Returns:
-        SimpleResponse with text, cost, tokens, model, provider
+        SimpleResponse with text, cost, tokens, model, provider, and
+        optional ``thinking`` when extended thinking is enabled and the
+        API returns reasoning content.
 
     Example:
         >>> import cost_katana as ck
@@ -316,6 +328,7 @@ def ai(
             provider=provider,
             cached=cached,
             optimized=options.get("cortex", False),
+            thinking=getattr(response, "thinking", None),
         )
         result.templateUsed = template_used
         return result

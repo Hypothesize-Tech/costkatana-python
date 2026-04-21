@@ -182,7 +182,7 @@ class Config:
             "llama-3.1-8b": "meta.llama3-1-8b-instruct-v1:0",
             "llama-3.1-70b": "meta.llama3-1-70b-instruct-v1:0",
             "llama-3.1-405b": "meta.llama3-1-405b-instruct-v1:0",
-            "llama-3.2-1b": "meta.llama3-2-1b-instruct-v1:0",
+            "llama-3.2-1b": "meta.llama4-scout-17b-instruct-v1:0",
             "llama-3.2-3b": "meta.llama3-2-3b-instruct-v1:0",
             # Mistral models
             "mistral-7b": "mistral.mistral-7b-instruct-v0:2",

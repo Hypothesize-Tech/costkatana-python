@@ -231,6 +231,51 @@ response = ck.ai(
 print(response.optimized, response.saved_amount)
 ```
 
+### Claude extended thinking
+
+For **Claude** models that support extended thinking (e.g. Opus 4.x, Sonnet 4.x, Sonnet 3.7), pass **`thinking=True`**. The gateway sizes the reasoning budget; thinking tokens count as **output** tokens for billing. On **Opus 4.6 / 4.7** and **Sonnet 4.6**, you can set **`thinking_effort`** to `'low'`, `'medium'`, `'high'`, or `'max'`. **`thinking_budget_tokens`** is optional if you need a fixed cap.
+
+```python
+import cost_katana as ck
+from cost_katana import anthropic
+
+response = ck.ai(
+    anthropic.claude_sonnet_4_20250514,
+    "Solve step by step: If a train leaves at 3pm...",
+    thinking=True,
+    max_tokens=1024,
+)
+print(response.text)
+if response.thinking:
+    print("Reasoning:", response.thinking)
+
+# Adaptive effort (Sonnet 4.6 / Opus 4.6+)
+r2 = ck.ai(
+    anthropic.claude_sonnet_4_6,
+    "Plan a week-long API migration with risks and rollback.",
+    thinking=True,
+    thinking_effort="high",
+    max_tokens=2048,
+)
+```
+
+With **`CostKatanaClient`** directly:
+
+```python
+from cost_katana import from_env
+from cost_katana import anthropic
+
+client = from_env()
+data = client.send_message(
+    message="Explain this architecture tradeoff.",
+    model_id=anthropic.claude_sonnet_4_20250514,
+    thinking=True,
+    thinking_effort="medium",
+)
+print(data.get("data", {}).get("response"))
+print(data.get("data", {}).get("thinking"))
+```
+
 ### Compare models
 
 ```python

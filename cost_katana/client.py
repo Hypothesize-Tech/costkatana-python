@@ -264,6 +264,9 @@ class CostKatanaClient:
         use_multi_agent: bool = False,
         template_id: Optional[str] = None,
         template_variables: Optional[Dict[str, Any]] = None,
+        thinking: Optional[bool] = None,
+        thinking_effort: Optional[str] = None,
+        thinking_budget_tokens: Optional[int] = None,
         **kwargs,
     ) -> Dict[str, Any]:
         """
@@ -279,9 +282,21 @@ class CostKatanaClient:
             use_multi_agent: Whether to use multi-agent processing
             template_id: Optional template ID to use
             template_variables: Optional variables for template
+            thinking: Enable Claude extended thinking (reasoning). Only
+                applies to models that support it (Opus 4.x, Sonnet 4.x,
+                Sonnet 3.7). The Cost Katana gateway auto-sizes the
+                reasoning budget per task and model pricing.
+            thinking_effort: Adaptive thinking effort for Opus 4.6/4.7 and
+                Sonnet 4.6 ('low', 'medium', 'high', 'max'). Ignored on
+                models that use fixed-budget thinking.
+            thinking_budget_tokens: Optional explicit budget cap for
+                fixed-budget thinking models. Usually leave unset — the
+                gateway computes a sensible default.
 
         Returns:
-            Response data from the API
+            Response data from the API. When thinking is enabled, the
+            response may include a `thinking` field with the reasoning
+            content (thinking tokens are billed as output tokens).
         """
         # Handle template if provided
         actual_message = message
@@ -300,6 +315,14 @@ class CostKatanaClient:
             "useMultiAgent": use_multi_agent,
             **kwargs,
         }
+
+        if thinking:
+            thinking_payload: Dict[str, Any] = {"enabled": True}
+            if thinking_effort:
+                thinking_payload["effort"] = thinking_effort
+            if thinking_budget_tokens:
+                thinking_payload["budgetTokens"] = thinking_budget_tokens
+            payload["thinking"] = thinking_payload
 
         if conversation_id:
             payload["conversationId"] = conversation_id
