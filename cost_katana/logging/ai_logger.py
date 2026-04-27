@@ -3,6 +3,7 @@ AI Logger for Cost Katana Python SDK
 Non-blocking async logging with batching for AI operations
 """
 
+import contextlib
 import os
 import re
 import time
@@ -51,7 +52,9 @@ class AILogger:
 
         # Sensitive data patterns
         self.sensitive_patterns = [
-            re.compile(r"api[_-]?key[_-]?:\s*['\"]?([a-zA-Z0-9_-]+)['\"]?", re.IGNORECASE),
+            re.compile(
+                r"api[_-]?key[_-]?:\s*['\"]?([a-zA-Z0-9_-]+)['\"]?", re.IGNORECASE
+            ),
             re.compile(r"token[_-]?:\s*['\"]?([a-zA-Z0-9_.-]+)['\"]?", re.IGNORECASE),
             re.compile(r"password[_-]?:\s*['\"]?([^'\"]+)['\"]?", re.IGNORECASE),
             re.compile(r"secret[_-]?:\s*['\"]?([a-zA-Z0-9_-]+)['\"]?", re.IGNORECASE),
@@ -101,9 +104,7 @@ class AILogger:
 
             with self.buffer_lock:
                 self.log_buffer.append(enriched_entry)
-                logger.debug(
-                    f"AI call logged to buffer (size: {len(self.log_buffer)})"
-                )
+                logger.debug(f"AI call logged to buffer (size: {len(self.log_buffer)})")
 
                 # Flush if buffer is full
                 if len(self.log_buffer) >= self.config["batch_size"]:
@@ -196,7 +197,9 @@ class AILogger:
         redacted = text
         for pattern in self.sensitive_patterns:
             redacted = pattern.sub(
-                lambda m: m.group(0)[:3] + "*" * max(0, len(m.group(0)) - 6) + m.group(0)[-3:],
+                lambda m: m.group(0)[:3]
+                + "*" * max(0, len(m.group(0)) - 6)
+                + m.group(0)[-3:],
                 redacted,
             )
         return redacted
@@ -249,10 +252,8 @@ class AILogger:
 
     def __del__(self):
         """Cleanup on deletion"""
-        try:
+        with contextlib.suppress(Exception):
             self.shutdown()
-        except:
-            pass
 
 
 class _LazyAILogger:
@@ -308,4 +309,3 @@ class _LazyAILogger:
 
 # Module-level singleton — lazy so import works without env vars
 ai_logger = _LazyAILogger()
-

@@ -21,7 +21,13 @@ Example:
 
 from typing import Optional, List, Dict, Any
 
-from .client import CostKatanaClient, get_global_client, configure, auto_configure, from_env
+from .client import (
+    CostKatanaClient,
+    get_global_client,
+    configure,
+    auto_configure,
+    from_env,
+)
 from .gateway import gateway_request_headers, GATEWAY_API_PREFIX
 from .models import ChatSession
 from .exceptions import (
@@ -155,10 +161,7 @@ class SimpleChat:
         )
 
     def send(
-        self, 
-        message: str,
-        template_id: str = None,
-        template_variables: dict = None
+        self, message: str, template_id: str = None, template_variables: dict = None
     ) -> str:
         """Send a message and get response."""
         # Handle template if provided
@@ -197,7 +200,7 @@ def ai(
     template_id: str = None,
     template_variables: dict = None,
     enable_ai_logging: bool = True,
-    **options
+    **options,
 ) -> SimpleResponse:
     """
     The simplest way to use AI in Python.
@@ -241,7 +244,7 @@ def ai(
     """
     import time
     import warnings
-    
+
     # Add deprecation warning for string model names
     if not is_model_constant(model):
         warnings.warn(
@@ -252,9 +255,9 @@ def ai(
             "            response = ck.ai(anthropic.claude_3_5_sonnet_20241022, 'your prompt')\n"
             "            response = ck.ai(google.gemini_2_5_pro, 'your prompt')",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
-    
+
     start_time = time.time()
     actual_prompt = prompt
     template_used = False
@@ -300,25 +303,35 @@ def ai(
 
         # Log AI call if enabled
         if enable_ai_logging:
-            ai_logger.log_ai_call({
-                "service": provider,
-                "operation": "chat_completion",
-                "aiModel": model,
-                "statusCode": 200,
-                "responseTime": response_time,
-                "prompt": actual_prompt,
-                "result": response.text,
-                "inputTokens": getattr(response.usage_metadata, "prompt_tokens", 0) if hasattr(response, "usage_metadata") else 0,
-                "outputTokens": getattr(response.usage_metadata, "completion_tokens", 0) if hasattr(response, "usage_metadata") else 0,
-                "totalTokens": tokens,
-                "cost": cost,
-                "success": True,
-                "cacheHit": cached,
-                "cortexEnabled": options.get("cortex", False),
-                "templateId": template_id,
-                "templateName": template_name_val,
-                "templateVariables": template_variables,
-            })
+            ai_logger.log_ai_call(
+                {
+                    "service": provider,
+                    "operation": "chat_completion",
+                    "aiModel": model,
+                    "statusCode": 200,
+                    "responseTime": response_time,
+                    "prompt": actual_prompt,
+                    "result": response.text,
+                    "inputTokens": (
+                        getattr(response.usage_metadata, "prompt_tokens", 0)
+                        if hasattr(response, "usage_metadata")
+                        else 0
+                    ),
+                    "outputTokens": (
+                        getattr(response.usage_metadata, "completion_tokens", 0)
+                        if hasattr(response, "usage_metadata")
+                        else 0
+                    ),
+                    "totalTokens": tokens,
+                    "cost": cost,
+                    "success": True,
+                    "cacheHit": cached,
+                    "cortexEnabled": options.get("cortex", False),
+                    "templateId": template_id,
+                    "templateName": template_name_val,
+                    "templateVariables": template_variables,
+                }
+            )
 
         result = SimpleResponse(
             text=response.text,
@@ -371,7 +384,7 @@ def chat(
         Total: $0.0023
     """
     import warnings
-    
+
     # Add deprecation warning for string model names
     if not is_model_constant(model):
         warnings.warn(
@@ -381,9 +394,9 @@ def chat(
             "            session = ck.chat(openai.gpt_4, system_message='...')\n"
             "            session = ck.chat(anthropic.claude_3_5_sonnet_20241022, system_message='...')",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
-    
+
     return SimpleChat(model, system_message, **options)
 
 

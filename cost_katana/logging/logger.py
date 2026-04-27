@@ -136,4 +136,3 @@ class Logger:
 
 # Export singleton instance
 logger = Logger()
-

@@ -31,10 +31,7 @@ def _has_direct_provider_keys_in_env() -> bool:
         os.getenv("OPENAI_API_KEY")
         or os.getenv("ANTHROPIC_API_KEY")
         or os.getenv("GOOGLE_API_KEY")
-        or (
-            os.getenv("AWS_ACCESS_KEY_ID")
-            and os.getenv("AWS_SECRET_ACCESS_KEY")
-        )
+        or (os.getenv("AWS_ACCESS_KEY_ID") and os.getenv("AWS_SECRET_ACCESS_KEY"))
     )
 
 

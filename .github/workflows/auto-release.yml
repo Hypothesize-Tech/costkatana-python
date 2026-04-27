@@ -16,7 +16,12 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        token: ${{ secrets.AI_GITHUB_TOKEN }}
+        # Falls back to GITHUB_TOKEN when AI_GITHUB_TOKEN is unset so
+        # checkout doesn't fail. NOTE: pushes/tags made with the default
+        # GITHUB_TOKEN do NOT trigger downstream workflows (e.g.
+        # publish.yml's tag trigger). Set the AI_GITHUB_TOKEN repo
+        # secret (a PAT with contents:write) to restore tag-driven publishing.
+        token: ${{ secrets.AI_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
         ssh-strict: false
     
     - name: Set up Python
@@ -139,7 +144,7 @@ jobs:
     - name: Create GitHub Release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.AI_GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.AI_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
       with:
         tag_name: v${{ steps.new_version.outputs.new_version }}
         release_name: Auto-release v${{ steps.new_version.outputs.new_version }}

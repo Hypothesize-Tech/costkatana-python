@@ -106,9 +106,7 @@ class Config:
         config_path_obj = Path(config_path).expanduser()
 
         if not config_path_obj.exists():
-            raise FileNotFoundError(
-                f"Configuration file not found: {config_path}"
-            )
+            raise FileNotFoundError(f"Configuration file not found: {config_path}")
 
         try:
             with open(config_path_obj, "r", encoding="utf-8") as f:

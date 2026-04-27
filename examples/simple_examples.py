@@ -49,7 +49,9 @@ def example_3_chat_conversation():
     print("-" * 50)
 
     # NEW: Type-safe model
-    chat = ck.chat(openai.gpt_3_5_turbo, system_message="You are a helpful Python expert.")
+    chat = ck.chat(
+        openai.gpt_3_5_turbo, system_message="You are a helpful Python expert."
+    )
 
     questions = [
         "Hello! Can you help me with Python?",
@@ -121,7 +123,9 @@ def example_6_content_generation():
 
     # Code
     code = ck.ai(
-        anthropic.claude_3_5_sonnet_20241022, "Write a Python function to sort a list", cache=True
+        anthropic.claude_3_5_sonnet_20241022,
+        "Write a Python function to sort a list",
+        cache=True,
     )
     print(f"Code generated: {len(code.text)} chars, ${code.cost:.6f}")
 

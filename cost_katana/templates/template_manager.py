@@ -3,6 +3,7 @@ Template Manager for Cost Katana Python SDK
 Handles local and backend template management
 """
 
+import contextlib
 import re
 import time
 from typing import Any, Dict, List, Optional
@@ -118,7 +119,9 @@ class TemplateManager:
 
                 # Filter out duplicates (local takes precedence)
                 unique_backend = [
-                    t for t in backend_templates if t.get("id") not in self.local_templates
+                    t
+                    for t in backend_templates
+                    if t.get("id") not in self.local_templates
                 ]
 
                 templates.extend(unique_backend)
@@ -155,7 +158,9 @@ class TemplateManager:
         missing_variables = [v for v in required_variables if v not in variables]
 
         if missing_variables:
-            raise ValueError(f"Missing required variables: {', '.join(missing_variables)}")
+            raise ValueError(
+                f"Missing required variables: {', '.join(missing_variables)}"
+            )
 
         # Resolve variables with defaults
         resolved_variables = {}
@@ -170,7 +175,9 @@ class TemplateManager:
                 if var_def and "defaultValue" in var_def:
                     resolved_variables[var_name] = var_def["defaultValue"]
                 else:
-                    resolved_variables[var_name] = f"{{{{{var_name}}}}}"  # Keep placeholder
+                    resolved_variables[var_name] = (
+                        f"{{{{{var_name}}}}}"  # Keep placeholder
+                    )
 
         # Substitute variables in content
         prompt = content
@@ -183,12 +190,10 @@ class TemplateManager:
             f"(variables: {len(resolved_variables)})"
         )
 
-        # Track usage if backend available
+        # Track usage if backend available — tracking failures are non-critical
         if self.client:
-            try:
+            with contextlib.suppress(Exception):
                 self._track_template_usage(template_id, resolved_variables)
-            except:
-                pass  # Silent fail - tracking is not critical
 
         return {
             "prompt": prompt,
@@ -204,13 +209,11 @@ class TemplateManager:
         if not self.client:
             return
 
-        try:
+        with contextlib.suppress(Exception):
             self.client.post(
                 f"/api/prompt-templates/{template_id}/use",
                 json={"variables": variables, "timestamp": time.time()},
             )
-        except:
-            pass  # Silent fail
 
     def clear_cache(self) -> None:
         """Clear template cache"""
@@ -232,12 +235,9 @@ class TemplateManager:
     def __del__(self):
         """Cleanup on deletion"""
         if self.client:
-            try:
+            with contextlib.suppress(Exception):
                 self.client.close()
-            except:
-                pass
 
 
 # Export singleton instance
 template_manager = TemplateManager()
-
