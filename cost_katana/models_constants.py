@@ -22,11 +22,12 @@ Example:
 class openai:
     """OpenAI model constants"""
 
-    # GPT-5.2 Series (Latest)
-    gpt_5_2 = "gpt-5.2"
-    gpt_5_2_pro = "gpt-5.2-pro"
-    gpt_5_2_codex = "gpt-5.2-codex"
-    gpt_5_2_chat_latest = "gpt-5.2-chat-latest"
+    # GPT-5.5 / GPT-5.4 Series (Latest — aligned with cost-katana core)
+    gpt_5_5 = "gpt-5.5"
+    gpt_5_5_2026_04_23 = "gpt-5.5-2026-04-23"
+    gpt_5_5_pro = "gpt-5.5-pro"
+    gpt_5_4 = "gpt-5.4"
+    gpt_5_4_mini = "gpt-5.4-mini"
 
     # GPT-5 Series
     gpt_5 = "gpt-5"
@@ -34,7 +35,14 @@ class openai:
     gpt_5_nano = "gpt-5-nano"
     gpt_5_pro = "gpt-5-pro"
     gpt_5_codex = "gpt-5-codex"
+    gpt_5_chat = "gpt-5-chat"
     gpt_5_chat_latest = "gpt-5-chat-latest"
+
+    # GPT-5.2 Series
+    gpt_5_2 = "gpt-5.2"
+    gpt_5_2_pro = "gpt-5.2-pro"
+    gpt_5_2_codex = "gpt-5.2-codex"
+    gpt_5_2_chat_latest = "gpt-5.2-chat-latest"
 
     # GPT-4.1 Series
     gpt_4_1 = "gpt-4.1"
@@ -137,6 +145,7 @@ class anthropic:
     # Claude 4.6 Series (Latest)
     claude_opus_4_6 = "claude-opus-4-6"
     claude_opus_4_6_v1 = "claude-opus-4-6-v1"
+    claude_opus_4_7 = "claude-opus-4-7"
     claude_sonnet_4_6 = "claude-sonnet-4-6"
 
     # Claude 4.5 Series
@@ -176,12 +185,20 @@ class google:
     gemini_3_pro_preview = "gemini-3-pro-preview"
     gemini_3_pro_image_preview = "gemini-3-pro-image-preview"
     gemini_3_flash_preview = "gemini-3-flash-preview"
+    gemini_3_1_pro = "gemini-3.1-pro"
 
     # Gemini 2.5 Series (Latest)
     gemini_2_5_pro = "gemini-2.5-pro"
     gemini_2_5_pro_computer_use_preview = "gemini-2.5-pro-computer-use-preview"
     gemini_2_5_flash = "gemini-2.5-flash"
     gemini_2_5_flash_lite_preview = "gemini-2.5-flash-lite-preview"
+    gemini_2_5_flash_lite = "gemini-2.5-flash-lite"
+    gemini_2_5_flash_audio = "gemini-2.5-flash-audio"
+    gemini_2_5_flash_lite_audio_preview = "gemini-2.5-flash-lite-audio-preview"
+    gemini_2_5_flash_native_audio = "gemini-2.5-flash-native-audio"
+    gemini_2_5_flash_native_audio_output = "gemini-2.5-flash-native-audio-output"
+    gemini_2_5_flash_preview_tts = "gemini-2.5-flash-preview-tts"
+    gemini_2_5_pro_preview_tts = "gemini-2.5-pro-preview-tts"
     gemini_2_5_flash_preview_09_2025 = "gemini-2.5-flash-preview-09-2025"
 
     # Gemini 2.0 Series
@@ -192,8 +209,11 @@ class google:
 
     # Gemini 1.5 Series
     gemini_1_5_flash = "gemini-1.5-flash"
+    gemini_1_5_flash_large_context = "gemini-1.5-flash-large-context"
     gemini_1_5_flash_8b = "gemini-1.5-flash-8b"
+    gemini_1_5_flash_8b_large_context = "gemini-1.5-flash-8b-large-context"
     gemini_1_5_pro = "gemini-1.5-pro"
+    gemini_1_5_pro_large_context = "gemini-1.5-pro-large-context"
 
     # Gemini 1.0 Series
     gemini_1_0_pro = "gemini-1.0-pro"
@@ -206,6 +226,8 @@ class google:
     # Gemma Models (Open Source)
     gemma_3n = "gemma-3n"
     gemma_3 = "gemma-3"
+    gemma_2 = "gemma-2"
+    gemma = "gemma"
     gemma_2_27b_it = "gemma-2-27b-it"
     gemma_2_9b_it = "gemma-2-9b-it"
     gemma_2_2b_it = "gemma-2-2b-it"
@@ -225,12 +247,14 @@ class google:
     gemini_embedding_001 = "gemini-embedding-001"
     text_embedding_004 = "text-embedding-004"
     text_multilingual_embedding_002 = "text-multilingual-embedding-002"
+    multimodal_embeddings = "multimodal-embeddings"
 
     # Imagen (Image Generation)
     imagen_4_generation = "imagen-4-generation"
     imagen_4_fast_generation = "imagen-4-fast-generation"
     imagen_4_ultra_generation = "imagen-4-ultra-generation"
     imagen_4_upscaling = "imagen-4-upscaling"
+    imagen_captioning_vqa = "imagen-captioning-vqa"
     imagen_3_generation = "imagen-3-generation"
     imagen_3_editing_customization = "imagen-3-editing-customization"
     imagen_3_fast_generation = "imagen-3-fast-generation"
@@ -246,6 +270,8 @@ class google:
     veo_3_1_fast_video_4k = "veo-3.1-fast-video-4k"
     veo_3_video_audio = "veo-3-video-audio"
     veo_3_video = "veo-3-video"
+    veo_3 = "veo-3"
+    veo_3_fast = "veo-3-fast"
     veo_2 = "veo-2"
     veo_2_advanced_controls = "veo-2-advanced-controls"
     veo_3_preview = "veo-3-preview"
@@ -281,6 +307,7 @@ class aws_bedrock:
 
     # Anthropic Claude on Bedrock
     claude_opus_4_6 = "anthropic.claude-opus-4-6-v1"
+    claude_opus_4_7_v1_0 = "anthropic.claude-opus-4-7-v1:0"
     claude_sonnet_4_6 = "anthropic.claude-sonnet-4-6-v1:0"
     claude_sonnet_4_5 = "anthropic.claude-sonnet-4-5-v1:0"
     claude_haiku_4_5 = "anthropic.claude-haiku-4-5-v1:0"
@@ -370,6 +397,11 @@ class aws_bedrock:
 class xai:
     """xAI model constants"""
 
+    # Grok 2 Series (aligned with cost-katana core aliases)
+    grok_2_1212 = "grok-2-1212"
+    grok_beta = "grok-beta"
+    grok_vision_beta = "grok-vision-beta"
+
     # Grok 4.1 Fast Series (Latest)
     grok_4_1_fast_reasoning = "grok-4-1-fast-reasoning"
     grok_4_1_fast_non_reasoning = "grok-4-1-fast-non-reasoning"
@@ -442,6 +474,7 @@ class mistral:
     pixtral_large_latest = "pixtral-large-latest"
 
     # Small Models
+    mistral_small_latest = "mistral-small-latest"
     magistral_small_2509 = "magistral-small-2509"
     magistral_small_latest = "magistral-small-latest"
     magistral_small_2507 = "magistral-small-2507"
@@ -518,9 +551,11 @@ class cohere:
     command_a_vision_07_2025 = "command-a-vision-07-2025"
 
     # Command R+ Series
+    command_r_plus = "command-r-plus"
     command_r_plus_04_2024 = "command-r-plus-04-2024"
 
     # Command R Series
+    command_r = "command-r"
     command_r_08_2024 = "command-r-08-2024"
     command_r_03_2024 = "command-r-03-2024"
     command_r7b_12_2024 = "command-r7b-12-2024"

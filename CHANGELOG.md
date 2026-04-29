@@ -4,6 +4,12 @@ All notable changes to Cost Katana Python SDK will be documented in this file.
 
 ## [Unreleased]
 
+## [2.5.5] - 2026-04-29
+
+### Changed
+
+- **`cost_katana.models_constants`**: Align type-safe model IDs with cost-katana core (GPT-5.5/5.4, Gemini 3.1 Pro, Claude Opus 4.7, expanded Gemini 2.5 and Bedrock entries); restore shorthand constants expected by integrations (`grok_2_1212`, `command_r_plus`, `mistral_small_latest`, etc.).
+
 ## [2.5.4] - 2026-04-22
 
 ### Added

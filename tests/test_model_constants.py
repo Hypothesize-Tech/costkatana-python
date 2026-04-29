@@ -141,9 +141,9 @@ class TestModelConstants:
         assert get_provider_from_model('command-r') == 'Cohere'
     
     def test_get_provider_from_model_groq(self):
-        """Test get_provider_from_model utility for Grok"""
-        assert get_provider_from_model('llama-3.3-70b-versatile') == 'Grok'
-        assert get_provider_from_model('mixtral-8x7b-32768') == 'Grok'
+        """Test get_provider_from_model utility for Groq"""
+        assert get_provider_from_model('llama-3.3-70b-versatile') == 'Groq'
+        assert get_provider_from_model('mixtral-8x7b-32768') == 'Groq'
     
     def test_get_provider_from_model_meta(self):
         """Test get_provider_from_model utility for Meta"""
@@ -163,7 +163,8 @@ class TestModelConstants:
             # This should trigger a deprecation warning
             # Note: actual API call will fail without config, but we only care about the warning
             try:
-                ck.ai('gpt-4', 'test')
+                # Deprecation warns only when the model id is not a registered constant
+                ck.ai('unknown-legacy-model-not-in-catalog', 'test')
             except:
                 pass  # We only care about the warning, not the result
             
@@ -193,7 +194,7 @@ class TestModelConstants:
             
             # This should trigger a deprecation warning
             try:
-                ck.chat('gpt-4', system_message='test')
+                ck.chat('unknown-legacy-model-not-in-catalog', system_message='test')
             except:
                 pass
             
