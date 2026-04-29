@@ -53,10 +53,6 @@ jobs:
         python -m flake8 cost_katana/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
         python -m flake8 cost_katana/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     
-    - name: Build package
-      run: |
-        python setup.py sdist bdist_wheel
-    
     - name: Get current version
       id: current_version
       run: |
@@ -84,10 +80,17 @@ jobs:
         echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
         echo "New version: $NEW_VERSION"
     
-    - name: Update version in setup.py
+    - name: Update version in setup.py and package __init__.py
       run: |
-        sed -i "s/version=\"[^\"]*\"/version=\"${{ steps.new_version.outputs.new_version }}\"/" setup.py
-        echo "Updated setup.py version to ${{ steps.new_version.outputs.new_version }}"
+        NEW="${{ steps.new_version.outputs.new_version }}"
+        sed -i "s/version=\"[^\"]*\"/version=\"${NEW}\"/" setup.py
+        sed -i "s/__version__ = \"[^\"]*\"/__version__ = \"${NEW}\"/" cost_katana/__init__.py
+        echo "Updated version to ${NEW}"
+    
+    - name: Build package
+      run: |
+        rm -rf dist build cost_katana.egg-info
+        python setup.py sdist bdist_wheel
     
     # Same secret name as publish.yml and manual-release.yml
     - name: Publish to PyPI
@@ -116,7 +119,7 @@ jobs:
         echo "Remote URL: $(git remote get-url origin)"
         
         # Add and commit changes
-        git add setup.py
+        git add setup.py cost_katana/__init__.py
         git commit -m "Auto-release: Bump version to ${{ steps.new_version.outputs.new_version }}"
         
         # Create tag

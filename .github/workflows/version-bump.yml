@@ -41,7 +41,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install semver
+        pip install semver setuptools
     
     - name: Get current version
       id: current_version
@@ -89,16 +89,19 @@ jobs:
         echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
         echo "New version: $NEW_VERSION"
     
-    - name: Update version in setup.py
+    - name: Update version in setup.py and package __init__.py
       run: |
-        sed -i "s/version=\"${{ steps.current_version.outputs.current_version }}\"/version=\"${{ steps.new_version.outputs.new_version }}\"/" setup.py
-        echo "Updated setup.py version to ${{ steps.new_version.outputs.new_version }}"
+        OLD="${{ steps.current_version.outputs.current_version }}"
+        NEW="${{ steps.new_version.outputs.new_version }}"
+        sed -i "s/version=\"${OLD}\"/version=\"${NEW}\"/" setup.py
+        sed -i "s/__version__ = \"${OLD}\"/__version__ = \"${NEW}\"/" cost_katana/__init__.py
+        echo "Updated version to ${NEW}"
     
     - name: Create and push tag
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add setup.py
+        git add setup.py cost_katana/__init__.py
         git commit -m "Bump version to ${{ steps.new_version.outputs.new_version }}"
         git tag -a "v${{ steps.new_version.outputs.new_version }}" -m "Release version ${{ steps.new_version.outputs.new_version }}"
         git push origin HEAD:${{ github.ref }}
