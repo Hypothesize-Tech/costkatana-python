@@ -22,15 +22,16 @@ jobs:
   version-bump:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: write
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        # Falls back to GITHUB_TOKEN when AI_GITHUB_TOKEN is unset.
-        # See note in auto-release.yml about downstream workflow triggers.
-        token: ${{ secrets.AI_GITHUB_TOKEN || github.token }}
+        # Uses default GITHUB_TOKEN from checkout for subsequent git push.
     
     - name: Set up Python
       uses: actions/setup-python@v4

@@ -11,18 +11,17 @@ on:
 jobs:
   auto-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        # Falls back to GITHUB_TOKEN when AI_GITHUB_TOKEN is unset so
-        # checkout doesn't fail. NOTE: pushes/tags made with the default
-        # GITHUB_TOKEN do NOT trigger downstream workflows (e.g.
-        # publish.yml's tag trigger). Set the AI_GITHUB_TOKEN repo
-        # secret (a PAT with contents:write) to restore tag-driven publishing.
-        token: ${{ secrets.AI_GITHUB_TOKEN || github.token }}
         ssh-strict: false
+        # Omit token: uses repo default GITHUB_TOKEN (same as github.token).
+        # Optional PAT secret AI_GITHUB_TOKEN with contents:write if pushes must
+        # trigger other workflows (GITHUB_TOKEN pushes skip downstream workflows).
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -90,23 +89,18 @@ jobs:
         sed -i "s/version=\"[^\"]*\"/version=\"${{ steps.new_version.outputs.new_version }}\"/" setup.py
         echo "Updated setup.py version to ${{ steps.new_version.outputs.new_version }}"
     
-    - name: Verify PyPI token
+    # Same secret name as publish.yml and manual-release.yml
+    - name: Publish to PyPI
+      env:
+        PYPI_SECRET: ${{ secrets.PYPI_API_TOKEN }}
       run: |
-        if [ -n "${{ secrets.PYPI_TOKEN }}" ]; then
-          echo "PYPI_TOKEN is available"
-          echo "[pypi]" > ~/.pypirc
-          echo "username = __token__" >> ~/.pypirc
-          echo "password = ${{ secrets.PYPI_TOKEN }}" >> ~/.pypirc
-        else
-          echo "PYPI_TOKEN is not available"
+        if [ -z "$PYPI_SECRET" ]; then
+          echo "::error::Add repository secret PYPI_API_TOKEN (PyPI API token with upload scope)."
           exit 1
         fi
-    
-    - name: Publish to PyPI
-      run: |
         echo "[pypi]" > ~/.pypirc
         echo "username = __token__" >> ~/.pypirc
-        echo "password = ${{ secrets.PYPI_TOKEN }}" >> ~/.pypirc
+        echo "password = $PYPI_SECRET" >> ~/.pypirc
         python -m twine upload --repository pypi dist/*
         echo "Successfully published cost-katana@${{ steps.new_version.outputs.new_version }} to PyPI"
     
@@ -116,7 +110,7 @@ jobs:
         git config --local user.name "GitHub Action"
         
         # Configure git to use the token for authentication
-        git remote set-url origin https://x-access-token:${{ secrets.AI_GITHUB_TOKEN || github.token }}@github.com/${{ github.repository }}.git
+        git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         
         # Verify the remote URL is set correctly
         echo "Remote URL: $(git remote get-url origin)"
@@ -131,20 +125,20 @@ jobs:
         # Push with explicit authentication
         if ! git push origin HEAD:${{ github.ref }}; then
           echo "Git push failed, trying with GitHub CLI..."
-          gh auth login --with-token <<< "${{ secrets.AI_GITHUB_TOKEN || github.token }}"
+          gh auth login --with-token <<< "${{ github.token }}"
           git push origin HEAD:${{ github.ref }}
         fi
         
         if ! git push origin "v${{ steps.new_version.outputs.new_version }}"; then
           echo "Tag push failed, trying with GitHub CLI..."
-          gh auth login --with-token <<< "${{ secrets.AI_GITHUB_TOKEN || github.token }}"
+          gh auth login --with-token <<< "${{ github.token }}"
           git push origin "v${{ steps.new_version.outputs.new_version }}"
         fi
     
     - name: Create GitHub Release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.AI_GITHUB_TOKEN || github.token }}
+        GITHUB_TOKEN: ${{ github.token }}
       with:
         tag_name: v${{ steps.new_version.outputs.new_version }}
         release_name: Auto-release v${{ steps.new_version.outputs.new_version }}
