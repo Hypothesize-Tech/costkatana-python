@@ -30,7 +30,7 @@ jobs:
         fetch-depth: 0
         # Falls back to GITHUB_TOKEN when AI_GITHUB_TOKEN is unset.
         # See note in auto-release.yml about downstream workflow triggers.
-        token: ${{ secrets.AI_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.AI_GITHUB_TOKEN || github.token }}
     
     - name: Set up Python
       uses: actions/setup-python@v4

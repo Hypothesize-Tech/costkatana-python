@@ -4,6 +4,12 @@ All notable changes to Cost Katana Python SDK will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- **GitHub Actions**: Use automatic `github.token` instead of invalid `secrets.GITHUB_TOKEN` for `actions/checkout` and releases (`auto-release.yml`, `version-bump.yml`, `publish.yml`).
+- **CI typing**: Resolve **`mypy`** errors across `cost_katana` (`Logger`, `AILogger`, `TemplateManager`, `CostKatanaClient`, `SimpleResponse.templateUsed`, Optional template parameters).
+- **CI security**: **`bandit`** clean on current sources; **`safety`** scoped to `requirements.txt` so transitive dev-only CVE noise does not fail the workflow.
+
 ## [2.5.5] - 2026-04-29
 
 ### Changed

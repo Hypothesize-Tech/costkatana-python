@@ -6,7 +6,7 @@ Handles local and backend template management
 import contextlib
 import re
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 import httpx
 
@@ -91,7 +91,7 @@ class TemplateManager:
             if self.config["enable_caching"]:
                 self.template_cache[template_id] = {
                     "template": template,
-                    "expiry": time.time() + self.config["cache_ttl"],
+                    "expiry": time.time() + float(cast(int, self.config["cache_ttl"])),
                 }
 
             logger.debug(f"Template fetched from backend: {template_id}")

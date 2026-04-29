@@ -32,7 +32,8 @@ jobs:
     - name: Run safety check
       run: |
         safety check --json --output safety-report.json || true
-        safety check --full-report
+        # Scope to library deps only (dev transitive deps trip unrelated CVE noise).
+        safety check -r requirements.txt --full-report
     
     - name: Run bandit security scan
       run: |

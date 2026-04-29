@@ -158,7 +158,7 @@ class CostKatanaClient:
             )
 
         if not self.config.project_id:
-            logger.warning(
+            logger.warn(
                 "PROJECT_ID not set — usage will attribute to your account without a project scope. "
                 "Set PROJECT_ID for per-project dashboard filtering."
             )
@@ -170,7 +170,7 @@ class CostKatanaClient:
         headers: Dict[str, str] = {
             "Authorization": f"Bearer {self.config.api_key}",
             "Content-Type": "application/json",
-            "User-Agent": "cost-katana-python/2.5.2",
+            "User-Agent": "cost-katana-python/2.5.5",
         }
         if self.config.project_id:
             headers["x-project-id"] = self.config.project_id
@@ -183,6 +183,7 @@ class CostKatanaClient:
         )
 
         # Initialize AI logger
+        self.ai_logger: Optional[AILogger]
         if getattr(self.config, "enable_ai_logging", True):
             self.ai_logger = AILogger(
                 api_key=self.config.api_key,

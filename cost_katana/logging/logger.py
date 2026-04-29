@@ -57,11 +57,12 @@ class Logger:
 
     def get_level(self) -> str:
         """Get current log level"""
-        return self.config["level"]
+        return str(self.config["level"])
 
     def _should_log(self, level: str) -> bool:
         """Check if a level should be logged"""
-        return self.LOG_LEVELS[level] >= self.LOG_LEVELS[self.config["level"]]
+        current = str(self.config["level"])
+        return self.LOG_LEVELS[level] >= self.LOG_LEVELS[current]
 
     def _log(self, level: str, message: str, data: Any = None) -> None:
         """Internal log method"""

@@ -10,7 +10,7 @@ import time
 import uuid
 from datetime import datetime
 from threading import Lock, Thread
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 import httpx
 
@@ -107,7 +107,7 @@ class AILogger:
                 logger.debug(f"AI call logged to buffer (size: {len(self.log_buffer)})")
 
                 # Flush if buffer is full
-                if len(self.log_buffer) >= self.config["batch_size"]:
+                if len(self.log_buffer) >= cast(int, self.config["batch_size"]):
                     # Spawn thread to flush without blocking
                     Thread(target=self.flush, daemon=True).start()
 
@@ -139,19 +139,18 @@ class AILogger:
         """Enrich log entry with metadata and context"""
         request_id = entry.get("requestId") or str(uuid.uuid4())
 
+        max_prompt_len = cast(int, self.config["max_prompt_length"])
+        max_result_len = cast(int, self.config["max_result_length"])
+
         # Redact sensitive data
         sanitized_prompt = (
-            self._redact_sensitive_data(entry.get("prompt", ""))[
-                : self.config["max_prompt_length"]
-            ]
+            self._redact_sensitive_data(str(entry.get("prompt", "")))[:max_prompt_len]
             if entry.get("prompt")
             else None
         )
 
         sanitized_result = (
-            self._redact_sensitive_data(entry.get("result", ""))[
-                : self.config["max_result_length"]
-            ]
+            self._redact_sensitive_data(str(entry.get("result", "")))[:max_result_len]
             if entry.get("result")
             else None
         )

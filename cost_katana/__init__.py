@@ -116,6 +116,8 @@ def create_generative_model(model_name: str, **kwargs):
 class SimpleResponse:
     """Simple response object with all the info you need."""
 
+    templateUsed: bool
+
     def __init__(
         self,
         text: str,
@@ -126,6 +128,7 @@ class SimpleResponse:
         cached: bool = False,
         optimized: bool = False,
         thinking: Any = None,
+        templateUsed: bool = False,
     ):
         self.text = text
         self.cost = cost
@@ -136,6 +139,7 @@ class SimpleResponse:
         self.optimized = optimized
         self.saved_amount = 0.0
         self.thinking = thinking
+        self.templateUsed = templateUsed
 
     def __repr__(self):
         return f"<Response text='{self.text[:50]}...' cost=${self.cost:.4f}>"
@@ -161,7 +165,10 @@ class SimpleChat:
         )
 
     def send(
-        self, message: str, template_id: str = None, template_variables: dict = None
+        self,
+        message: str,
+        template_id: Optional[str] = None,
+        template_variables: Optional[Dict[str, Any]] = None,
     ) -> str:
         """Send a message and get response."""
         # Handle template if provided
@@ -197,10 +204,10 @@ class SimpleChat:
 def ai(
     model: str,
     prompt: str,
-    template_id: str = None,
-    template_variables: dict = None,
+    template_id: Optional[str] = None,
+    template_variables: Optional[Dict[str, Any]] = None,
     enable_ai_logging: bool = True,
-    **options,
+    **options: Any,
 ) -> SimpleResponse:
     """
     The simplest way to use AI in Python.
@@ -342,8 +349,8 @@ def ai(
             cached=cached,
             optimized=options.get("cortex", False),
             thinking=getattr(response, "thinking", None),
+            templateUsed=template_used,
         )
-        result.templateUsed = template_used
         return result
 
     except Exception as e:
