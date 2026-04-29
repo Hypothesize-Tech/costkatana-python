@@ -170,7 +170,7 @@ class CostKatanaClient:
         headers: Dict[str, str] = {
             "Authorization": f"Bearer {self.config.api_key}",
             "Content-Type": "application/json",
-            "User-Agent": "cost-katana-python/2.5.5",
+            "User-Agent": "cost-katana-python/2.5.6",
         }
         if self.config.project_id:
             headers["x-project-id"] = self.config.project_id
