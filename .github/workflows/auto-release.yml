@@ -1,12 +1,10 @@
-name: Auto Release on Push
+# Manual patch release: bump version, push to default branch + tag, then PyPI + GitHub Release.
+# `master` is often protected — set secret RELEASE_PUSH_TOKEN (PAT with contents:write + bypass)
+# or use PR + tag flow via publish.yml instead of this workflow.
+name: Auto Release
 
 on:
-  push:
-    branches: [ main, master ]
-    paths-ignore:
-      - '**.md'
-      - '.github/**'
-      - 'CHANGELOG.md'
+  workflow_dispatch:
 
 jobs:
   auto-release:
@@ -19,9 +17,6 @@ jobs:
       with:
         fetch-depth: 0
         ssh-strict: false
-        # Omit token: uses repo default GITHUB_TOKEN (same as github.token).
-        # Optional PAT secret AI_GITHUB_TOKEN with contents:write if pushes must
-        # trigger other workflows (GITHUB_TOKEN pushes skip downstream workflows).
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -65,13 +60,11 @@ jobs:
       run: |
         CURRENT_VERSION="${{ steps.current_version.outputs.current_version }}"
         
-        # Split version into components
         IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
         MAJOR="${VERSION_PARTS[0]}"
         MINOR="${VERSION_PARTS[1]}"
         PATCH="${VERSION_PARTS[2]}"
         
-        # Always bump patch version for auto-releases
         NEW_MAJOR=$MAJOR
         NEW_MINOR=$MINOR
         NEW_PATCH=$((PATCH + 1))
@@ -80,19 +73,43 @@ jobs:
         echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
         echo "New version: $NEW_VERSION"
     
-    - name: Update version in setup.py and package __init__.py
+    - name: Update version in setup.py, __init__.py, and client User-Agent
       run: |
         NEW="${{ steps.new_version.outputs.new_version }}"
         sed -i "s/version=\"[^\"]*\"/version=\"${NEW}\"/" setup.py
         sed -i "s/__version__ = \"[^\"]*\"/__version__ = \"${NEW}\"/" cost_katana/__init__.py
-        echo "Updated version to ${NEW}"
+        sed -i "s/cost-katana-python\/[0-9.]*\"/cost-katana-python\/${NEW}\"/" cost_katana/client.py
     
     - name: Build package
       run: |
         rm -rf dist build cost_katana.egg-info
         python setup.py sdist bdist_wheel
     
-    # Same secret name as publish.yml and manual-release.yml
+    - name: Create and push commit and tag
+      env:
+        # PAT optional: bypass protected-branch pushes; otherwise falls back to github.token (often blocked on master).
+        PUSH_TOKEN: ${{ secrets.RELEASE_PUSH_TOKEN || github.token }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git remote set-url origin "https://x-access-token:${PUSH_TOKEN}@github.com/${{ github.repository }}.git"
+        
+        git add setup.py cost_katana/__init__.py cost_katana/client.py
+        git commit -m "Auto-release: Bump version to ${{ steps.new_version.outputs.new_version }}"
+        git tag -a "v${{ steps.new_version.outputs.new_version }}" -m "Auto-release version ${{ steps.new_version.outputs.new_version }}"
+        
+        if ! git push origin "HEAD:${{ github.ref }}"; then
+          echo "Git push failed, trying with GitHub CLI..."
+          echo "$PUSH_TOKEN" | gh auth login --with-token
+          git push origin "HEAD:${{ github.ref }}"
+        fi
+        
+        if ! git push origin "v${{ steps.new_version.outputs.new_version }}"; then
+          echo "Tag push failed, trying with GitHub CLI..."
+          echo "$PUSH_TOKEN" | gh auth login --with-token
+          git push origin "v${{ steps.new_version.outputs.new_version }}"
+        fi
+    
     - name: Publish to PyPI
       env:
         PYPI_SECRET: ${{ secrets.PYPI_API_TOKEN }}
@@ -107,37 +124,6 @@ jobs:
         python -m twine upload --repository pypi dist/*
         echo "Successfully published cost-katana@${{ steps.new_version.outputs.new_version }} to PyPI"
     
-    - name: Create and push tag
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        
-        # Configure git to use the token for authentication
-        git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
-        
-        # Verify the remote URL is set correctly
-        echo "Remote URL: $(git remote get-url origin)"
-        
-        # Add and commit changes
-        git add setup.py cost_katana/__init__.py
-        git commit -m "Auto-release: Bump version to ${{ steps.new_version.outputs.new_version }}"
-        
-        # Create tag
-        git tag -a "v${{ steps.new_version.outputs.new_version }}" -m "Auto-release version ${{ steps.new_version.outputs.new_version }}"
-        
-        # Push with explicit authentication
-        if ! git push origin HEAD:${{ github.ref }}; then
-          echo "Git push failed, trying with GitHub CLI..."
-          gh auth login --with-token <<< "${{ github.token }}"
-          git push origin HEAD:${{ github.ref }}
-        fi
-        
-        if ! git push origin "v${{ steps.new_version.outputs.new_version }}"; then
-          echo "Tag push failed, trying with GitHub CLI..."
-          gh auth login --with-token <<< "${{ github.token }}"
-          git push origin "v${{ steps.new_version.outputs.new_version }}"
-        fi
-    
     - name: Create GitHub Release
       uses: actions/create-release@v1
       env:
@@ -148,17 +134,9 @@ jobs:
         body: |
           ## Auto-release v${{ steps.new_version.outputs.new_version }}
           
-          This is an automatic release triggered by changes to the main branch.
-          
           ### Installation
           ```bash
           pip install cost-katana==${{ steps.new_version.outputs.new_version }}
           ```
-          
-          ### Changes
-          - Automatic version bump and release
-          - Updated dependencies and improvements
-          - Enhanced Python package structure
-          - Better error handling
         draft: false
-        prerelease: false 
+        prerelease: false

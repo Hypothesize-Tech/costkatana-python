@@ -4,6 +4,14 @@ All notable changes to Cost Katana Python SDK will be documented in this file.
 
 ## [Unreleased]
 
+## [2.5.7] - 2026-04-30
+
+### Fixed
+
+- **Source ↔ PyPI**: Align repo metadata with **2.5.7** already on PyPI after an Auto Release run could upload but not push to protected `master`.
+- **Auto Release**: Workflow is **`workflow_dispatch` only**; **PyPI upload runs only after** commit + tag push succeed; bumps **`cost_katana/client.py`** User-Agent; optional secret **`RELEASE_PUSH_TOKEN`** (PAT with `contents:write` and branch bypass) when `github.token` cannot push `master`.
+- **Version Bump**: **`workflow_dispatch` only** (no push hook); same **`RELEASE_PUSH_TOKEN`** / User-Agent handling; redundant **`publish.yml` dispatch** removed — tag push triggers **Build and Publish**.
+
 ## [2.5.6] - 2026-04-29
 
 ### Fixed
